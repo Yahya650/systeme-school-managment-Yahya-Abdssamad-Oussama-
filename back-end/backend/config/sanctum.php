@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    'guard' => ['super_admin', 'admin', 'teacher', 'student_parent', 'student'],
 
     /*
     |--------------------------------------------------------------------------

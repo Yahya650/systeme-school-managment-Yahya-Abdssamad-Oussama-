@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\Student;
+use App\Models\StudentParent;
+use App\Models\SuperAdmin;
+use App\Models\Teacher;
+
 return [
 
     /*
@@ -14,8 +20,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'super_admin',
+        'passwords' => 'super_admins',
     ],
 
     /*
@@ -36,9 +42,25 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'super_admin' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'super_admins',
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        'teacher' => [
+            'driver' => 'session',
+            'provider' => 'teachers',
+        ],
+        'student_parent' => [
+            'driver' => 'session',
+            'provider' => 'student_parents',
+        ],
+        'student' => [
+            'driver' => 'session',
+            'provider' => 'students',
         ],
     ],
 
@@ -60,10 +82,26 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'super_admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => SuperAdmin::class,
         ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => Admin::class,
+        ],
+        'teachers' => [
+            'driver' => 'eloquent',
+            'model' => Teacher::class,
+        ],
+        'student_parents' => [
+            'driver' => 'eloquent',
+            'model' => StudentParent::class,
+        ],
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => Student::class,
+        ]
 
         // 'users' => [
         //     'driver' => 'database',
@@ -91,8 +129,32 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'super_admins' => [
+            'provider' => 'super_admins',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'teachers' => [
+            'provider' => 'teachers',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'student_parents' => [
+            'provider' => 'student_parents',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'students' => [
+            'provider' => 'students',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

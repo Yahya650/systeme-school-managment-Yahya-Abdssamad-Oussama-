@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::group(['prefix' => 'admin'], function () {
+    require __DIR__ . '/admin.php';
+});
+
+
+Route::group(['prefix' => 'super-admin'], function () {
+    require __DIR__ . '/super_admin.php';
+});
+
+
+Route::group(['prefix' => 'teacher'], function () {
+    require __DIR__ . '/teacher.php';
+});
+
+
+Route::group(['prefix' => 'student'], function () {
+    require __DIR__ . '/student.php';
+});
+
+
+Route::group(['prefix' => 'student-parent'], function () {
+    require __DIR__ . '/student_parent.php';
 });
