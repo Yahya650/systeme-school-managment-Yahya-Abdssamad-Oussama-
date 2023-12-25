@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // Routes Auth
-Route::middleware(['auth:sanctum,student'])->group(function () {
+Route::middleware(['auth:student'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return $request->user();
     });
@@ -14,6 +14,6 @@ Route::middleware(['auth:sanctum,student'])->group(function () {
     Route::get('/logout', [StudentController::class, 'logout']);
 });
 
-Route::middleware(['guest:sanctum,student,admin,super_admin,teacher,student_parent'])->group(function () {
+Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {
     Route::post('/login', [StudentController::class, 'login']);
 });

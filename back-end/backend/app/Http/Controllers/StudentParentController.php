@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Nette\Utils\Random;
 use Illuminate\Http\Request;
 use App\Models\StudentParent;
 use Illuminate\Validation\Rule;
@@ -14,7 +15,6 @@ class StudentParentController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate([
             'cin' => 'required',
             'password' => 'required',
@@ -31,34 +31,34 @@ class StudentParentController extends Controller
         $studentParent->save();
 
         return response([
-            'token' => $studentParent->createToken('StudentParent')->plainTextToken
+            'token' => $studentParent->createToken('StudentParent', ['student_parent'])->plainTextToken
         ], 200);
     }
 
     public function store(Request $request)
     {
-
-
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
-            'email' => 'required|email|unique:super_admins,email',
-            'cin' => 'required|string|unique:super_admins,cin',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|unique:student_parents,email',
+            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:student_parents,cin',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|string|max:10|unique:super_admins,phone_number',
+            'phone_number' => 'required|min:10|string|max:10|unique:student_parents,phone_number',
             'address' => 'nullable|string|max:255',
         ]);
+
+
+        $password = Random::generate(8);
 
         $newStudentParent = new StudentParent();
 
         if ($request->profile_picture) {
-            Storage::disk('local')->put('public/picture_profiles/parent_students/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newStudentParent->profile_picture = '/picture_profiles/parent_students/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
+            $newStudentParent->profile_picture = '/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $newStudentParent->profile_picture = $request->profile_picture;
@@ -67,7 +67,7 @@ class StudentParentController extends Controller
         $newStudentParent->gender = $request->gender;
         $newStudentParent->email = $request->email;
         $newStudentParent->cin = $request->cin;
-        $newStudentParent->password = Hash::make($request->password);
+        $newStudentParent->password = Hash::make($password);
         $newStudentParent->health_status = $request->health_status;
         $newStudentParent->date_of_birth = $request->date_of_birth;
         $newStudentParent->blood_type = $request->blood_type;
@@ -77,7 +77,9 @@ class StudentParentController extends Controller
         $newStudentParent->save();
 
         return response([
-            'message' => "Parent d'élève créé avec succès"
+            'cin' => $request->cin,
+            'password' => $password,
+            'message' => "Cet parent d'éléve créé avec succès"
         ], 200);
     }
 
@@ -96,41 +98,94 @@ class StudentParentController extends Controller
     }
 
 
-
-
-
-
-
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response()->json($request->user()->student_parents()->latest()->get());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(StudentParent $studentParent)
+
+    public function show($id)
     {
-        //
+        if (!StudentParent::find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'éléve non trouvé'
+            ]);
+        }
+        return response()->json(StudentParent::find($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, StudentParent $studentParent)
+
+    public function update(Request $request, $id)
     {
-        //
+        if (!StudentParent::find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'éléve non trouvé'
+            ]);
+        }
+
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($id)],
+            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:student_parents,cin',
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', 'size:10', Rule::unique('student_parents', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $studentParent = StudentParent::find($id);
+
+        // if (!Hash::check($request->old_password, $admin->password)) {
+        //     return response()->json([
+        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
+        //     ]);
+        // }
+
+        if ($request->profile_picture) {
+            Storage::delete($studentParent->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
+            $studentParent->profile_picture = '/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+        }
+
+        $studentParent->first_name = $request->first_name;
+        $studentParent->last_name = $request->last_name;
+        $studentParent->gender = $request->gender;
+        $studentParent->email = $request->email;
+        $studentParent->cin = $request->cin;
+        $studentParent->health_status = $request->health_status;
+        $studentParent->date_of_birth = $request->date_of_birth;
+        $studentParent->blood_type = $request->blood_type;
+        $studentParent->phone_number = $request->phone_number;
+        $studentParent->address = $request->address;
+
+        $studentParent->save();
+
+        return response([
+            'message' => "Cet parent d\'éléve mis à jour avec succès"
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(StudentParent $studentParent)
+
+    public function destroy($id)
     {
-        //
+        if (!StudentParent::find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'éléve non trouvé'
+            ]);
+        }
+
+        if (!StudentParent::find($id)->delete()) {
+            return response()->json([
+                'message' => 'Cet parent d\'éléve non trouvé pour la suppression'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Cet parent d\'éléve supprimé avec succès'
+        ]);
     }
 }

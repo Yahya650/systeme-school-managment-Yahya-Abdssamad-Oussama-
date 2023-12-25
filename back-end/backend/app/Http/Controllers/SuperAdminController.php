@@ -27,6 +27,7 @@ class SuperAdminController extends Controller
             ], 401);
         }
 
+
         $superAdmin->last_login_date = date('Y-m-d H:i:s');
         $superAdmin->save();
 
@@ -44,12 +45,12 @@ class SuperAdminController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:super_admins,email',
-            'cin' => 'required|string|unique:super_admins,cin',
+            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:super_admins,cin',
             'password' => 'required|string|min:8|confirmed',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|string|max:10|unique:super_admins,phone_number',
+            'phone_number' => 'required|min:10|string|max:10|unique:super_admins,phone_number',
             'address' => 'nullable|string|max:255',
         ]);
 

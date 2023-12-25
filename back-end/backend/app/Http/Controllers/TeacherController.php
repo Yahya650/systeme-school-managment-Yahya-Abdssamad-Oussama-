@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Storage;
 class TeacherController extends Controller
 {
 
+    // function __construct()
+    // {
+    //     $this->middleware('isSuperAdminOwner:teacher', ['only' => ['update', 'destroy']]);
+    // }
 
     public function login(Request $request)
     {
@@ -56,12 +60,11 @@ class TeacherController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:teachers,email',
-            'cin' => 'required|string|unique:teachers,cin',
-            'password' => 'required|string|min:8|confirmed',
+            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:teachers,cin',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|string|max:10|unique:teachers,phone_number',
+            'phone_number' => 'required|min:10|string|max:10|unique:teachers,phone_number',
             'address' => 'nullable|string|max:255',
         ]);
 
@@ -90,6 +93,7 @@ class TeacherController extends Controller
         $newTeacher->save();
 
         return response([
+            'cin' => $request->cin,
             'email' => $request->email,
             'password' => $password,
             'message' => "Enseignant créé avec succès"
@@ -111,37 +115,95 @@ class TeacherController extends Controller
     }
 
 
-
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response()->json($request->user()->teachers()->latest()->get());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Teacher $teacher)
+    
+    public function show($id)
     {
-        //
+        if (!Teacher::find($id)) {
+            return response()->json([
+                'message' => 'Enseignant non trouvé'
+            ]);
+        }
+        return response()->json(Teacher::find($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Teacher $teacher)
+    
+    public function update(Request $request, $id)
     {
-        //
+        if (!Teacher::find($id)) {
+            return response()->json([
+                'message' => 'Enseignant non trouvé'
+            ]);
+        }
+
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('teachers', 'email')->ignore($id)],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('teachers', 'cin')->ignore($id)],
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', 'size:10', Rule::unique('teachers', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $teacher = Teacher::find($id);
+        // if (!Hash::check($request->old_password, $teacher->password)) {
+        //     return response()->json([
+        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
+        //     ]);
+        // }
+
+        if ($request->profile_picture) {
+            Storage::delete($teacher->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
+            $teacher->profile_picture = '/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+        }
+
+        $teacher->first_name = $request->first_name;
+        $teacher->last_name = $request->last_name;
+        $teacher->gender = $request->gender;
+        $teacher->email = $request->email;
+        $teacher->cin = $request->cin;
+        $teacher->health_status = $request->health_status;
+        $teacher->date_of_birth = $request->date_of_birth;
+        $teacher->blood_type = $request->blood_type;
+        $teacher->phone_number = $request->phone_number;
+        $teacher->address = $request->address;
+
+        $teacher->save();
+
+        return response([
+            'message' => "Enseignant mis à jour avec succès"
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Teacher $teacher)
+    public function destroy($id)
     {
-        //
+        if (!Teacher::find($id)) {
+            return response()->json([
+                'message' => 'Enseignant non trouvé'
+            ]);
+        }
+
+        if (!Teacher::find($id)->delete()) {
+            return response()->json([
+                'message' => 'Enseignant non trouvé pour la suppression'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Enseignant supprimé avec succès'
+        ]);
     }
 }

@@ -43,23 +43,23 @@ return [
 
     'guards' => [
         'super_admin' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'super_admins',
         ],
         'admin' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'admins',
         ],
         'teacher' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'teachers',
         ],
         'student_parent' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'student_parents',
         ],
         'student' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'students',
         ],
     ],

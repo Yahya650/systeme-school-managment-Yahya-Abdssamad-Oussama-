@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
 
+    // function __construct()
+    // {
+    //     $this->middleware('isSuperAdminOwner:admin', ['only' => ['update', 'destroy']]);
+    // }
 
     public function login(Request $request)
     {
@@ -44,7 +48,7 @@ class AdminController extends Controller
         $admin->save();
 
         return response([
-            'token' => $admin->createToken('Admin', ['admin', 'can-crud_students', 'can-crud_parent_students'])->plainTextToken
+            'token' => $admin->createToken('Admin', ['admin', 'can-crud_students', 'can-crud_student_parents'])->plainTextToken
         ], 200);
     }
 
@@ -57,11 +61,11 @@ class AdminController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:admins,email',
-            'cin' => 'required|string|unique:admins,cin',
+            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:admins,cin',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|string|max:10|unique:admins,phone_number',
+            'phone_number' => 'required|min:10|string|max:10|min:10|unique:admins,phone_number',
             'address' => 'nullable|string|max:255',
         ]);
 
@@ -73,6 +77,7 @@ class AdminController extends Controller
             Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
             $newAdmin->profile_picture = '/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
+
 
         $newAdmin->first_name = $request->first_name;
         $newAdmin->last_name = $request->last_name;
@@ -90,6 +95,7 @@ class AdminController extends Controller
         $newAdmin->save();
 
         return response([
+            'cin' => $request->cin,
             'email' => $request->email,
             'password' => $password,
             'message' => "Administrateur créé avec succès"
@@ -110,48 +116,102 @@ class AdminController extends Controller
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return response()->json($request->user()->admins()->latest()->get());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Admin $admin)
+    public function show($id)
     {
-        //
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Admin non trouvé'
+            ]);
+        }
+        return response()->json(Admin::find($id));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Admin $admin)
+    public function update(Request $request, $id)
     {
-        //
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Admin non trouvé'
+            ]);
+        }
+
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('admins', 'email')->ignore($id)],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('admins', 'cin')->ignore($id)],
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', 'size:10', Rule::unique('admins', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $admin = Admin::find($id);
+        // if (!Hash::check($request->old_password, $admin->password)) {
+        //     return response()->json([
+        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
+        //     ]);
+        // }
+
+        if ($request->profile_picture) {
+            Storage::delete($admin->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
+            $admin->profile_picture = '/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+        }
+
+        $admin->first_name = $request->first_name;
+        $admin->last_name = $request->last_name;
+        $admin->gender = $request->gender;
+        $admin->email = $request->email;
+        $admin->cin = $request->cin;
+        $admin->health_status = $request->health_status;
+        $admin->date_of_birth = $request->date_of_birth;
+        $admin->blood_type = $request->blood_type;
+        $admin->phone_number = $request->phone_number;
+        $admin->address = $request->address;
+
+        $admin->save();
+
+        return response([
+            'message' => "Admin mis à jour avec succès"
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin)
+    public function destroy($id)
     {
-        //
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Admin non trouvé'
+            ]);
+        }
+
+        if (!Admin::find($id)->delete()) {
+            return response()->json([
+                'message' => 'Admin non trouvé pour la suppression'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'admin deleted successfuly'
+        ]);
     }
 }
