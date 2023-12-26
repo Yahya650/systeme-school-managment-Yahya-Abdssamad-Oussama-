@@ -10,28 +10,12 @@ use Illuminate\Auth\Access\Response;
 class StudentParentPolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    // public function viewAny(Admin $admin): bool
-    // {
-    //     //
-    // }
-
-    /**
      * Determine whether the user can view the model.
      */
     public function view(Admin $admin, StudentParent $studentParent): bool
     {
         return $admin->id === $studentParent->admin_id;
     }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    // public function create(Admin $admin): bool
-    // {
-    //     //
-    // }
 
     /**
      * Determine whether the user can update the model.
