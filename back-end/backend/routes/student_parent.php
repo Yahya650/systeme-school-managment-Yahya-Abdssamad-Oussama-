@@ -7,7 +7,7 @@ use App\Http\Controllers\StudentParentController;
 // Routes Auth
 Route::middleware(['auth:student_parent'])->group(function () {
     Route::get('/profile', function (Request $request) {
-        return $request->user();
+        return $request->user('student_parent');
     });
 
     Route::get('/logout', [StudentParentController::class, 'logout']);

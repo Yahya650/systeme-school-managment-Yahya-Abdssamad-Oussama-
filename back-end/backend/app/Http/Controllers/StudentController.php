@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
-
     public function login(Request $request)
     {
         $request->validate([
@@ -23,7 +22,7 @@ class StudentController extends Controller
         if (!$student || !Hash::check($request->password, $student->password)) {
             return response([
                 'message' => 'Les identifiants fournis sont incorrects'
-            ], 401);
+            ], 422);
         }
 
         $student->last_login_date = date('Y-m-d H:i:s');
@@ -43,19 +42,18 @@ class StudentController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:students,email',
-            'cin' => 'nullable|string|unique:students,cin',
+            'cin' => 'nullable|string|regex:/^[A-Z]{1,2}\d+$/|unique:students,cin',
             'code_massar' => 'required|string|unique:students,code_massar|regex:/^[A-Z]\d{9}$/',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|min:10|string|max:10|unique:students,phone_number',
+            'phone_number' => 'required|size:10|string|unique:students,phone_number',
             'address' => 'nullable|string|max:255',
         ]);
 
         $password = Random::generate(8);
 
         $newStudent = new Student();
-
 
         if ($request->profile_picture) {
             Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
@@ -76,7 +74,7 @@ class StudentController extends Controller
         $newStudent->address = $request->address;
         $newStudent->classe_id = 1;
         $newStudent->parent_id = 2;
-        $newStudent->admin_id = $request->user()->id;
+        $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
 
         return response([
@@ -89,7 +87,7 @@ class StudentController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->tokens()->delete();
+            $request->user('student')->tokens()->delete();
             return response([
                 'message' => 'Déconnexion réussie'
             ], 200);
@@ -107,7 +105,7 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user()->students()->latest()->get());
+        return response()->json($request->user('admin')->students()->latest()->get());
     }
 
     /**
@@ -115,11 +113,19 @@ class StudentController extends Controller
      */
     public function show($id)
     {
+
         if (!Student::find($id)) {
             return response()->json([
                 'message' => 'Étudiant non trouvé'
-            ]);
+            ], 404);
         }
+
+        if (request()->user()->cannot('view', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
+            ], 401);
+        }
+       
         return response()->json(Student::find($id));
     }
 
@@ -131,8 +137,15 @@ class StudentController extends Controller
         if (!Student::find($id)) {
             return response()->json([
                 'message' => 'Étudiant non trouvé'
-            ]);
+            ], 404);
         }
+
+        if (request()->user()->cannot('update', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de modifier ce Étudiant'
+            ], 401);
+        }
+        
 
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -186,16 +199,23 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
+
         if (!Student::find($id)) {
             return response()->json([
                 'message' => 'Étudiant non trouvé'
-            ]);
+            ], 404);
+        }
+
+        if (request()->user()->cannot('delete', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de supprimer ce Étudiant'
+            ], 401);
         }
 
         if (!Student::find($id)->delete()) {
             return response()->json([
                 'message' => 'Étudiant non trouvé pour la suppression'
-            ]);
+            ], 404);
         }
 
         return response()->json([

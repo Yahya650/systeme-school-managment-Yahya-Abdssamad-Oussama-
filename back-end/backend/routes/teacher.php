@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 // Routes Auth
 Route::middleware(['auth:teacher'])->group(function () {
     Route::get('/profile', function (Request $request) {
-        return $request->user();
+        return $request->user('teacher');
     });
 
     Route::get('/logout', [TeacherController::class, 'logout']);

@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Storage;
 class TeacherController extends Controller
 {
 
-    // function __construct()
-    // {
-    //     $this->middleware('isSuperAdminOwner:teacher', ['only' => ['update', 'destroy']]);
-    // }
-
     public function login(Request $request)
     {
 
@@ -29,18 +24,18 @@ class TeacherController extends Controller
             if (!Hash::check($request->password, $teacher->password)) {
                 return response([
                     'message' => 'Le mot de passe est incorrecte'
-                ], 401);
+                ], 422);
             }
         } else if ($teacher = Teacher::where('cin', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $teacher->password)) {
                 return response([
                     'message' => 'Le mot de passe est incorrect'
-                ], 401);
+                ], 422);
             }
         } else {
             return response([
                 'message' => 'Les identifiants fournis sont incorrects'
-            ], 401);
+            ], 422);
         }
 
         $teacher->last_login_date = date('Y-m-d H:i:s');
@@ -60,7 +55,7 @@ class TeacherController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:teachers,email',
-            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:teachers,cin',
+            'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:teachers,cin',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
@@ -89,7 +84,7 @@ class TeacherController extends Controller
         $newTeacher->blood_type = $request->blood_type;
         $newTeacher->phone_number = $request->phone_number;
         $newTeacher->address = $request->address;
-        $newTeacher->super_admin_id = $request->user()->id;
+        $newTeacher->super_admin_id = $request->user('super_admin')->id;
         $newTeacher->save();
 
         return response([
@@ -103,7 +98,7 @@ class TeacherController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->tokens()->delete();
+            $request->user('teacher')->tokens()->delete();
             return response([
                 'message' => 'Déconnexion réussie'
             ], 200);
@@ -117,28 +112,46 @@ class TeacherController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json($request->user()->teachers()->latest()->get());
+        return response()->json($request->user('super_admin')->teachers()->latest()->get());
     }
 
     
     public function show($id)
     {
+
+
         if (!Teacher::find($id)) {
             return response()->json([
                 'message' => 'Enseignant non trouvé'
-            ]);
+            ], 404);
         }
+
+        if (request()->user()->cannot('view', Teacher::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de voir ce enseignant'
+            ], 401);
+        }
+
         return response()->json(Teacher::find($id));
     }
 
     
     public function update(Request $request, $id)
     {
+
         if (!Teacher::find($id)) {
             return response()->json([
                 'message' => 'Enseignant non trouvé'
-            ]);
+            ], 404);
         }
+
+
+        if (request()->user()->cannot('update', Teacher::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de modifier ce enseignant'
+            ], 401);
+        }
+
 
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -190,16 +203,24 @@ class TeacherController extends Controller
      */
     public function destroy($id)
     {
+
         if (!Teacher::find($id)) {
             return response()->json([
                 'message' => 'Enseignant non trouvé'
-            ]);
+            ], 404);
         }
 
+        if (request()->user()->cannot('delete', Teacher::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de supprimer ce enseignant'
+            ], 401);
+        }
+
+        
         if (!Teacher::find($id)->delete()) {
             return response()->json([
                 'message' => 'Enseignant non trouvé pour la suppression'
-            ]);
+            ], 404);
         }
 
         return response()->json([

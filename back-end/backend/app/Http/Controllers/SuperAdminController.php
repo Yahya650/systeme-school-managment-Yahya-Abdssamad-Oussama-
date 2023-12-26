@@ -11,26 +11,33 @@ use Illuminate\Support\Facades\Storage;
 class SuperAdminController extends Controller
 {
 
-
     public function login(Request $request)
     {
-
         $request->validate([
-            'cin' => 'required',
+            'cin_email' => 'required',
             'password' => 'required',
         ]);
-
-        $superAdmin = SuperAdmin::where('cin', $request->cin)->first();
-        if (!$superAdmin || !Hash::check($request->password, $superAdmin->password)) {
+        if ($superAdmin = SuperAdmin::where('email', $request->cin_email)->first()) {
+            if (!Hash::check($request->password, $superAdmin->password)) {
+                return response([
+                    'message' => 'Le mot de passe est incorrecte'
+                ], 422);
+            }
+        } else if ($superAdmin = SuperAdmin::where('cin', $request->cin_email)->first()) {
+            if (!Hash::check($request->password, $superAdmin->password)) {
+                return response([
+                    'message' => 'Le mot de passe est incorrect'
+                ], 422);
+            }
+        } else {
             return response([
                 'message' => 'Les identifiants fournis sont incorrects'
-            ], 401);
+            ], 422);
         }
-
-
+        
         $superAdmin->last_login_date = date('Y-m-d H:i:s');
         $superAdmin->save();
-
+        
         return response([
             'token' => $superAdmin->createToken('SuperAdmin', ['super_admin', 'can-crud_teachers', 'can-crud_admins'])->plainTextToken
         ], 200);
@@ -45,7 +52,7 @@ class SuperAdminController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:super_admins,email',
-            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:super_admins,cin',
+            'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:super_admins,cin',
             'password' => 'required|string|min:8|confirmed',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
@@ -82,7 +89,7 @@ class SuperAdminController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->tokens()->delete();
+            $request->user('super_admin')->tokens()->delete();
             return response([
                 'message' => 'Déconnexion réussie'
             ], 200);

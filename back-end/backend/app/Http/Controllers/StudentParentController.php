@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentParentController extends Controller
 {
-
-
     public function login(Request $request)
     {
         $request->validate([
@@ -24,7 +22,7 @@ class StudentParentController extends Controller
         if (!$studentParent || !Hash::check($request->password, $studentParent->password)) {
             return response([
                 'message' => 'Les identifiants fournis sont incorrects'
-            ], 401);
+            ], 422);
         }
 
         $studentParent->last_login_date = date('Y-m-d H:i:s');
@@ -43,7 +41,7 @@ class StudentParentController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:student_parents,email',
-            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:student_parents,cin',
+            'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:student_parents,cin',
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
@@ -73,7 +71,7 @@ class StudentParentController extends Controller
         $newStudentParent->blood_type = $request->blood_type;
         $newStudentParent->phone_number = $request->phone_number;
         $newStudentParent->address = $request->address;
-        $newStudentParent->admin_id = $request->user()->id;
+        $newStudentParent->admin_id = $request->user('admin')->id;
         $newStudentParent->save();
 
         return response([
@@ -86,7 +84,7 @@ class StudentParentController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->tokens()->delete();
+            $request->user('student_parent')->tokens()->delete();
             return response([
                 'message' => 'Déconnexion réussie'
             ], 200);
@@ -100,27 +98,43 @@ class StudentParentController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json($request->user()->student_parents()->latest()->get());
+        return response()->json($request->user('admin')->student_parents()->latest()->get());
     }
 
 
     public function show($id)
     {
+
+        
         if (!StudentParent::find($id)) {
             return response()->json([
                 'message' => 'Cet parent d\'éléve non trouvé'
-            ]);
+            ], 404);
         }
+
+        if (request()->user()->cannot('view', StudentParent::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de voir ce parent'
+            ], 401);
+        }
+
         return response()->json(StudentParent::find($id));
     }
 
 
     public function update(Request $request, $id)
     {
+
         if (!StudentParent::find($id)) {
             return response()->json([
                 'message' => 'Cet parent d\'éléve non trouvé'
-            ]);
+            ], 404);
+        }
+
+        if (request()->user()->cannot('update', StudentParent::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de modifier ce parent'
+            ], 401);
         }
 
         $request->validate([
@@ -129,7 +143,7 @@ class StudentParentController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($id)],
-            'cin' => 'required|regex:/^[A-Z]{2}\d+$/|unique:student_parents,cin',
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($id)], 
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
@@ -172,16 +186,23 @@ class StudentParentController extends Controller
 
     public function destroy($id)
     {
+
         if (!StudentParent::find($id)) {
             return response()->json([
                 'message' => 'Cet parent d\'éléve non trouvé'
-            ]);
+            ], 404);
+        }
+
+        if (request()->user()->cannot('delete', StudentParent::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de supprimer ce parent'
+            ], 401);
         }
 
         if (!StudentParent::find($id)->delete()) {
             return response()->json([
                 'message' => 'Cet parent d\'éléve non trouvé pour la suppression'
-            ]);
+            ], 404);
         }
 
         return response()->json([

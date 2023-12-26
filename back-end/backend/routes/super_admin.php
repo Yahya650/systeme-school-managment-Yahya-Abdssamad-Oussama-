@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Route;
 // Routes Auth
 Route::middleware(['auth:super_admin'])->group(function () {
     Route::get('/profile', function (Request $request) {
-        return $request->user();
+        return $request->user('super_admin');
     });
 
-    // CRUD
+    // CRUD for admins and teachers
     Route::middleware(['abilities:can-crud_teachers,can-crud_admins'])->group(function () {
         Route::apiResource('teachers', TeacherController::class);
         Route::apiResource('admins', AdminController::class);
