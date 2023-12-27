@@ -115,7 +115,7 @@ class TeacherController extends Controller
         return response()->json($request->user('super_admin')->teachers()->latest()->get());
     }
 
-    
+
     public function show($id)
     {
 
@@ -135,7 +135,7 @@ class TeacherController extends Controller
         return response()->json(Teacher::find($id));
     }
 
-    
+
     public function update(Request $request, $id)
     {
 
@@ -168,11 +168,6 @@ class TeacherController extends Controller
         ]);
 
         $teacher = Teacher::find($id);
-        // if (!Hash::check($request->old_password, $teacher->password)) {
-        //     return response()->json([
-        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
-        //     ]);
-        // }
 
         if ($request->profile_picture) {
             Storage::delete($teacher->profile_picture);
@@ -216,7 +211,7 @@ class TeacherController extends Controller
             ], 401);
         }
 
-        
+
         if (!Teacher::find($id)->delete()) {
             return response()->json([
                 'message' => 'Enseignant non trouvé pour la suppression'
@@ -227,4 +222,129 @@ class TeacherController extends Controller
             'message' => 'Enseignant supprimé avec succès'
         ]);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
+                if (!Hash::check($old_password, auth('teacher')->user()->password)) {
+                    $fail($attribute, 'Ancien mot de passe incorrect');
+                }
+            }],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                Rule::notIn([$request->old_password]),
+            ],
+        ], [
+            'new_password.not_in' => 'Le nouveau mot de passe doit être différent du mot de passe actuel',
+        ]);
+
+        $teacher = $request->user('teacher');
+        $teacher->password = Hash::make($request->new_password);
+        $teacher->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+
+    public function renewPassword($id)
+    {
+        if (!Teacher::find($id)) {
+            return response()->json([
+                'message' => 'Cet enseignant non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('renewPassword', Teacher::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de rêinitialiser le mot de passe ce enseignant'
+            ], 401);
+        }
+
+        $teacher = Teacher::find($id);
+        $newPassword = Random::generate(8);
+        $teacher->password = Hash::make($newPassword);
+        $teacher->save();
+        return response()->json([
+            'email' => $teacher->email,
+            'cin' => $teacher->cin,
+            'new_password' => $newPassword,
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+    public function restore($id)
+    {
+
+        if (!Teacher::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet enseignant d\'eleve non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('restore', Teacher::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de restaurer ce enseignant'
+            ], 401);
+        }
+
+        if (!Teacher::onlyTrashed()->find($id)->restore()) {
+            return response()->json([
+                'message' => 'Cet enseignant d\'eleve non trouvé pour la restauration'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet enseignant d\'eleve restaure avec succès'
+        ]);
+    }
+
+    public function restoreAll()
+    {
+        if (!Teacher::onlyTrashed()->where('super_admin_id', request()->user()->id)->restore()) {
+            return response()->json([
+                'message' => 'Aucun enseignant d\'eleve non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Tous les enseignants d\'eleve restaure avec succès'
+        ]);
+    }
+
+    public function trash()
+    {
+        return response()->json(request()->user()->teachers()->onlyTrashed()->latest()->get());
+        // return response()->json(Teacher::onlyTrashed()->where('super_admin_id', request()->user()->id)->get());
+    }
+
+    public function forceDelete($id)
+    {
+        if (!Teacher::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet enseignant non détruit ou non trouvé'
+            ], 404);
+        }
+        if (request()->user()->cannot('forceDelete', Teacher::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de détruire ce enseignant'
+            ], 401);
+        }
+
+        if (!Teacher::onlyTrashed()->find($id)->forceDelete()) {
+            return response()->json([
+                'message' => 'Cet enseignant non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet enseignant détruit avec succès'
+        ]);
+    }
+
+
 }

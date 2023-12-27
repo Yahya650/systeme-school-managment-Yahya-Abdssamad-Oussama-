@@ -48,4 +48,10 @@ class StudentPolicy
     {
         return $admin->id === $student->admin_id;
     }
+
+    public function renewPassword(Admin $admin, Student $student): bool
+    {
+        return $admin->id === $student->admin_id;
+    }
+    
 }

@@ -7,6 +7,10 @@ use Nette\Utils\Random;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\ExamRecord;
+use App\Models\Report;
+use App\Models\Student;
+use App\Models\StudentParent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -98,16 +102,10 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
-        try {
-            $request->user('admin')->tokens()->delete();
-            return response([
-                'message' => 'Déconnexion réussie'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response([
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        $request->user('admin')->tokens()->delete();
+        return response([
+            'message' => 'Déconnexion réussie'
+        ], 200);
     }
 
     /**
@@ -123,16 +121,18 @@ class AdminController extends Controller
      */
     public function show($id)
     {
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Administrateur non trouvé'
+            ], 404);
+        }
+
         if (request()->user()->cannot('view', Admin::find($id))) {
             return response()->json([
                 'message' => 'Vous n\'avez pas la permission de voir ce administrateur'
             ], 401);
         }
-        if (!Admin::find($id)) {
-            return response()->json([
-                'message' => 'Admin non trouvé'
-            ], 404);
-        }
+
         return response()->json(Admin::find($id));
     }
 
@@ -142,17 +142,20 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
 
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Administrateur non trouvé'
+            ], 404);
+        }
+
+
         if (request()->user()->cannot('update', Admin::find($id))) {
             return response()->json([
                 'message' => 'Vous n\'avez pas la permission de modifier ce administrateur'
             ], 401);
         }
 
-        if (!Admin::find($id)) {
-            return response()->json([
-                'message' => 'Admin non trouvé'
-            ], 404);
-        }
+
 
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -195,7 +198,7 @@ class AdminController extends Controller
         $admin->save();
 
         return response([
-            'message' => "Admin mis à jour avec succès"
+            'message' => "Administrateur mis à jour avec succès"
         ], 200);
     }
 
@@ -205,26 +208,155 @@ class AdminController extends Controller
     public function destroy($id)
     {
 
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Administrateur non trouvé'
+            ], 404);
+        }
+
         if (request()->user()->cannot('delete', Admin::find($id))) {
             return response()->json([
                 'message' => 'Vous n\'avez pas la permission de supprimer ce administrateur'
             ], 401);
         }
 
-        if (!Admin::find($id)) {
-            return response()->json([
-                'message' => 'Admin non trouvé'
-            ], 404);
-        }
 
         if (!Admin::find($id)->delete()) {
             return response()->json([
-                'message' => 'Admin non trouvé pour la suppression'
+                'message' => 'Administrateur non trouvé pour la suppression'
             ], 404);
         }
 
         return response()->json([
             'message' => 'Administrateur supprimé avec succès'
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
+                if (!Hash::check($old_password, auth('admin')->user()->password)) {
+                    $fail($attribute, 'Ancien mot de passe incorrect');
+                }
+            }],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                Rule::notIn([$request->old_password]),
+            ],
+        ], [
+            'new_password.not_in' => 'Le nouveau mot de passe doit être différent du mot de passe actuel',
+        ]);
+
+        $admin = $request->user('admin');
+        $admin->password = Hash::make($request->new_password);
+        $admin->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+
+    public function renewPassword($id)
+    {
+        if (!Admin::find($id)) {
+            return response()->json([
+                'message' => 'Cet administrateur non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('renewPassword', Admin::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de rêinitialiser le mot de passe ce administrateur'
+            ], 401);
+        }
+
+        $admin = Admin::find($id);
+        $newPassword = Random::generate(8);
+        $admin->password = Hash::make($newPassword);
+        $admin->save();
+        return response()->json([
+            'email' => $admin->email,
+            'cin' => $admin->cin,
+            'new_password' => $newPassword,
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+    public function restore($id)
+    {
+        if (!Admin::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('restore', Admin::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de restaurer ce parent'
+            ], 401);
+        }
+
+        if (!Admin::onlyTrashed()->find($id)->restore()) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non trouvé pour la restauration'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet parent d\'eleve restaure avec succès'
+        ]);
+    }
+
+
+    public function restoreAll()
+    {
+        if (!Admin::onlyTrashed()->where('super_admin_id', request()->user()->id)->restore()) {
+            return response()->json([
+                'message' => 'Aucun administrateur non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Tous les administrateurs restaure avec succès'
+        ]);
+    }
+
+    public function trash()
+    {
+        return response()->json(request()->user()->admins()->onlyTrashed()->latest()->get());
+    }
+
+    public function forceDelete(Request $request, $id)
+    {
+
+        $request->validate([
+            'admin_id' => 'required|exists:admins,id',
+        ]);
+
+        if (!Admin::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet administrateur non détruit ou non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('forceDelete', Admin::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de détruire ce administrateur'
+            ], 401);
+        }
+
+        StudentParent::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+        ExamRecord::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+        Student::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+        Report::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+        Admin::onlyTrashed()->find($id)->forceDelete();
+
+        return response()->json([
+            'message' => 'Cet administrateur détruit avec succès'
         ]);
     }
 }

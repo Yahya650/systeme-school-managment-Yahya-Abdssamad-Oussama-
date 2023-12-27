@@ -45,4 +45,8 @@ class AdminPolicy
     {
         return $superAdmin->id === $admin->super_admin_id;
     }
+    public function renewPassword(SuperAdmin $superAdmin, Admin $admin): bool
+    {
+        return $superAdmin->id === $admin->super_admin_id;
+    }
 }

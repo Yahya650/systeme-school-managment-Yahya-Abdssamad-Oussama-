@@ -11,6 +11,7 @@ Route::middleware(['auth:teacher'])->group(function () {
     });
 
     Route::get('/logout', [TeacherController::class, 'logout']);
+    Route::put('/reset-password', [TeacherController::class, 'resetPassword']);
 });
 
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {

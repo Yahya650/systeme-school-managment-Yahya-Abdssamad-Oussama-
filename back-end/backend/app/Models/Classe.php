@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Exam;
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\TimeTable;
 use App\Models\ClasseType;

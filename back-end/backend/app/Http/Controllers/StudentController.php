@@ -125,7 +125,7 @@ class StudentController extends Controller
                 'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
             ], 401);
         }
-       
+
         return response()->json(Student::find($id));
     }
 
@@ -145,7 +145,7 @@ class StudentController extends Controller
                 'message' => 'Vous n\'avez pas la permission de modifier ce Étudiant'
             ], 401);
         }
-        
+
 
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -222,4 +222,129 @@ class StudentController extends Controller
             'message' => 'Étudiant supprimé avec succès'
         ]);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
+                if (!Hash::check($old_password, auth('student')->user()->password)) {
+                    $fail($attribute, 'Ancien mot de passe incorrect');
+                }
+            }],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                Rule::notIn([$request->old_password]),
+            ],
+        ], [
+            'new_password.not_in' => 'Le nouveau mot de passe doit être différent du mot de passe actuel',
+        ]);
+
+        $student = $request->user('student');
+        $student->password = Hash::make($request->new_password);
+        $student->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+    public function renewPassword($id)
+    {
+        if (!Student::find($id)) {
+            return response()->json([
+                'message' => 'Étudiant non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('renewPassword', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de rêinitialiser le mot de passe ce étudiant'
+            ], 401);
+        }
+
+        $student = Student::find($id);
+        $newPassword = Random::generate(8);
+        $student->password = Hash::make($newPassword);
+        $student->save();
+        return response()->json([
+            'code_massar' => $student->code_massar,
+            'new_password' => $newPassword,
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+    public function restore($id)
+    {
+
+        if (!Student::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet etudiant non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('restore', Student::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de restaurer ce etudiant'
+            ], 401);
+        }
+
+
+        if (!Student::onlyTrashed()->find($id)->restore()) {
+            return response()->json([
+                'message' => 'Cet etudiant non trouvé pour la restauration'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet etudiant restaure avec succès'
+        ]);
+    }
+    
+
+    public function restoreAll()
+    {
+        if (!Student::onlyTrashed()->where('admin_id', request()->user()->id)->restore()) {
+            return response()->json([
+                'message' => 'Aucun etudiant non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Tous les etudiants restaure avec succès'
+        ]);
+    }
+
+    public function trash()
+    {
+        return response()->json(request()->user()->students()->onlyTrashed()->latest()->get());
+    }
+
+
+    public function forceDelete($id)
+    {
+        if (!Student::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet etudiant non détruit ou non trouvé'
+            ], 404);
+        }
+        if (request()->user()->cannot('forceDelete', Student::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de détruire ce etudiant'
+            ], 401);
+        }
+
+        if (!Student::onlyTrashed()->find($id)->forceDelete()) {
+            return response()->json([
+                'message' => 'Cet etudiant non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet etudiant détruit avec succès'
+        ]);
+    }
+
+
 }

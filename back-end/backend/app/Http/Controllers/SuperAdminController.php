@@ -34,10 +34,10 @@ class SuperAdminController extends Controller
                 'message' => 'Les identifiants fournis sont incorrects'
             ], 422);
         }
-        
+
         $superAdmin->last_login_date = date('Y-m-d H:i:s');
         $superAdmin->save();
-        
+
         return response([
             'token' => $superAdmin->createToken('SuperAdmin', ['super_admin', 'can-crud_teachers', 'can-crud_admins'])->plainTextToken
         ], 200);
@@ -102,7 +102,32 @@ class SuperAdminController extends Controller
 
 
 
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
+                if (!Hash::check($old_password, auth('super_admin')->user()->password)) {
+                    $fail($attribute, 'Ancien mot de passe incorrect');
+                }
+            }],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                Rule::notIn([$request->old_password]),
+            ],
+        ], [
+            'new_password.not_in' => 'Le nouveau mot de passe doit être différent du mot de passe actuel',
+        ]);
 
+        $superAdmin = $request->user('super_admin');
+        $superAdmin->password = Hash::make($request->new_password);
+        $superAdmin->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
 
 
 

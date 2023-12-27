@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('admin_id')->references('id')->on('admins');
 
             $table->unsignedBigInteger('student_id');
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
 
             $table->softDeletes();
             $table->timestamps();

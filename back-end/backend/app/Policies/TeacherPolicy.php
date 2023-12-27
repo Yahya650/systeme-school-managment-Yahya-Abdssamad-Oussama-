@@ -47,4 +47,9 @@ class TeacherPolicy
     {
         return $superAdmin->id === $teacher->super_admin_id;
     }
+
+    public function renewPassword(SuperAdmin $superAdmin, Teacher $teacher): bool
+    {
+        return $superAdmin->id === $teacher->super_admin_id;
+    }
 }

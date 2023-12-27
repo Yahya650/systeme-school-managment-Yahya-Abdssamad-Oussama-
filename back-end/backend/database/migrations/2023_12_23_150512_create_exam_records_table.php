@@ -17,13 +17,13 @@ return new class extends Migration
             $table->text('comment');
 
             $table->unsignedBigInteger('student_id');
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
 
             $table->unsignedBigInteger('exam_id');
             $table->foreign('exam_id')->references('id')->on('exams');
 
-            $table->unsignedBigInteger('teacher_id');
-            $table->foreign('teacher_id')->references('id')->on('teachers');
+            $table->unsignedBigInteger('admin_id');
+            $table->foreign('admin_id')->references('id')->on('admins');
 
             $table->softDeletes();
             $table->timestamps();

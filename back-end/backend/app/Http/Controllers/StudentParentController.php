@@ -105,7 +105,7 @@ class StudentParentController extends Controller
     public function show($id)
     {
 
-        
+
         if (!StudentParent::find($id)) {
             return response()->json([
                 'message' => 'Cet parent d\'éléve non trouvé'
@@ -143,7 +143,7 @@ class StudentParentController extends Controller
             'last_name' => 'required|string|max:255',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($id)],
-            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($id)], 
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($id)],
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
@@ -209,4 +209,128 @@ class StudentParentController extends Controller
             'message' => 'Cet parent d\'éléve supprimé avec succès'
         ]);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
+                if (!Hash::check($old_password, auth('student_parent')->user()->password)) {
+                    $fail($attribute, 'Ancien mot de passe incorrect');
+                }
+            }],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                Rule::notIn([$request->old_password]),
+            ],
+        ], [
+            'new_password.not_in' => 'Le nouveau mot de passe doit être différent du mot de passe actuel',
+        ]);
+
+        $studentParent = $request->user('student_parent');
+        $studentParent->password = Hash::make($request->new_password);
+        $studentParent->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+    public function renewPassword($id)
+    {
+        if (!StudentParent::find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('renewPassword', StudentParent::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de rêinitialiser le mot de passe ce parent'
+            ], 401);
+        }
+
+        $studentParent = StudentParent::find($id);
+        $newPassword = Random::generate(8);
+        $studentParent->password = Hash::make($newPassword);
+        $studentParent->save();
+        return response()->json([
+            'email' => $studentParent->email,
+            'cin' => $studentParent->cin,
+            'new_password' => $newPassword,
+            'message' => 'Mot de passe mis à jour avec succès'
+        ]);
+    }
+
+
+    public function restore($id)
+    {
+        if (!StudentParent::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non trouvé'
+            ], 404);
+        }
+
+        if (request()->user()->cannot('restore', StudentParent::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de restaurer ce parent'
+            ], 401);
+        }
+
+
+        if (!StudentParent::onlyTrashed()->find($id)->restore()) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non trouvé pour la restauration'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet parent d\'eleve restaure avec succès'
+        ]);
+    }
+
+    public function restoreAll()
+    {
+        if (!StudentParent::onlyTrashed()->where('admin_id', request()->user()->id)->restore()) {
+            return response()->json([
+                'message' => 'Aucun parent d\'eleve non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Tous les parents d\'eleve restaure avec succès'
+        ]);
+    }
+
+    public function trash()
+    {
+        return response()->json(request()->user()->student_parents()->onlyTrashed()->latest()->get());
+    }
+
+    public function forceDelete($id)
+    {
+        if (!StudentParent::onlyTrashed()->find($id)) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non détruit ou non trouvé'
+            ], 404);
+        }
+        if (request()->user()->cannot('forceDelete', StudentParent::onlyTrashed()->find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de détruire ce parent d\'eleve'
+            ], 401);
+        }
+
+        if (!StudentParent::onlyTrashed()->find($id)->forceDelete()) {
+            return response()->json([
+                'message' => 'Cet parent d\'eleve non détruit'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Cet parent d\'eleve détruit avec succès'
+        ]);
+    }
+
+
 }

@@ -12,6 +12,7 @@ Route::middleware(['auth:student'])->group(function () {
     });
 
     Route::get('/logout', [StudentController::class, 'logout']);
+    Route::put('/reset-password', [StudentController::class, 'resetPassword']);
 });
 
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {
