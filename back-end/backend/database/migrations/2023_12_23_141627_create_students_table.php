@@ -36,8 +36,8 @@ return new class extends Migration
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')->references('id')->on('classes');
 
-            $table->unsignedBigInteger('parent_id');
-            $table->foreign('parent_id')->references('id')->on('student_parents');
+            $table->unsignedBigInteger('student_parent_id');
+            $table->foreign('student_parent_id')->references('id')->on('student_parents');
 
             $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();

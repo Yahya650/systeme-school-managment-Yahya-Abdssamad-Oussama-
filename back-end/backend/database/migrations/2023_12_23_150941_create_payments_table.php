@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('month');
             $table->boolean('status')->default(false);
 
-            $table->unsignedBigInteger('parent_id');
-            $table->foreign('parent_id')->references('id')->on('student_parents');
+            $table->unsignedBigInteger('student_parent_id');
+            $table->foreign('student_parent_id')->references('id')->on('student_parents');
 
             $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
