@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Exam;
 use App\Models\Absence;
+use App\Models\Filiere;
 use App\Models\Teacher;
 use App\Models\ClasseType;
 use App\Models\TeacherCourse;
@@ -34,11 +35,15 @@ class Course extends Model
     {
         return $this->hasMany(Absence::class);
     }
+    public function filiere()
+    {
+        return $this->belongsTo(Filiere::class);
+    }
 
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class, 'teacher_courses')
-            ->using(TeacherCourse::class)
+        return $this->belongsToMany(Teacher::class, 'teachers_classes_courses')
+            ->using(TeacherClasseCourse::class)
             ->withTimestamps();
     }
 

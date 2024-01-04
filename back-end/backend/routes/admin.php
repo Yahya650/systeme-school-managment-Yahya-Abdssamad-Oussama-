@@ -30,7 +30,6 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/restore/{id}', [StudentController::class, 'restore']);
         Route::post('/restore-all', [StudentController::class, 'restoreAll']);
         Route::post('/trash', [StudentController::class, 'trash']);
-        // Route::delete('/force-delete/{id}', [StudentController::class, 'forceDelete']);
     });
 
     // Routes Student Parents
@@ -39,7 +38,6 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/restore/{id}', [StudentParentController::class, 'restore']);
         Route::post('/restore-all', [StudentParentController::class, 'restoreAll']);
         Route::post('/trash', [StudentParentController::class, 'trash']);
-        // Route::delete('/force-delete/{id}', [StudentParentController::class, 'forceDelete']);
     });
 });
 

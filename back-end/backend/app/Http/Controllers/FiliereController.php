@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TeacherClasse;
+use App\Models\Filiere;
 use Illuminate\Http\Request;
 
-class TeacherClasseController extends Controller
+class FiliereController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class TeacherClasseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TeacherClasse $TeacherClasse)
+    public function show(Filiere $filiere)
     {
         //
     }
@@ -34,7 +34,7 @@ class TeacherClasseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TeacherClasse $TeacherClasse)
+    public function update(Request $request, Filiere $filiere)
     {
         //
     }
@@ -42,7 +42,7 @@ class TeacherClasseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TeacherClasse $TeacherClasse)
+    public function destroy(Filiere $filiere)
     {
         //
     }

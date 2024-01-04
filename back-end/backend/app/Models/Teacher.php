@@ -11,6 +11,7 @@ use App\Models\SuperAdmin;
 use App\Models\TeacherClasse;
 use App\Models\TeacherCourse;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\TeacherClasseCourse;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -55,8 +56,8 @@ class Teacher extends Authenticatable
 
     public function classes()
     {
-        return $this->belongsToMany(Classe::class, 'teachers_classes')
-            ->using(TeacherClasse::class)
+        return $this->belongsToMany(Classe::class, 'teachers_classes_courses')
+            ->using(TeacherClasseCourse::class)
             ->withTimestamps();
     }
 

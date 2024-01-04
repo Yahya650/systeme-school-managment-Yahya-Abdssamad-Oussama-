@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('exam_classes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Exam::class)->constrained();
-            $table->foreignIdFor(Classe::class)->constrained();
+            $table->unsignedBigInteger('exam_id');
+            $table->foreign('exam_id')->references('id')->on('exams');
+            $table->unsignedBigInteger('classe_id');
+            $table->foreign('classe_id')->references('id')->on('classes');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ClasseType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,14 @@ class CourseFactory extends Factory
      */
     public function definition(): array
     {
+
+        $classeType = ClasseType::whereIn('id', [11, 12])->inRandomOrder()->first();
+
         return [
-            //
+            'name' => 'PC',
+            'description' => fake()->text(255),
+            'ceof' => '5',
+            'classe_type_id' => 12,
         ];
     }
 }

@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('classe_types', function (Blueprint $table) {
             $table->id();
-            $table->string('filiere');
-            $table->string('code');
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            $table->string('name');
+            $table->string('code')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

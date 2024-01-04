@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Classe;
+use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,10 +14,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teachers_classes', function (Blueprint $table) {
+        Schema::create('teachers_classes_courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Teacher::class)->constrained();
-            $table->foreignIdFor(Classe::class)->constrained();
+            $table->unsignedBigInteger('teacher_id')->nullable();
+            $table->foreign('teacher_id')->references('id')->on('teachers')->nullOnDelete();
+            $table->unsignedBigInteger('classe_id')->nullable();
+            $table->foreign('classe_id')->references('id')->on('classes')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('teachers_classes');
+        Schema::dropIfExists('teachers_classes_courses');
     }
 };

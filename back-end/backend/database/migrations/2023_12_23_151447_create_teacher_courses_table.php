@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('teacher_courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Teacher::class)->constrained();
-            $table->foreignIdFor(Course::class)->constrained();
+            $table->unsignedBigInteger('teacher_id')->nullable();
+            $table->foreign('teacher_id')->references('id')->on('teachers')->nullOnDelete();
+            $table->unsignedBigInteger('course_id')->nullable();
+            $table->foreign('course_id')->references('id')->on('courses')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

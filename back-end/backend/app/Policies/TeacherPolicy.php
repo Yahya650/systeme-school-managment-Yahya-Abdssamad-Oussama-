@@ -52,4 +52,10 @@ class TeacherPolicy
     {
         return $superAdmin->id === $teacher->super_admin_id;
     }
+    
+    public function attachTeacherToClasse(SuperAdmin $superAdmin, Teacher $teacher): bool
+    {
+        return $superAdmin->id === $teacher->super_admin_id;
+    }
+
 }

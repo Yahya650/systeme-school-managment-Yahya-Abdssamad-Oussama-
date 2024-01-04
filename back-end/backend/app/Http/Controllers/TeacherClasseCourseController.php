@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classe;
 use Illuminate\Http\Request;
+use App\Models\TeacherClasseCourse;
 
-class ClasseController extends Controller
+class TeacherClasseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,13 +20,13 @@ class ClasseController extends Controller
      */
     public function store(Request $request)
     {
-        // mnin tbghi dir create l classe dkhal m3ah les modules liki9ra 3la 7sab classe type and l filier likintami liha
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Classe $classe)
+    public function show(TeacherClasseCourse $TeacherClasse)
     {
         //
     }
@@ -34,7 +34,7 @@ class ClasseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Classe $classe)
+    public function update(Request $request, TeacherClasseCourse $TeacherClasse)
     {
         //
     }
@@ -42,7 +42,7 @@ class ClasseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classe $classe)
+    public function destroy(TeacherClasseCourse $TeacherClasse)
     {
         //
     }

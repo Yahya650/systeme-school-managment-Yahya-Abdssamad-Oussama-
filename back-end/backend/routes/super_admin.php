@@ -31,7 +31,6 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::get('/restore/{id}', [AdminController::class, 'restore']);
         Route::post('/restore-all', [AdminController::class, 'restoreAll']);
         Route::post('/trash', [AdminController::class, 'trash']);
-        // Route::post('/force-delete/{id}', [AdminController::class, 'forceDelete']);
     });
 
     // Routes Teachers
@@ -40,7 +39,7 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::get('/restore/{id}', [TeacherController::class, 'restore']);
         Route::post('/restore-all', [TeacherController::class, 'restoreAll']);
         Route::post('/trash', [TeacherController::class, 'trash']);
-        // Route::delete('/force-delete/{id}', [TeacherController::class, 'forceDelete']);
+        Route::post('/attach-teacher-to-classe', [TeacherController::class, 'attachTeacherToClasse']); 
     });
 });
 
@@ -48,3 +47,6 @@ Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->g
     Route::post('/login', [SuperAdminController::class, 'login']);
     Route::post('/register', [SuperAdminController::class, 'register']);
 });
+
+
+// ghda test dyal les relations lli zadt m3a had l api : /attach-teacher-to-classe, and n7awl n9ad seeders dyal les modules and dyal les filiers and les classe types
