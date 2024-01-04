@@ -33,11 +33,11 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id');
             $table->foreign('admin_id')->references('id')->on('admins');
 
-            $table->unsignedBigInteger('classe_id');
-            $table->foreign('classe_id')->references('id')->on('classes');
+            $table->unsignedBigInteger('classe_id')->nullable();
+            $table->foreign('classe_id')->references('id')->on('classes')->nullOnDelete();
 
-            $table->unsignedBigInteger('student_parent_id');
-            $table->foreign('student_parent_id')->references('id')->on('student_parents');
+            $table->unsignedBigInteger('student_parent_id')->nullable();
+            $table->foreign('student_parent_id')->references('id')->on('student_parents')->nullOnDelete();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();

@@ -118,7 +118,7 @@ class StudentParentController extends Controller
             ], 401);
         }
 
-        return response()->json(StudentParent::find($id));
+        return response()->json(StudentParent::find($id)->with('students')->get());
     }
 
 

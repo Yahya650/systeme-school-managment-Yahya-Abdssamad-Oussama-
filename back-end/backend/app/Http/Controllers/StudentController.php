@@ -47,8 +47,10 @@ class StudentController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|size:10|string|unique:students,phone_number',
+            'phone_number' => ['required','size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
+            'student_parent_id' => 'required|exists:student_parents,id',
+            'classe_id' => 'required|exists:classes,id',
         ]);
 
         $password = Random::generate(8);
@@ -72,8 +74,8 @@ class StudentController extends Controller
         $newStudent->blood_type = $request->blood_type;
         $newStudent->phone_number = $request->phone_number;
         $newStudent->address = $request->address;
-        $newStudent->classe_id = 1;
-        $newStudent->parent_id = 2;
+        $newStudent->classe_id = $request->classe_id;
+        $newStudent->student_parent_id = $request->student_parent_id;
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
 
@@ -126,7 +128,7 @@ class StudentController extends Controller
             ], 401);
         }
 
-        return response()->json(Student::find($id));
+        return response()->json(Student::find($id)->with('parent')->get());
     }
 
     /**

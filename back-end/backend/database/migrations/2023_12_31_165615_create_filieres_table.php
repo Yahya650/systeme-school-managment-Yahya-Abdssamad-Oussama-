@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code');
             $table->unsignedBigInteger('classe_type_id');
             $table->foreign('classe_type_id')->references('id')->on('classe_types');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

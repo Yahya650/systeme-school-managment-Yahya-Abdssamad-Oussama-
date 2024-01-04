@@ -57,7 +57,7 @@ class SuperAdminController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|min:10|string|max:10|unique:super_admins,phone_number',
+            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('super_admins', 'phone_number')],
             'address' => 'nullable|string|max:255',
         ]);
 

@@ -13,6 +13,8 @@ class TeacherClasseCourse extends Pivot
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'teachers_classes_courses';
+
 
     public function teacher()
     {

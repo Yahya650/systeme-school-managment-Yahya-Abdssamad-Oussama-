@@ -6,9 +6,13 @@ use App\Models\Exam;
 use App\Models\Classe;
 use App\Models\Course;
 use App\Models\Absence;
+use App\Models\ClasseType;
 use App\Models\Teacher;
 use Nette\Utils\Random;
 use App\Models\Exercise;
+use App\Models\Filiere;
+use App\Models\Student;
+use App\Models\StudentParent;
 use Nette\Schema\Expect;
 use Illuminate\Http\Request;
 use App\Models\TeacherClasse;
@@ -68,7 +72,7 @@ class TeacherController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => 'required|min:10|string|max:10|unique:teachers,phone_number',
+            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('teachers', 'phone_number')],
             'address' => 'nullable|string|max:255',
         ]);
 
@@ -95,11 +99,6 @@ class TeacherController extends Controller
         $newTeacher->address = $request->address;
         $newTeacher->super_admin_id = $request->user('super_admin')->id;
         $newTeacher->save();
-
-        TeacherCourse::create([
-            'teacher_id' => $newTeacher->id,
-            'course_id' => $request->course_id,
-        ]);
 
         return response([
             'cin' => $request->cin,
@@ -148,7 +147,7 @@ class TeacherController extends Controller
     }
 
 
-    public function update(Request $request, $id)   
+    public function update(Request $request, $id)
     {
 
         if (!Teacher::find($id)) {
@@ -175,7 +174,7 @@ class TeacherController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required', 'string', 'size:10', Rule::unique('teachers', 'phone_number')->ignore($id)],
+            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('teachers', 'phone_number')],
             'address' => 'nullable|string|max:255',
         ]);
 
@@ -340,12 +339,11 @@ class TeacherController extends Controller
         return response()->json(request()->user()->teachers()->onlyTrashed()->latest()->get());
     }
 
-    public function attachTeacherToClasse(Request $request) 
+    public function attachTeacherToClasse(Request $request, $idclasse)
     {
 
         $request->validate([
             'teacher_id' => 'required|exists:teachers,id',
-            'classe_id' => 'required|exists:classes,id',
             'course_id' => 'required|exists:courses,id',
         ]);
 
@@ -356,9 +354,9 @@ class TeacherController extends Controller
         }
 
 
-        if (!TeacherClasseCourse::where('classe_id', $request->classe_id)->where('course_id', $request->course_id)->where('teacher_id', null)->update(['teacher_id' => $request->teacher_id])) {
+        if (!TeacherClasseCourse::where('classe_id', $idclasse)->where('course_id', $request->course_id)->where('teacher_id', null)->update(['teacher_id' => $request->teacher_id])) {
             return response()->json([
-                'message' => 'Cet enseignant ne posséde pas ce cours'
+                'message' => 'Enseignant non ajouté à la classe avec succès ou course deja ajoutée un enseignant'
             ], 500);
         }
 

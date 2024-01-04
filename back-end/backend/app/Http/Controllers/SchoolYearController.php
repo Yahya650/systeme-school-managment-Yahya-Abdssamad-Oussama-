@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classe;
+use App\Models\SchoolYear;
 use Illuminate\Http\Request;
 
-class ClasseController extends Controller
+class SchoolYearController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,15 +20,13 @@ class ClasseController extends Controller
      */
     public function store(Request $request)
     {
-        // if i want return the courses for any classe not have teacher
-        // return response()->json(TeacherClasseCourse::where('classe_id', $idclasse)->where('teacher_id', null)->with('course')->get('course_id'));
-        // mnin tbghi dir create l classe dkhal m3ah les modules liki9ra 3la 7sab classe type and l filier likintami liha
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Classe $classe)
+    public function show(SchoolYear $schoolYear)
     {
         //
     }
@@ -36,7 +34,7 @@ class ClasseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Classe $classe)
+    public function update(Request $request, SchoolYear $schoolYear)
     {
         //
     }
@@ -44,7 +42,7 @@ class ClasseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classe $classe)
+    public function destroy(SchoolYear $schoolYear)
     {
         //
     }

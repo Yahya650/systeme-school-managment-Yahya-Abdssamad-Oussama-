@@ -82,8 +82,8 @@ class Teacher extends Authenticatable
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class, 'teacher_courses')
-            ->using(TeacherCourse::class)
+        return $this->belongsToMany(Course::class, 'teachers_classes_courses')
+            ->using(TeacherClasseCourse::class)
             ->withTimestamps();
     }
 

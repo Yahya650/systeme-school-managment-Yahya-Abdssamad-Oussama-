@@ -82,6 +82,6 @@ class Student extends Authenticatable
 
     public function parent()
     {
-        return $this->belongsTo(StudentParent::class, 'parent_id');
+        return $this->belongsTo(StudentParent::class, 'student_parent_id');
     }
 }

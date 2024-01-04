@@ -24,7 +24,7 @@ class Classe extends Model
         'number_etud_max',
     ];
 
-    public function classType()
+    public function classeType()
     {
         return $this->belongsTo(ClasseType::class);
     }
