@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,7 +12,12 @@ Route::middleware(['auth:teacher'])->group(function () {
     });
 
     Route::get('/logout', [TeacherController::class, 'logout']);
-    Route::put('/reset-password', [TeacherController::class, 'resetPassword']);
+    Route::put('/change-password', [TeacherController::class, 'changePassword']);
+
+    Route::post('/upload-exercise', [ExerciseController::class, 'store']);
+    Route::apiResource('exercises', ExerciseController::class)->only(['index', 'destroy', 'show']);
+    Route::post('/update-exercise/{id}', [ExerciseController::class, 'update']);
+
 });
 
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {

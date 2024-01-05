@@ -59,7 +59,7 @@ class StudentController extends Controller
 
         if ($request->profile_picture) {
             Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newStudent->profile_picture = '/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $newStudent->profile_picture = 'picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $newStudent->first_name = $request->first_name;
@@ -165,16 +165,11 @@ class StudentController extends Controller
         ]);
 
         $student = Student::find($id);
-        // if (!Hash::check($request->old_password, $teacher->password)) {
-        //     return response()->json([
-        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
-        //     ]);
-        // }
 
         if ($request->profile_picture) {
-            Storage::delete($student->profile_picture);
+            Storage::delete('public/' . $student->profile_picture);
             Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $student->profile_picture = '/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $student->profile_picture = 'picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $student->first_name = $request->first_name;
@@ -225,7 +220,7 @@ class StudentController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
@@ -324,29 +319,29 @@ class StudentController extends Controller
     }
 
 
-    public function forceDelete($id)
-    {
-        if (!Student::onlyTrashed()->find($id)) {
-            return response()->json([
-                'message' => 'Cet etudiant non détruit ou non trouvé'
-            ], 404);
-        }
-        if (request()->user()->cannot('forceDelete', Student::onlyTrashed()->find($id))) {
-            return response()->json([
-                'message' => 'Vous n\'avez pas la permission de détruire ce etudiant'
-            ], 401);
-        }
+    // public function forceDelete($id)
+    // {
+    //     if (!Student::onlyTrashed()->find($id)) {
+    //         return response()->json([
+    //             'message' => 'Cet etudiant non détruit ou non trouvé'
+    //         ], 404);
+    //     }
+    //     if (request()->user()->cannot('forceDelete', Student::onlyTrashed()->find($id))) {
+    //         return response()->json([
+    //             'message' => 'Vous n\'avez pas la permission de détruire ce etudiant'
+    //         ], 401);
+    //     }
 
-        if (!Student::onlyTrashed()->find($id)->forceDelete()) {
-            return response()->json([
-                'message' => 'Cet etudiant non détruit'
-            ], 404);
-        }
+    //     if (!Student::onlyTrashed()->find($id)->forceDelete()) {
+    //         return response()->json([
+    //             'message' => 'Cet etudiant non détruit'
+    //         ], 404);
+    //     }
 
-        return response()->json([
-            'message' => 'Cet etudiant détruit avec succès'
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Cet etudiant détruit avec succès'
+    //     ]);
+    // }
 
 
 }

@@ -74,7 +74,7 @@ class AdminController extends Controller
 
         if ($request->profile_picture) {
             Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newAdmin->profile_picture = '/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $newAdmin->profile_picture = 'picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $newAdmin->first_name = $request->first_name;
@@ -172,16 +172,11 @@ class AdminController extends Controller
         ]);
 
         $admin = Admin::find($id);
-        // if (!Hash::check($request->old_password, $admin->password)) {
-        //     return response()->json([
-        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
-        //     ]);
-        // }
 
         if ($request->profile_picture) {
-            Storage::delete($admin->profile_picture);
+            Storage::delete('public/' . $admin->profile_picture);
             Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $admin->profile_picture = '/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $admin->profile_picture = 'picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $admin->first_name = $request->first_name;
@@ -232,7 +227,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
@@ -330,33 +325,33 @@ class AdminController extends Controller
         return response()->json(request()->user()->admins()->onlyTrashed()->latest()->get());
     }
 
-    public function forceDelete(Request $request, $id)
-    {
+    // public function forceDelete(Request $request, $id)
+    // {
 
-        $request->validate([
-            'admin_id' => 'required|exists:admins,id',
-        ]);
+    //     $request->validate([
+    //         'admin_id' => 'required|exists:admins,id',
+    //     ]);
 
-        if (!Admin::onlyTrashed()->find($id)) {
-            return response()->json([
-                'message' => 'Cet administrateur non détruit ou non trouvé'
-            ], 404);
-        }
+    //     if (!Admin::onlyTrashed()->find($id)) {
+    //         return response()->json([
+    //             'message' => 'Cet administrateur non détruit ou non trouvé'
+    //         ], 404);
+    //     }
 
-        if (request()->user()->cannot('forceDelete', Admin::onlyTrashed()->find($id))) {
-            return response()->json([
-                'message' => 'Vous n\'avez pas la permission de détruire ce administrateur'
-            ], 401);
-        }
+    //     if (request()->user()->cannot('forceDelete', Admin::onlyTrashed()->find($id))) {
+    //         return response()->json([
+    //             'message' => 'Vous n\'avez pas la permission de détruire ce administrateur'
+    //         ], 401);
+    //     }
 
-        StudentParent::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-        ExamRecord::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-        Student::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-        Report::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-        Admin::onlyTrashed()->find($id)->forceDelete();
+    //     StudentParent::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+    //     ExamRecord::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+    //     Student::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+    //     Report::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
+    //     Admin::onlyTrashed()->find($id)->forceDelete();
 
-        return response()->json([
-            'message' => 'Cet administrateur détruit avec succès'
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Cet administrateur détruit avec succès'
+    //     ]);
+    // }
 }

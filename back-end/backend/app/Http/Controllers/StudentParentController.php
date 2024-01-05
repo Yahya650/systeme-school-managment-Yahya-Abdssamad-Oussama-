@@ -56,7 +56,7 @@ class StudentParentController extends Controller
 
         if ($request->profile_picture) {
             Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newStudentParent->profile_picture = '/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $newStudentParent->profile_picture = 'picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $newStudentParent->profile_picture = $request->profile_picture;
@@ -153,16 +153,10 @@ class StudentParentController extends Controller
 
         $studentParent = StudentParent::find($id);
 
-        // if (!Hash::check($request->old_password, $admin->password)) {
-        //     return response()->json([
-        //         'message' => 'oldPassword not correct' // message if oldPassword not correct
-        //     ]);
-        // }
-
         if ($request->profile_picture) {
-            Storage::delete($studentParent->profile_picture);
+            Storage::delete('public/' . $studentParent->profile_picture);
             Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $studentParent->profile_picture = '/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $studentParent->profile_picture = 'picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $studentParent->first_name = $request->first_name;
@@ -210,7 +204,7 @@ class StudentParentController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
@@ -308,29 +302,29 @@ class StudentParentController extends Controller
         return response()->json(request()->user()->student_parents()->onlyTrashed()->latest()->get());
     }
 
-    public function forceDelete($id)
-    {
-        if (!StudentParent::onlyTrashed()->find($id)) {
-            return response()->json([
-                'message' => 'Cet parent d\'eleve non détruit ou non trouvé'
-            ], 404);
-        }
-        if (request()->user()->cannot('forceDelete', StudentParent::onlyTrashed()->find($id))) {
-            return response()->json([
-                'message' => 'Vous n\'avez pas la permission de détruire ce parent d\'eleve'
-            ], 401);
-        }
+    // public function forceDelete($id)
+    // {
+    //     if (!StudentParent::onlyTrashed()->find($id)) {
+    //         return response()->json([
+    //             'message' => 'Cet parent d\'eleve non détruit ou non trouvé'
+    //         ], 404);
+    //     }
+    //     if (request()->user()->cannot('forceDelete', StudentParent::onlyTrashed()->find($id))) {
+    //         return response()->json([
+    //             'message' => 'Vous n\'avez pas la permission de détruire ce parent d\'eleve'
+    //         ], 401);
+    //     }
 
-        if (!StudentParent::onlyTrashed()->find($id)->forceDelete()) {
-            return response()->json([
-                'message' => 'Cet parent d\'eleve non détruit'
-            ], 404);
-        }
+    //     if (!StudentParent::onlyTrashed()->find($id)->forceDelete()) {
+    //         return response()->json([
+    //             'message' => 'Cet parent d\'eleve non détruit'
+    //         ], 404);
+    //     }
 
-        return response()->json([
-            'message' => 'Cet parent d\'eleve détruit avec succès'
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Cet parent d\'eleve détruit avec succès'
+    //     ]);
+    // }
 
 
 }

@@ -6,9 +6,11 @@ use App\Models\Exam;
 use App\Models\Filiere;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Models\Exercise;
 use App\Models\TimeTable;
 use App\Models\ClasseType;
 use App\Models\ExamClasse;
+use App\Models\ExerciseClasse;
 use App\Models\TeacherClasseCourse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -65,5 +67,10 @@ class Classe extends Model
             ->withTimestamps();
     }
 
-
+    public function exercises()
+    {
+        return $this->belongsToMany(Exercise::class, 'exercise_classes')
+            ->using(ExerciseClasse::class)
+            ->withTimestamps();
+    }
 }

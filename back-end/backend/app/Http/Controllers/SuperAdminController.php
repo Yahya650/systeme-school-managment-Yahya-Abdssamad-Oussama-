@@ -43,48 +43,48 @@ class SuperAdminController extends Controller
         ], 200);
     }
 
-    public function register(Request $request)
-    {
+    // public function register(Request $request)
+    // {
 
-        $request->validate([
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'gender' => ['required', Rule::in(['male', 'female'])],
-            'email' => 'required|email|unique:super_admins,email',
-            'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:super_admins,cin',
-            'password' => 'required|string|min:8|confirmed',
-            'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
-            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('super_admins', 'phone_number')],
-            'address' => 'nullable|string|max:255',
-        ]);
+    //     $request->validate([
+    //         'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //         'gender' => ['required', Rule::in(['male', 'female'])],
+    //         'email' => 'required|email|unique:super_admins,email',
+    //         'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:super_admins,cin',
+    //         'password' => 'required|string|min:8|confirmed',
+    //         'health_status' => 'nullable|string|max:255',
+    //         'date_of_birth' => 'required|date',
+    //         'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+    //         'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('super_admins', 'phone_number')],
+    //         'address' => 'nullable|string|max:255',
+    //     ]);
 
-        $newSuperAdmin = new SuperAdmin();
+    //     $newSuperAdmin = new SuperAdmin();
 
-        if ($request->profile_picture) {
-            Storage::disk('local')->put('public/picture_profiles/super_admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newSuperAdmin->profile_picture = '/picture_profiles/super_admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
-        }
+    //     if ($request->profile_picture) {
+    //         Storage::disk('local')->put('public/picture_profiles/super_admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
+    //         $newSuperAdmin->profile_picture = '/picture_profiles/super_admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+    //     }
 
-        $newSuperAdmin->first_name = $request->first_name;
-        $newSuperAdmin->last_name = $request->last_name;
-        $newSuperAdmin->gender = $request->gender;
-        $newSuperAdmin->email = $request->email;
-        $newSuperAdmin->cin = $request->cin;
-        $newSuperAdmin->password = Hash::make($request->password);
-        $newSuperAdmin->health_status = $request->health_status;
-        $newSuperAdmin->date_of_birth = $request->date_of_birth;
-        $newSuperAdmin->blood_type = $request->blood_type;
-        $newSuperAdmin->phone_number = $request->phone_number;
-        $newSuperAdmin->address = $request->address;
-        $newSuperAdmin->save();
+    //     $newSuperAdmin->first_name = $request->first_name;
+    //     $newSuperAdmin->last_name = $request->last_name;
+    //     $newSuperAdmin->gender = $request->gender;
+    //     $newSuperAdmin->email = $request->email;
+    //     $newSuperAdmin->cin = $request->cin;
+    //     $newSuperAdmin->password = Hash::make($request->password);
+    //     $newSuperAdmin->health_status = $request->health_status;
+    //     $newSuperAdmin->date_of_birth = $request->date_of_birth;
+    //     $newSuperAdmin->blood_type = $request->blood_type;
+    //     $newSuperAdmin->phone_number = $request->phone_number;
+    //     $newSuperAdmin->address = $request->address;
+    //     $newSuperAdmin->save();
 
-        return response([
-            'message' => "Super administrateur créé avec succès"
-        ], 200);
-    }
+    //     return response([
+    //         'message' => "Super administrateur créé avec succès"
+    //     ], 200);
+    // }
 
     public function logout(Request $request)
     {
@@ -102,7 +102,7 @@ class SuperAdminController extends Controller
 
 
 
-    public function resetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {

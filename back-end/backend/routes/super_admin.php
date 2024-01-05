@@ -14,7 +14,9 @@ Route::middleware(['auth:super_admin'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return $request->user('super_admin');
     });
-    Route::put('/reset-password', [SuperAdminController::class, 'resetPassword']);
+    
+    // Route::put('/reset-password', [SuperAdminController::class, 'resetPassword']);
+    Route::put('/change-password', [SuperAdminController::class, 'changePassword']);
     Route::get('/logout', [SuperAdminController::class, 'logout']);
     // End Routes Admin
 

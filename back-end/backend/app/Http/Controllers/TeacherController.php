@@ -82,8 +82,8 @@ class TeacherController extends Controller
         $newTeacher = new Teacher();
 
         if ($request->profile_picture) {
-            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newTeacher->profile_picture = '/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $newTeacher->profile_picture = 'picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
         }
 
         $newTeacher->first_name = $request->first_name;
@@ -110,16 +110,10 @@ class TeacherController extends Controller
 
     public function logout(Request $request)
     {
-        try {
             $request->user('teacher')->tokens()->delete();
             return response([
                 'message' => 'Déconnexion réussie'
             ], 200);
-        } catch (\Throwable $th) {
-            return response([
-                'message' => $th->getMessage()
-            ], 500);
-        }
     }
 
 
@@ -181,9 +175,9 @@ class TeacherController extends Controller
         $teacher = Teacher::find($id);
 
         if ($request->profile_picture) {
-            Storage::delete($teacher->profile_picture);
+            Storage::delete('public/' . $teacher->profile_picture);
             Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $teacher->profile_picture = '/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            $teacher->profile_picture = 'picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
         }
 
         $teacher->first_name = $request->first_name;
@@ -210,12 +204,6 @@ class TeacherController extends Controller
     public function destroy($id)
     {
 
-        if (TeacherClasseCourse::where('teacher_id', null)->count() > 3) {
-            return response()->json([
-                'message' => 'Il y a des classes sans enseignants, sélectionnez des enseignants pour eux afin que vous puissiez coucher un autre enseignant'
-            ], 500);
-        }
-
         if (!Teacher::find($id)) {
             return response()->json([
                 'message' => 'Enseignant non trouvé'
@@ -234,14 +222,12 @@ class TeacherController extends Controller
             ], 404);
         }
 
-        TeacherClasseCourse::where('teacher_id', $id)->update(['teacher_id' => null]);
-
         return response()->json([
             'message' => 'Enseignant supprimé avec succès'
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
             'old_password' => ['required', 'min:8', function ($attribute, $old_password, $fail) {
@@ -341,7 +327,6 @@ class TeacherController extends Controller
 
     public function attachTeacherToClasse(Request $request, $idclasse)
     {
-
         $request->validate([
             'teacher_id' => 'required|exists:teachers,id',
             'course_id' => 'required|exists:courses,id',

@@ -14,7 +14,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return $request->user('admin');
     });
-    Route::put('/reset-password', [AdminController::class, 'resetPassword']);
+    Route::put('/change-password', [AdminController::class, 'changePassword']);
     Route::get('/logout', [AdminController::class, 'logout']);
     // End Routes Admin
 

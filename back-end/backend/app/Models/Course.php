@@ -26,6 +26,12 @@ class Course extends Model
     {
         return $this->hasMany(Exercise::class);
     }
+
+    public function classeType()
+    {
+        return $this->belongsTo(ClasseType::class);
+    }
+
     public function exams()
     {
         return $this->hasMany(Exam::class);
