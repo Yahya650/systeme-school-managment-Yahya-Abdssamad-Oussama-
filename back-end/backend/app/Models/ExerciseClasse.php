@@ -14,6 +14,7 @@ class ExerciseClasse extends Pivot
     use HasFactory, SoftDeletes;
 
     protected $table = 'exercise_classes';
+    
 
 
     public function classe()

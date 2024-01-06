@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TimeTableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,10 @@ Route::middleware(['auth:admin'])->group(function () {
     });
     Route::put('/change-password', [AdminController::class, 'changePassword']);
     Route::get('/logout', [AdminController::class, 'logout']);
+
+    Route::post('/upload-timetable/{idClass}', [TimeTableController::class, 'store']);
+    Route::apiResource('timetables', TimeTableController::class)->only(['index', 'destroy', 'show']);
+    Route::post('/update-timetable/{id}', [TimeTableController::class, 'update']);
     // End Routes Admin
 
     // CRUD for students and student parents

@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
+use Spatie\FlareClient\Time\Time;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\TimeTableController;
 
 // Routes Auth
 Route::middleware(['auth:student'])->group(function () {
@@ -13,6 +15,8 @@ Route::middleware(['auth:student'])->group(function () {
 
     Route::get('/logout', [StudentController::class, 'logout']);
     Route::put('/change-password', [StudentController::class, 'changePassword']);
+    Route::get('/timetable', [TimeTableController::class, 'timetableForStudent']);
+    Route::get('/exercises', [ExerciseController::class, 'exersicesForStudent']);
     // Route::put('/reset-password', [StudentController::class, 'resetPassword']);
 });
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Admin;
 use App\Models\ClasseType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,11 @@ class SchoolLevel extends Model
     
     public function classe_types(){
         return $this->hasMany(ClasseType::class);
+    }
+
+    public function admins()
+    {
+        return $this->hasMany(Admin::class);
     }
 
 }

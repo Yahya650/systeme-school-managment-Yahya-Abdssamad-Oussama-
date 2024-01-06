@@ -38,7 +38,7 @@ class Classe extends Model
 
     public function time_table()
     {
-        return $this->hasMany(TimeTable::class);
+        return $this->hasOne(TimeTable::class);
     }
 
     public function teachers()

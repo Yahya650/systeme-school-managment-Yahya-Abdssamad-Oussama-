@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TimeTable extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     public function classe()
     {
-        return $this->belongsTo(Classe::class);
+        return $this->hasOne(Classe::class);
     }
 }

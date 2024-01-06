@@ -6,6 +6,7 @@ use App\Models\Report;
 use App\Models\Student;
 use App\Models\ExamRecord;
 use App\Models\SuperAdmin;
+use App\Models\SchoolLevel;
 use App\Models\StudentParent;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -50,10 +51,16 @@ class Admin extends Authenticatable
     ];
 
 
-    public function classeTypes()
+    // public function classeTypes()
+    // {
+    //     return $this->hasMany(ClasseType::class);
+    // }
+
+    public function school_level()
     {
-        return $this->hasMany(ClasseType::class);
+        return $this->belongsTo(SchoolLevel::class);
     }
+    
     public function students()
     {
         return $this->hasMany(Student::class);

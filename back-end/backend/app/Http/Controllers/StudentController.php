@@ -107,7 +107,7 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user('admin')->students()->latest()->get());
+        return response()->json($request->user('admin')->school_level()->first()->classe_types()->with('classes.students.parent')->get());
     }
 
     /**

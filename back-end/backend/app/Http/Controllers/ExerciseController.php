@@ -33,6 +33,11 @@ class ExerciseController extends Controller
         return response()->json($request->user('teacher')->exercises()->with('course')->with('classes')->get(), 200);
     }
 
+    public function exersicesForStudent(Request $request)
+    {
+        return response()->json($request->user('student')->classe()->with('exercises.course')->get(), 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -56,11 +61,11 @@ class ExerciseController extends Controller
         $newExercise = new Exercise();
 
         if ($request->file) {
-            $newExercise->title = $request->title;
             $directoryPath = 'exercises/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
                 $classe->classeType()->first()->code . $classe->filiere()->first()->code . '-' . $classe->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
+            
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
-            $newExercise->file = $directoryPath;
+            $newExercise->file = $directoryPath; 
         }
 
         $newExercise->title = $request->title;
@@ -109,7 +114,7 @@ class ExerciseController extends Controller
         }
 
         $request->validate([
-            'file' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
+            'file' => ['nullable', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
         ]);
 
         if (Exercise::find($id) && $request->file) {

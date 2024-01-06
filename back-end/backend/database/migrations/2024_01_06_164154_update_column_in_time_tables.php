@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('time_tables', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('file');
-            $table->date('start_date');
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('time_tables', function (Blueprint $table) {
+            $table->string('title')->nullable()->change();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('time_tables');
+        Schema::table('time_tables', function (Blueprint $table) {
+            // 
+        });
     }
 };

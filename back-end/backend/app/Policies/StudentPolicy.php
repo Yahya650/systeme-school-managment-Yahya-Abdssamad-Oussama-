@@ -14,7 +14,7 @@ class StudentPolicy
      */
     public function view(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
 
     /**
@@ -22,7 +22,7 @@ class StudentPolicy
      */
     public function update(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
 
     /**
@@ -30,7 +30,7 @@ class StudentPolicy
      */
     public function delete(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
 
     /**
@@ -38,7 +38,7 @@ class StudentPolicy
      */
     public function restore(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
 
     /**
@@ -46,12 +46,11 @@ class StudentPolicy
      */
     public function forceDelete(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
 
     public function renewPassword(Admin $admin, Student $student): bool
     {
-        return $admin->id === $student->admin_id;
+        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
     }
-    
 }

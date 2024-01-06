@@ -98,13 +98,12 @@ class StudentParentController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json($request->user('admin')->student_parents()->latest()->get());
+        return response()->json($request->user('admin')->student_parents()->latest()->get()); // hadi t9dar t7ayd 7it l2ab ymkan ykon 3ndo wlado klla wa7d ki9ra f niveau scolaire mkhtalf donc ghadi nib students wkla student m3a l parent dyalo
     }
 
 
     public function show($id)
     {
-
 
         if (!StudentParent::find($id)) {
             return response()->json([
@@ -328,3 +327,4 @@ class StudentParentController extends Controller
 
 
 }
+

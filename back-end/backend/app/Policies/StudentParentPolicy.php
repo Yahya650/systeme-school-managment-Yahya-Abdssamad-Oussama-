@@ -14,7 +14,7 @@ class StudentParentPolicy
      */
     public function view(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StudentParentPolicy
      */
     public function update(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class StudentParentPolicy
      */
     public function delete(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
 
     /**
@@ -38,7 +38,7 @@ class StudentParentPolicy
      */
     public function restore(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
 
     /**
@@ -46,10 +46,10 @@ class StudentParentPolicy
      */
     public function forceDelete(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
     public function renewPassword(Admin $admin, StudentParent $studentParent): bool
     {
-        return $admin->id === $studentParent->admin_id;
+        return true;
     }
 }

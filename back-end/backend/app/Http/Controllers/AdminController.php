@@ -66,6 +66,7 @@ class AdminController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('admins', 'phone_number')],
             'address' => 'nullable|string|max:255',
+            'school_level_id' => 'required|exists:school_levels,id',
         ]);
 
         $password = Random::generate(8);
@@ -88,8 +89,8 @@ class AdminController extends Controller
         $newAdmin->blood_type = $request->blood_type;
         $newAdmin->phone_number = $request->phone_number;
         $newAdmin->address = $request->address;
+        $newAdmin->school_level_id = $request->school_level_id;
         $newAdmin->super_admin_id = $request->user('super_admin')->id;
-
         $newAdmin->save();
 
         return response([
@@ -154,8 +155,6 @@ class AdminController extends Controller
                 'message' => 'Vous n\'avez pas la permission de modifier ce administrateur'
             ], 401);
         }
-
-
 
         $request->validate([
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
