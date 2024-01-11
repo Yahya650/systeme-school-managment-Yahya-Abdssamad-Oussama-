@@ -22,7 +22,10 @@ class SchoolLevel extends Model
 
     public function admins()
     {
-        return $this->hasMany(Admin::class);
+        return $this->belongsToMany(Admin::class, 'responsibles')
+        ->using(Responsible::class)
+        ->withPivot('type')
+        ->withTimestamps();
     }
 
 }

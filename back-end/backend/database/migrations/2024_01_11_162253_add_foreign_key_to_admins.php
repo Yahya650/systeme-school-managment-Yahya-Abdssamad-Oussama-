@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->unsignedBigInteger('school_level_id')->after('super_admin_id');
-            $table->foreign('school_level_id')->references('id')->on('school_levels');
+            $table->unsignedBigInteger('super_admin_id')->nullable()->after('last_login_date');
+            $table->foreign('super_admin_id')->references('id')->on('super_admins')->nullOnDelete();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->dropForeign(['school_level_id']);
-            $table->dropColumn('school_level_id');
+            $table->dropForeign(['super_admin_id']);
+            $table->dropColumn('super_admin_id');
         });
     }
 };

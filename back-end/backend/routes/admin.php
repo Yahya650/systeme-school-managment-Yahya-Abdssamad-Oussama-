@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\StudentController;
@@ -31,6 +32,8 @@ Route::middleware(['auth:admin'])->group(function () {
 
     // Routes Students
     Route::group(['prefix' => 'students'], function () {
+        Route::apiResource('absences', AbsenceController::class)->only(['index', 'show', 'destroy']);
+        Route::post('/update-absence/{id}', [AbsenceController::class, 'update']);
         Route::get('/renew-password/{id}', [StudentController::class, 'renewPassword']);
         Route::get('/restore/{id}', [StudentController::class, 'restore']);
         Route::post('/restore-all', [StudentController::class, 'restoreAll']);

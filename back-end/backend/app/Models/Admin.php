@@ -50,15 +50,12 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
-
-    // public function classeTypes()
-    // {
-    //     return $this->hasMany(ClasseType::class);
-    // }
-
-    public function school_level()
+    public function school_levels()
     {
-        return $this->belongsTo(SchoolLevel::class);
+        return $this->belongsToMany(SchoolLevel::class, 'responsibles')
+        ->using(Responsible::class)
+        ->withPivot('type')
+        ->withTimestamps();
     }
     
     public function students()

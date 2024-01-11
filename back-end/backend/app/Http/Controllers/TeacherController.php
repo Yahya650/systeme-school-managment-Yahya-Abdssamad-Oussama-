@@ -269,8 +269,8 @@ class TeacherController extends Controller
             ], 401);
         }
 
+        $newPassword = Random::generate(8); 
         $teacher = Teacher::find($id);
-        $newPassword = Random::generate(8);
         $teacher->password = Hash::make($newPassword);
         $teacher->save();
         return response()->json([
@@ -279,6 +279,7 @@ class TeacherController extends Controller
             'new_password' => $newPassword,
             'message' => 'Mot de passe mis à jour avec succès'
         ]);
+        
     }
 
     public function restore($id)

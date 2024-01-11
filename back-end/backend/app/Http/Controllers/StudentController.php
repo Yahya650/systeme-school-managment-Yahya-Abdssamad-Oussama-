@@ -49,7 +49,7 @@ class StudentController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required','size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
-            'student_parent_id' => 'required|exists:student_parents,id',
+            'student_parent_id' => 'nullable|exists:student_parents,id',
             'classe_id' => 'required|exists:classes,id',
         ]);
 

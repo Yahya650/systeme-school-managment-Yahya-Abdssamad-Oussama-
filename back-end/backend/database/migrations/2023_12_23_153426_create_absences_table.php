@@ -13,19 +13,18 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('reason');
-            $table->boolean('isExcused')->default(false);
+            $table->text('reason');
+            $table->boolean('is_excused')->default(false);
 
-            $table->unsignedBigInteger('course_id');
-            $table->foreign('course_id')->references('id')->on('courses');
+            $table->unsignedBigInteger('course_id')->nullable();
+            $table->foreign('course_id')->references('id')->on('courses')->nullOnDelete();
 
-            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('student_id')->nullable();
             $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
-            
+
             $table->unsignedBigInteger('teacher_id')->nullable();
             $table->foreign('teacher_id')->references('id')->on('teachers')->nullOnDelete();
-            
+
             $table->softDeletes();
             $table->timestamps();
         });
