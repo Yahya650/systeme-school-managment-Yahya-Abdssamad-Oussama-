@@ -105,7 +105,7 @@ class TeacherController extends Controller
             'email' => $request->email,
             'password' => $password,
             'message' => "Enseignant créé avec succès"
-        ], 200);
+        ], 201);
     }
 
     public function logout(Request $request)

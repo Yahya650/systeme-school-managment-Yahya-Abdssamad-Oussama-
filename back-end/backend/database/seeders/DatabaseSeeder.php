@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             FiliereSeeder::class,
             SuperAdminSeeder::class,
             CourseSeeder::class,
+            SemesterSeeder::class
         ]);
     }
 }

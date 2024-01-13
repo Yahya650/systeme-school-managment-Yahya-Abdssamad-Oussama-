@@ -112,7 +112,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => $password,
             'message' => "Administrateur créé avec succès"
-        ], 200);
+        ], 201);
     }
 
     public function logout(Request $request)

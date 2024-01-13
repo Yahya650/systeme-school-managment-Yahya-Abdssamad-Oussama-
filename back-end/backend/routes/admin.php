@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ExamRecordController;
 use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TimeTableController;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-// Routes Auth
+// Routes Authentication Admin
 Route::middleware(['auth:admin'])->group(function () {
 
     // Routes Admin
@@ -32,6 +33,10 @@ Route::middleware(['auth:admin'])->group(function () {
 
     // Routes Students
     Route::group(['prefix' => 'students'], function () {
+        Route::post('/save-mark', [ExamRecordController::class, 'store']);
+        Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);
+        Route::post('/update-mark/{id}', [ExamRecordController::class, 'update']);
+
         Route::apiResource('absences', AbsenceController::class)->only(['index', 'show', 'destroy']);
         Route::post('/update-absence/{id}', [AbsenceController::class, 'update']);
         Route::get('/renew-password/{id}', [StudentController::class, 'renewPassword']);
@@ -50,10 +55,7 @@ Route::middleware(['auth:admin'])->group(function () {
 });
 
 
-
-
-
-
+// Routes Guest
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {
     Route::post('/login', [AdminController::class, 'login']);
 });

@@ -75,10 +75,10 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(Classe::class, 'classe_id');
     }
-    public function admin()
-    {
-        return $this->belongsTo(Admin::class, 'admin_id');
-    }
+    // public function admin()
+    // {
+    //     return $this->belongsTo(Admin::class, 'admin_id');
+    // }
 
     public function parent()
     {

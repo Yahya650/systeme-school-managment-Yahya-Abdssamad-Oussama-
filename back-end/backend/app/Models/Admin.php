@@ -58,10 +58,10 @@ class Admin extends Authenticatable
         ->withTimestamps();
     }
     
-    public function students()
-    {
-        return $this->hasMany(Student::class);
-    }
+    // public function students()
+    // {
+    //     return $this->hasMany(Student::class);
+    // }
     public function student_parents()
     {
         return $this->hasMany(StudentParent::class);

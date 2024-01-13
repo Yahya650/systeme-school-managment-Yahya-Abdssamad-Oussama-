@@ -86,5 +86,4 @@ class Teacher extends Authenticatable
             ->using(TeacherClasseCourse::class)
             ->withTimestamps();
     }
-
 }

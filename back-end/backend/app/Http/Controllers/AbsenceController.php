@@ -40,7 +40,7 @@ class AbsenceController extends Controller
         if (!TeacherClasseCourse::where('teacher_id', $request->user('teacher')->id)->where('course_id', $request->course_id)->exists()) {
             return response()->json([
                 'message' => 'Ce professeur ne peut pas enseigner à cette classe ou n\'est pas enseigné à cette matière',
-            ]);
+            ], 401);
         }
 
         $classes = $request->user('teacher')->classes()->get();
@@ -57,7 +57,7 @@ class AbsenceController extends Controller
 
                 return response()->json([
                     'message' => 'Absence ajouter avec succès',
-                ]);
+                ], 201);
             }
         }
     }

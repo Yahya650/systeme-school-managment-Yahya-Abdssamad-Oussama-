@@ -9,4 +9,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ExamClasse extends Pivot
 {
     use HasFactory, SoftDeletes;
+    protected $table = "exam_classes";
 }

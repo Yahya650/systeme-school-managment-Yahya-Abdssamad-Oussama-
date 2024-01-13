@@ -104,7 +104,7 @@ class TimeTableController extends Controller
 
         $classe->time_table_id = $newTimeTable->id;
         $classe->save();
-        return response()->json(['message' => 'Emploi du temps ajouté et envoyé avec succès']);
+        return response()->json(['message' => 'Emploi du temps ajouté et envoyé avec succès'], 201);
     }
 
     public function show($id)

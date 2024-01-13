@@ -78,7 +78,7 @@ class StudentParentController extends Controller
             'cin' => $request->cin,
             'password' => $password,
             'message' => "Cet parent d'éléve créé avec succès"
-        ], 200);
+        ], 201);
     }
 
     public function logout(Request $request)

@@ -7,15 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-// Routes Auth
+// Routes Authentication Super Admin
 Route::middleware(['auth:super_admin'])->group(function () {
 
     // Routes Admin
     Route::get('/profile', function (Request $request) {
         return $request->user('super_admin');
     });
-    
-    // Route::put('/reset-password', [SuperAdminController::class, 'resetPassword']);
     Route::put('/change-password', [SuperAdminController::class, 'changePassword']);
     Route::get('/logout', [SuperAdminController::class, 'logout']);
     // End Routes Admin
@@ -45,10 +43,8 @@ Route::middleware(['auth:super_admin'])->group(function () {
     });
 });
 
+
+// Routes Guest
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {
     Route::post('/login', [SuperAdminController::class, 'login']);
-    // Route::post('/register', [SuperAdminController::class, 'register']);
 });
-
-
-// ghda test dyal les relations lli zadt m3a had l api : /attach-teacher-to-classe, and n7awl n9ad seeders dyal les modules and dyal les filiers and les classe types

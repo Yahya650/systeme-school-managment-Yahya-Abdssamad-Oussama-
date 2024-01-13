@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('semesters', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->integer('semester');
-            $table->softDeletes();
-            $table->timestamps();
+        Schema::table('exam_records', function (Blueprint $table) {
+            $table->string('image')->nullable()->after('id');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('semesters');
+        Schema::table('exam_records', function (Blueprint $table) {
+            $table->dropColumn('image');
+        });
     }
 };

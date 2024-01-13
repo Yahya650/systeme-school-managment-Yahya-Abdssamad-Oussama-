@@ -83,7 +83,7 @@ class StudentController extends Controller
             'code_massar' => $request->code_massar,
             'password' => $password,
             'message' => "Étudiant créé avec succès"
-        ], 200);
+        ], 201);
     }
 
     public function logout(Request $request)

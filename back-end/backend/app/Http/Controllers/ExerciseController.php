@@ -78,7 +78,7 @@ class ExerciseController extends Controller
         $exerciseClasses->exercise_id = $newExercise->id;
         $exerciseClasses->save();
         
-        return response()->json(['message' => 'Exercice ajouté et envoyé avec succès']);
+        return response()->json(['message' => 'Exercice ajouté et envoyé avec succès'], 201);
     }
 
     /**

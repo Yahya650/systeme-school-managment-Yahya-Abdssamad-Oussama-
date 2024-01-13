@@ -26,7 +26,7 @@ class ClassTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Class_type $class_type)
+    public function show($id)
     {
         //
     }
@@ -34,7 +34,7 @@ class ClassTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Class_type $class_type)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class ClassTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Class_type $class_type)
+    public function destroy($id)
     {
         //
     }
