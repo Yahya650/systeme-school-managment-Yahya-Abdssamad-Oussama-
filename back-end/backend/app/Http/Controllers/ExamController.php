@@ -37,13 +37,13 @@ class ExamController extends Controller
     public function store(Request $request)
     {
 
-        dd($request->all());
         $request->validate([
             'name' => 'nullable|max:255',
             'image' => 'nullable|mimes:pdf,png,jpg,jpeg|max:2048',
             'type' => 'required|in:cc1,cc2,cc3,cc4,cc5,cc6,cc7',
             'duration' => 'required',
             'passing_marks' => 'required|in:5,10',
+            'variant' => 'nullable|in:v1,v2,v3,v4,v5',
             'course_id' => 'required|exists:courses,id',
             'semester_id' => 'required|exists:semesters,id',
         ]);
@@ -117,6 +117,7 @@ class ExamController extends Controller
             'type' => 'required|in:cc1,cc2,cc3,cc4,cc5,cc6,cc7',
             'duration' => 'required',
             'passing_marks' => 'required|in:5,10',
+            'variant' => 'nullable|in:v1,v2,v3,v4,v5',
             'course_id' => 'required|exists:courses,id',
             'semester_id' => 'required|exists:semesters,id'
         ]);

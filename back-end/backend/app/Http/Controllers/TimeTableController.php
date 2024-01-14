@@ -60,7 +60,6 @@ class TimeTableController extends Controller
             return response()->json(['message' => 'Vous n\'avez pas la permission de voir ce emploi du temps'], 401);
         }
         return response()->json($student->classe->time_table, 200);
-        
     }
 
     public function store(Request $request, $idClasse)
@@ -79,7 +78,8 @@ class TimeTableController extends Controller
         $admin = $request->user('admin');
         $schoolLevel = $classe->classeType->school_level;
 
-        if ($admin->school_level_id !== $schoolLevel->id) {
+
+        if (!$admin->school_levels()->wherePivot('school_level_id', $schoolLevel->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists()) {
             return response()->json(['message' => 'Vous n\'avez pas la permission de modifier ou ajouter ce emploi du temps'], 401);
         }
 
@@ -144,8 +144,8 @@ class TimeTableController extends Controller
         $admin = $request->user('admin');
         $schoolLevel = $classe->classeType->school_level;
 
-        if ($admin->school_level_id !== $schoolLevel->id) {
-            return response()->json(['message' => 'Unauthorized.'], 401);
+        if (!$admin->school_levels()->wherePivot('school_level_id', $schoolLevel->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists()) {
+            return response()->json(['message' => 'Vous n\'avez pas la permission de modifier ce emploi du temps'], 401);
         }
 
         if ($request->file) {

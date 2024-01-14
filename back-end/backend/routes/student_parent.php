@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ExerciseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\StudentParentController;
 
@@ -14,7 +16,11 @@ Route::middleware(['auth:student_parent'])->group(function () {
     });
     Route::get('/logout', [StudentParentController::class, 'logout']);
     Route::put('/change-password', [StudentParentController::class, 'changePassword']);
-    Route::get('/mychildren/timetable/{idStudent}', [TimeTableController::class, 'timetableForParent']);
+    Route::group(['prefix' => 'mychildrens'], function () {
+        Route::get('/timetable/{idStudent}', [TimeTableController::class, 'timetableForParent']);
+        Route::get('/{idStudent}', [StudentController::class, 'getStudentWithAllInfo']);
+        Route::get('/exercises', [ExerciseController::class, 'getExercisesForAllChildrens']);
+    });
 });
 
 

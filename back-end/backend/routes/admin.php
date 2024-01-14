@@ -3,6 +3,7 @@
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ExamRecordController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TimeTableController;
@@ -32,10 +33,13 @@ Route::middleware(['auth:admin'])->group(function () {
     });
 
     // Routes Students
-    Route::group(['prefix' => 'students'], function () {
+    Route::group(['prefix' => 'etudiant'], function () {
         Route::post('/save-mark', [ExamRecordController::class, 'store']);
         Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);
         Route::post('/update-mark/{id}', [ExamRecordController::class, 'update']);
+
+        Route::post('/create-report/{idStudent}', [ReportController::class, 'store']);
+        Route::apiResource('reports', ReportController::class)->only(['index', 'destroy', 'show']);
 
         Route::apiResource('absences', AbsenceController::class)->only(['index', 'show', 'destroy']);
         Route::post('/update-absence/{id}', [AbsenceController::class, 'update']);
@@ -46,7 +50,7 @@ Route::middleware(['auth:admin'])->group(function () {
     });
 
     // Routes Student Parents
-    Route::group(['prefix' => 'student-parents'], function () {
+    Route::group(['prefix' => 'parent'], function () {
         Route::get('/renew-password/{id}', [StudentParentController::class, 'renewPassword']);
         Route::get('/restore/{id}', [StudentParentController::class, 'restore']);
         Route::post('/restore-all', [StudentParentController::class, 'restoreAll']);

@@ -26,7 +26,7 @@ Route::middleware(['auth:super_admin'])->group(function () {
 
 
     // Routes Admins
-    Route::group(['prefix' => 'admins'], function () {
+    Route::group(['prefix' => 'administrators'], function () {
         Route::get('/renew-password/{id}', [AdminController::class, 'renewPassword']);
         Route::get('/restore/{id}', [AdminController::class, 'restore']);
         Route::post('/restore-all', [AdminController::class, 'restoreAll']);
@@ -34,7 +34,7 @@ Route::middleware(['auth:super_admin'])->group(function () {
     });
 
     // Routes Teachers
-    Route::group(['prefix' => 'teachers'], function () {
+    Route::group(['prefix' => 'professors'], function () {
         Route::get('/renew-password/{id}', [TeacherController::class, 'renewPassword']);
         Route::get('/restore/{id}', [TeacherController::class, 'restore']);
         Route::post('/restore-all', [TeacherController::class, 'restoreAll']);

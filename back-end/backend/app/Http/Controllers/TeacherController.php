@@ -2,21 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Exam;
-use App\Models\Classe;
-use App\Models\Course;
-use App\Models\Absence;
-use App\Models\ClasseType;
 use App\Models\Teacher;
 use Nette\Utils\Random;
-use App\Models\Exercise;
-use App\Models\Filiere;
-use App\Models\Student;
-use App\Models\StudentParent;
-use Nette\Schema\Expect;
 use Illuminate\Http\Request;
-use App\Models\TeacherClasse;
-use App\Models\TeacherCourse;
 use Illuminate\Validation\Rule;
 use App\Models\TeacherClasseCourse;
 use Illuminate\Support\Facades\Hash;

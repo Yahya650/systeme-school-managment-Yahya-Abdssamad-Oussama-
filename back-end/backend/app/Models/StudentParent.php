@@ -49,7 +49,8 @@ class StudentParent extends Authenticatable
     ];
 
 
-    public function students(){
+    public function students()
+    {
         return $this->hasMany(Student::class);
     }
 
@@ -58,7 +59,8 @@ class StudentParent extends Authenticatable
         return $this->belongsTo(Admin::class, 'admin_id');
     }
     
-    public function payments(){
+    public function payments()
+    {
         return $this->hasMany(Payment::class);
     }
 

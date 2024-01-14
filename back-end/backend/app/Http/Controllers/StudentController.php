@@ -319,29 +319,15 @@ class StudentController extends Controller
     }
 
 
-    // public function forceDelete($id)
-    // {
-    //     if (!Student::onlyTrashed()->find($id)) {
-    //         return response()->json([
-    //             'message' => 'Cet etudiant non détruit ou non trouvé'
-    //         ], 404);
-    //     }
-    //     if (request()->user()->cannot('forceDelete', Student::onlyTrashed()->find($id))) {
-    //         return response()->json([
-    //             'message' => 'Vous n\'avez pas la permission de détruire ce etudiant'
-    //         ], 401);
-    //     }
-
-    //     if (!Student::onlyTrashed()->find($id)->forceDelete()) {
-    //         return response()->json([
-    //             'message' => 'Cet etudiant non détruit'
-    //         ], 404);
-    //     }
-
-    //     return response()->json([
-    //         'message' => 'Cet etudiant détruit avec succès'
-    //     ]);
-    // }
-
+    public function getStudentWithAllInfo($id)
+    {
+        if (!Student::find($id)) {
+            return response()->json([
+                'message' => 'Étudiant non trouvé'
+            ], 404);
+        }
+        $student = Student::find($id);
+        return response()->json($student->with('payments')->with('examRecords.exam')->with('reports')->with('absences.course.teacher')->with('classe.exercises.teachers.courses.time_table')->with('payments')->get());
+    }
 
 }

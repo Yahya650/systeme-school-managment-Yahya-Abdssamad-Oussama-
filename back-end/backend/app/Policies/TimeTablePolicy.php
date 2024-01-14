@@ -22,7 +22,7 @@ class TimeTablePolicy
      */
     public function view(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -30,7 +30,7 @@ class TimeTablePolicy
      */
     public function create(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -38,7 +38,7 @@ class TimeTablePolicy
      */
     public function update(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -46,7 +46,7 @@ class TimeTablePolicy
      */
     public function delete(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -54,7 +54,7 @@ class TimeTablePolicy
      */
     public function restore(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -62,6 +62,6 @@ class TimeTablePolicy
      */
     public function forceDelete(Admin $admin, TimeTable $timeTable): bool
     {
-        return $admin->school_level_id === $timeTable->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', $timeTable->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 }

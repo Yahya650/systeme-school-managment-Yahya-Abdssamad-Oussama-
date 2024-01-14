@@ -37,6 +37,11 @@ class ExerciseController extends Controller
     {
         return response()->json($request->user('student')->classe()->with('exercises.course')->get(), 200);
     }
+    
+    public function getExercisesForAllChildrens(Request $request)
+    {
+        return response()->json($request->user('student_parent')->students()->with('classe.exercises')->get(), 200);
+    }
 
     /**
      * Store a newly created resource in storage.

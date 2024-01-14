@@ -14,7 +14,7 @@ class StudentPolicy
      */
     public function view(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -22,7 +22,7 @@ class StudentPolicy
      */
     public function update(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -30,7 +30,7 @@ class StudentPolicy
      */
     public function delete(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -38,7 +38,7 @@ class StudentPolicy
      */
     public function restore(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     /**
@@ -46,11 +46,11 @@ class StudentPolicy
      */
     public function forceDelete(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 
     public function renewPassword(Admin $admin, Student $student): bool
     {
-        return $admin->school_level_id === $student->classe()->first()->classeType()->first()->school_level()->first()->id;
+        return $admin->school_levels()->wherePivot('school_level_id', Student::find($student->id)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists();
     }
 }
