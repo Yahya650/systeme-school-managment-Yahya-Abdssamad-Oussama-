@@ -1,33 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
+import AdminLayout from './Layouts/Admin/AdminLayout'
+import SuperAdminLayout from './Layouts/SuperAdmin/SuperAdminLayout';
+import TeacherLayout from './Layouts/Teacher/TeacherLayout';
+import ParentStudentLayout from './Layouts/ParentStudent/ParentStudentLayout';
+import StudentLayout from './Layouts/Student/StudentLayout';
+import GuestLayout from './Layouts/Guest/GuestLayout';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+
+        {/* Guest Layout Routes */}
+        <Route path='/' element={<GuestLayout />}>
+
+        </Route>
+
+        {/* SuperAdmin Layout Routes */}
+        <Route path='/super-admin' element={<SuperAdminLayout />}>
+
+        </Route>
+
+        {/* Admin Layout Routes */}
+        <Route path='/admin' element={<AdminLayout />}>
+
+        </Route>
+
+        {/* Teacher Layout Routes */}
+        <Route path='/teacher' element={<TeacherLayout />}>
+
+        </Route>
+
+        {/* ParentStudent Layout Routes */}
+        <Route path='/parent-student' element={<ParentStudentLayout />}>
+
+        </Route>
+
+        {/* Student Layout Routes */}
+        <Route path='/student' element={<StudentLayout />}>
+
+        </Route>
+
+      </Routes>
     </>
   )
 }
