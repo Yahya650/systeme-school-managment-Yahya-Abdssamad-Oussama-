@@ -3,8 +3,16 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Factories\SuperAdminFactory;
+
 use Illuminate\Database\Seeder;
+use Database\Seeders\CourseSeeder;
+use Database\Seeders\ModuleSeeder;
+use Database\Seeders\FiliereSeeder;
+use Database\Seeders\SemesterSeeder;
+use Illuminate\Foundation\Auth\User;
+use Database\Seeders\ClasseTypeSeeder;
+use Database\Seeders\SuperAdminSeeder;
+use Database\Seeders\SchoolLevelSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,7 +33,8 @@ class DatabaseSeeder extends Seeder
             FiliereSeeder::class,
             SuperAdminSeeder::class,
             CourseSeeder::class,
-            SemesterSeeder::class
+            ModuleSeeder::class,
+            SemesterSeeder::class,
         ]);
     }
 }

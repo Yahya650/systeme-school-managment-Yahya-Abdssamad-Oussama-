@@ -90,7 +90,7 @@ class TimeTableController extends Controller
 
         $newTimeTable = new TimeTable();
         if ($request->file) {
-            $directoryPath = 'time_tables/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
+            $directoryPath = 'time_tables/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
                 $classe->code . '-' . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
 
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
@@ -150,7 +150,7 @@ class TimeTableController extends Controller
 
         if ($request->file) {
             Storage::exists("public/" . $classe->time_table()->file) && Storage::disk('local')->delete("public/" . $classe->time_table()->first()->file);
-            $directoryPath = 'time_tables/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
+            $directoryPath = 'time_tables/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
                 $classe->code . '-' . $this->getCurrentSchoolYear() . '.' . $request->file->extension();
 
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));

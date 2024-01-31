@@ -7,6 +7,7 @@ use App\Models\ExamClasse;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ExamController extends Controller
 {
@@ -40,7 +41,7 @@ class ExamController extends Controller
         $request->validate([
             'name' => 'nullable|max:255',
             'image' => 'nullable|mimes:pdf,png,jpg,jpeg|max:2048',
-            'type' => 'required|in:cc1,cc2,cc3,cc4,cc5,cc6,cc7',
+            'type' => 'required|in:cc1,cc2,cc3,cc4,AI,cff',
             'duration' => 'required',
             'passing_marks' => 'required|in:5,10',
             'variant' => 'nullable|in:v1,v2,v3,v4,v5',
@@ -60,7 +61,7 @@ class ExamController extends Controller
             $exam = new Exam();
             if ($request->image) {
                 $schoolLevel = $teacher->classes()->first()->classeType->school_level;
-                $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
+                $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
                     $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
 
                 Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->image));
@@ -114,7 +115,7 @@ class ExamController extends Controller
         $request->validate([
             'name' => 'nullable|max:255',
             'image' => 'nullable|mimes:pdf,png,jpg,jpeg|max:2048',
-            'type' => 'required|in:cc1,cc2,cc3,cc4,cc5,cc6,cc7',
+            'type' => 'required|in:cc1,cc2,cc3,cc4,AI,cff',
             'duration' => 'required',
             'passing_marks' => 'required|in:5,10',
             'variant' => 'nullable|in:v1,v2,v3,v4,v5',
@@ -127,7 +128,7 @@ class ExamController extends Controller
             if ($exam = Exam::find($id)) {
                 if ($request->image) {
                     $schoolLevel = $teacher->classes()->first()->classeType->school_level;
-                    $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
+                    $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
                         $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
 
                     Storage::delete("public/" . $exam->image);

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\SchoolLevel;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class SchoolLevelSeeder extends Seeder
 {
@@ -15,6 +14,7 @@ class SchoolLevelSeeder extends Seeder
     {
         // Define the data for each school level
         $schoolLevelsData = [
+            ['name' => 'Préscolaire'],
             ['name' => 'Primaire'],
             ['name' => 'College'],
             ['name' => 'Lycée'],

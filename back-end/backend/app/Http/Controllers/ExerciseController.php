@@ -37,7 +37,7 @@ class ExerciseController extends Controller
     {
         return response()->json($request->user('student')->classe()->with('exercises.course')->get(), 200);
     }
-    
+
     public function getExercisesForAllChildrens(Request $request)
     {
         return response()->json($request->user('student_parent')->students()->with('classe.exercises')->get(), 200);
@@ -66,11 +66,11 @@ class ExerciseController extends Controller
         $newExercise = new Exercise();
 
         if ($request->file) {
-            $directoryPath = 'exercises/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/' .
+            $directoryPath = 'exercises/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? "préscolaire" : 'high_school'))) . '/' .
                 $classe->classeType()->first()->code . $classe->filiere()->first()->code . '-' . $classe->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
-            
+
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
-            $newExercise->file = $directoryPath; 
+            $newExercise->file = $directoryPath;
         }
 
         $newExercise->title = $request->title;
@@ -82,7 +82,7 @@ class ExerciseController extends Controller
         $exerciseClasses->classe_id = $request->classe_id;
         $exerciseClasses->exercise_id = $newExercise->id;
         $exerciseClasses->save();
-        
+
         return response()->json(['message' => 'Exercice ajouté et envoyé avec succès'], 201);
     }
 
@@ -132,7 +132,7 @@ class ExerciseController extends Controller
             $school_level = $course->classeType()->first()->school_level()->first();
             $classe_type = $course->classeType()->first();
 
-            $directoryPath = 'exercises/' . ($school_level->name === 'Primaire' ? 'primary' : ($school_level->name === 'College' ? "college" : 'high_school')) . '/' .
+            $directoryPath = 'exercises/' . ($school_level->name === 'Primaire' ? 'primary' : ($school_level->name === 'College' ? "college" : ($school_level->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
                 $classe_type->code . $filiere->code . '-' . $course->name . "-" . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
 
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));

@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Classe;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Module>
  */
-class AdminFactory extends Factory
+class ModuleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +17,7 @@ class AdminFactory extends Factory
     public function definition(): array
     {
         return [
-            // 
+            //
         ];
     }
 }

@@ -15,23 +15,30 @@ class ClasseTypeSeeder extends Seeder
     {
         // Define the data for each class type
         $classTypesData = [
+
+            // Préscolaire
+            ['name' => 'Première Année', 'code' => 'DEPE', 'school_level_id' => 1],
+            ['name' => 'Deux Année', 'code' => 'PS1', 'school_level_id' => 1],
+            ['name' => 'Troisième Année', 'code' => 'PS2', 'school_level_id' => 1],
+
             // Primaire
-            ['name' => 'Première Année', 'school_level_id' => 1],
-            ['name' => 'Deux Année', 'school_level_id' => 1],
-            ['name' => 'Troisième Année', 'school_level_id' => 1],
-            ['name' => 'Quatrième Année', 'school_level_id' => 1],
-            ['name' => 'Cinquième Année', 'school_level_id' => 1],
-            ['name' => 'Sixième Année', 'school_level_id' => 1],
+            ['name' => 'Première Année', 'code' => '1AP', 'school_level_id' => 2],
+            ['name' => 'Deux Année', 'code' => '2AP', 'school_level_id' => 2],
+            ['name' => 'Troisième Année', 'code' => '3AP', 'school_level_id' => 2],
+            ['name' => 'Quatrième Année', 'code' => '4AP', 'school_level_id' => 2],
+            ['name' => 'Cinquième Année', 'code' => '5AP', 'school_level_id' => 2],
+            ['name' => 'Sixième Année', 'code' => '6AP', 'school_level_id' => 2],
 
             // Collège
-            ['name' => 'Première Année', 'school_level_id' => 2],
-            ['name' => 'Deuxième Année', 'school_level_id' => 2],
-            ['name' => 'Troisième Année', 'school_level_id' => 2],
+            ['name' => 'Première Année', 'code' => '1AP', 'school_level_id' => 3],
+            ['name' => 'Deuxième Année', 'code' => '2AP', 'school_level_id' => 3],
+            ['name' => 'Troisième Année', 'code' => '3AP', 'school_level_id' => 3],
 
             // Lycée
-            ['name' => 'Première Année', 'school_level_id' => 3],
-            ['name' => 'Deuxième Année', 'code' => '1BAC', 'school_level_id' => 3],
-            ['name' => 'Troisième Année', 'code' => '2BAC', 'school_level_id' => 3],
+            ['name' => 'Première Année', 'school_level_id' => 4],
+            ['name' => 'Deuxième Année', 'code' => '1BAC', 'school_level_id' => 4],
+            ['name' => 'Troisième Année', 'code' => '2BAC', 'school_level_id' => 4],
+
         ];
 
         // Loop through the data and create ClasseType instances

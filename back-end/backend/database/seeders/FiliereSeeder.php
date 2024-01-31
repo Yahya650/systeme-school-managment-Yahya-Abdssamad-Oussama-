@@ -15,9 +15,31 @@ class FiliereSeeder extends Seeder
     {
 
         $filieres = [
-            ['name' => 'Sciences de la vie et de la terre', "code" => "SVT", 'classe_type_id' => 12],
-            ['name' => 'physique et chimie', "code" => "PC", 'classe_type_id' => 12],
-            ['name' => 'Sciences Mathématiques', "code" => "SMATH", 'classe_type_id' => 12],
+
+            // Primaire
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 4],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 5],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 6],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 7],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 8],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 9],
+
+            // Collège
+            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 10],
+            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 11],
+            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 12],
+
+            ['name' => 'Sport Etude', "code" => "OSE", 'classe_type_id' => 10],
+            ['name' => 'Sport Etude', "code" => "OSE", 'classe_type_id' => 11],
+            ['name' => 'Sport Etude', "code" => "OSE", 'classe_type_id' => 12],
+
+            ['name' => 'Sport et Education Physique', "code" => "SEP", 'classe_type_id' => 11],
+            ['name' => 'Sport et Education Physique', "code" => "SEP", 'classe_type_id' => 12],
+
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 10],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 11],
+            ['name' => 'Générale', "code" => "G", 'classe_type_id' => 12],
+
         ];
 
         foreach ($filieres as $filiere) {
