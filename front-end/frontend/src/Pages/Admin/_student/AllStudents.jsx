@@ -10,12 +10,12 @@ const AllStudents = () => {
           <div className="row">
             <div className="col-sm-12">
               <div className="page-sub-header">
-                <h3 className="page-title">Students</h3>
+                <h3 className="page-title">Étudiants</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="#">Student</Link>
+                    <Link to="#">Étudiants</Link>
                   </li>
-                  <li className="breadcrumb-item active">All Students</li>
+                  <li className="breadcrumb-item active">Tous les étudiants</li>
                 </ul>
               </div>
             </div>
@@ -29,7 +29,7 @@ const AllStudents = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search by ID ..."
+                  placeholder="Rechercher par ID ..."
                 />
               </div>
             </div>
@@ -38,7 +38,7 @@ const AllStudents = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search by Name ..."
+                  placeholder="Rechercher par nom ..."
                 />
               </div>
             </div>
@@ -47,14 +47,14 @@ const AllStudents = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search by Phone ..."
+                  placeholder="Rechercher par téléphone ..."
                 />
               </div>
             </div>
             <div className="col-lg-2">
               <div className="search-student-btn">
                 <button type="btn" className="btn btn-primary">
-                  Search
+                  Rechercher
                 </button>
               </div>
             </div>
@@ -67,7 +67,7 @@ const AllStudents = () => {
                 <div className="page-header">
                   <div className="row align-items-center">
                     <div className="col">
-                      <h3 className="page-title">Students</h3>
+                      <h3 className="page-title">Étudiants</h3>
                     </div>
                     <div className="col-auto text-end float-end ms-auto download-grp">
                       <Link to="#" className="btn btn-outline-gray me-2 active">
@@ -80,7 +80,7 @@ const AllStudents = () => {
                         <i className="feather-grid"></i>
                       </Link>
                       <Link to="#" className="btn btn-outline-primary me-2">
-                        <i className="fas fa-download"></i> Download
+                        <i className="fas fa-download"></i> Télécharger
                       </Link>
                       <Link to="#" className="btn btn-primary">
                         <i className="fas fa-plus"></i>
@@ -103,12 +103,12 @@ const AllStudents = () => {
                           </div>
                         </th>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Class</th>
+                        <th>Nom</th>
+                        <th>Classe</th>
                         <th>DOB</th>
-                        <th>Parent Name</th>
-                        <th>Mobile Number</th>
-                        <th>Address</th>
+                        <th>Nom du Parent</th>
+                        <th>Numéro de téléphone</th>
+                        <th>Adresse</th>
                         <th className="text-end">Action</th>
                       </tr>
                     </thead>
@@ -133,17 +133,17 @@ const AllStudents = () => {
                               <img
                                 className="avatar-img rounded-circle"
                                 src="/assets/img/profiles/avatar-01.jpg"
-                                alt="User Image"
+                                alt="Image de l'utilisateur"
                               />
                             </Link>
                             <Link to="student-details.html">Aaliyah</Link>
                           </h2>
                         </td>
                         <td>10 A</td>
-                        <td>2 Feb 2002</td>
+                        <td>2 Fév 2002</td>
                         <td>Jeffrey Wong</td>
                         <td>097 3584 5870</td>
-                        <td>911 Deer Ridge Drive,USA</td>
+                        <td>911 Deer Ridge Drive, USA</td>
                         <td className="text-end">
                           <div className="actions ">
                             <Link
@@ -152,10 +152,7 @@ const AllStudents = () => {
                             >
                               <i className="feather-eye"></i>
                             </Link>
-                            <Link
-                              to=""
-                              className="btn btn-sm bg-danger-light"
-                            >
+                            <Link to="" className="btn btn-sm bg-danger-light">
                               <i className="feather-edit"></i>
                             </Link>
                           </div>

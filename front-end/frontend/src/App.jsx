@@ -12,6 +12,8 @@ import UpdateStudent from "./Pages/Admin/_student/UpdateStudent";
 import ShowStudent from "./Pages/Admin/_student/ShowStudent";
 import AllStudents from "./Pages/Admin/_student/AllStudents";
 import Page404 from "./Pages/errors/Page404";
+import LoginAdmin from "./Pages/Admin/Auth/LoginAdmin";
+import ForgotPasswordAdmin from "./Pages/Admin/Auth/ForgotPasswordAdmin";
 
 function App() {
   return (
@@ -19,7 +21,10 @@ function App() {
       <Routes>
         <Route path="*" element={<Page404 />} />
         {/* Guest Layout Routes */}
-        <Route path="/" element={<GuestLayout />}></Route>
+        <Route path="/" element={<GuestLayout />}>
+          <Route path="admin/login" element={<LoginAdmin />} />
+          <Route path="admin/forgot-password" element={<ForgotPasswordAdmin />} />
+        </Route>
 
         {/* SuperAdmin Layout Routes */}
         <Route path="/super-admin" element={<SuperAdminLayout />}></Route>

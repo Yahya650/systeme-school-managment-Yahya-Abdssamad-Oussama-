@@ -11,21 +11,19 @@ const _sidebar = () => {
               <span>Main Menu</span>
             </li>
             <li className="active">
-              <NavLink to="/admin/dashboard">
+              <Link to="/admin/dashboard">
                 <i className="feather-grid"></i> <span> Dashboard</span>
-              </NavLink>
+              </Link>
             </li>
             <li className="submenu">
-              <NavLink to="#">
+              <Link to={"#"} className="subdrop">
                 <i className="fas fa-graduation-cap"></i>
                 <span> Étudiants</span>
                 <span className="menu-arrow"></span>
-              </NavLink>
-              <ul>
+              </Link>
+              <ul style={{ display: "block" }}>
                 <li>
-                  <NavLink to="/admin/all-students">
-                    Liste des Étudiants
-                  </NavLink>
+                  <NavLink to="/admin/all-students">Tous les étudiants</NavLink>
                 </li>
                 <li>
                   <NavLink to="/admin/show-student">Voir un Étudiant</NavLink>
@@ -42,11 +40,12 @@ const _sidebar = () => {
                 </li>
               </ul>
             </li>
-            <li className="submenu">
-              {/* <NavLink to="#">
-                <i className="fas fa-chalkboard-teacher"></i>
+
+            {/* <li className="submenu">
+              <NavLink to="#">
+                <i class="fas fa-chalkboard-teacher"></i>
                 <span> Parents</span>
-                <span className="menu-arrow"></span>
+                <span class="menu-arrow"></span>
               </NavLink>
               <ul>
                 <li>
@@ -61,9 +60,9 @@ const _sidebar = () => {
                 <li>
                   <NavLink to="#">Modifier un Parente</NavLink>
                 </li>
-              </ul> */}
+              </ul>
             </li>
-            {/* <li className="submenu">
+            <li class="submenu">
               <NavLink to="#">
                 <i className="fas fa-building"></i> <span> Departments</span>
                 <span className="menu-arrow"></span>
@@ -79,8 +78,8 @@ const _sidebar = () => {
                   <Link to="#">Department Edit</Link>
                 </li>
               </ul>
-            </li> */}
-            {/* <li className="submenu">
+            </li>
+            <li className="submenu">
               <Link to="#">
                 <i className="fas fa-book-reader"></i> <span> Subjects</span>
                 <span className="menu-arrow"></span>

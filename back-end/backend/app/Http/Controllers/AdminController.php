@@ -31,14 +31,10 @@ class AdminController extends Controller
             }
         } else if ($admin = Admin::where('cin', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $admin->password)) {
-                return response([
-                    'message' => 'Le mot de passe est incorrect'
-                ], 422);
+                return response(['message' => 'Le mot de passe est incorrect', 'errors' => ['password' => ['Le mot de passe est incorrect']]], 422);
             }
         } else {
-            return response([
-                'message' => 'Les identifiants fournis sont incorrects'
-            ], 422);
+            return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin_email' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
         $admin->last_login_date = date('Y-m-d H:i:s');

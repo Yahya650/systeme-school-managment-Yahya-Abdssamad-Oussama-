@@ -9,7 +9,6 @@ import "../public/assets/plugins/icons/flags/flags.css";
 import "../public/assets/plugins/fontawesome/css/fontawesome.min.css";
 import "../public/assets/plugins/fontawesome/css/all.min.css";
 import "../public/assets/css/style.css";
-
 import { BrowserRouter } from "react-router-dom";
 
 const divRoot = document.getElementById("root");

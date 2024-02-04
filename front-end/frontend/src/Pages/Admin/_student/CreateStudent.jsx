@@ -9,12 +9,14 @@ const CreateStudent = () => {
           <div className="row align-items-center">
             <div className="col-sm-12">
               <div className="page-sub-header">
-                <h3 className="page-title">Add Students</h3>
+                <h3 className="page-title">Ajouter des étudiants</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="#">Student</Link>
+                    <Link to="#">Étudiant</Link>
                   </li>
-                  <li className="breadcrumb-item active">Add Students</li>
+                  <li className="breadcrumb-item active">
+                    Ajouter des étudiants
+                  </li>
                 </ul>
               </div>
             </div>
@@ -29,7 +31,7 @@ const CreateStudent = () => {
                   <div className="row">
                     <div className="col-12">
                       <h5 className="form-title student-info">
-                        Student Information
+                        Informations sur l'étudiant
                         <span>
                           <Link to="#">
                             <i className="feather-more-vertical"></i>
@@ -40,49 +42,50 @@ const CreateStudent = () => {
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          First Name <span className="login-danger">*</span>
+                          Prénom <span className="login-danger">*</span>
                         </label>
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter First Name"
+                          placeholder="Entrez le prénom"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Last Name <span className="login-danger">*</span>
+                          Nom de famille <span className="login-danger">*</span>
                         </label>
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter First Name"
+                          placeholder="Entrez le nom de famille"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Gender <span className="login-danger">*</span>
+                          Sexe <span className="login-danger">*</span>
                         </label>
                         <select className="form-control select">
-                          <option>Select Gender</option>
-                          <option>Female</option>
-                          <option>Male</option>
-                          <option>Others</option>
+                          <option>Sélectionnez le genre</option>
+                          <option>Féminin</option>
+                          <option>Masculin</option>
+                          <option>Autre</option>
                         </select>
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms calendar-icon">
                         <label>
-                          Date Of Birth <span className="login-danger">*</span>
+                          Date de naissance{" "}
+                          <span className="login-danger">*</span>
                         </label>
                         <input
                           className="form-control datetimepicker"
                           type="text"
-                          placeholder="DD-MM-YYYY"
+                          placeholder="JJ-MM-AAAA"
                         />
                       </div>
                     </div>
@@ -92,17 +95,17 @@ const CreateStudent = () => {
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter Roll Number"
+                          placeholder="Entrez le numéro d'enregistrement"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Blood Group <span className="login-danger">*</span>
+                          Groupe sanguin <span className="login-danger">*</span>
                         </label>
                         <select className="form-control select">
-                          <option>Please Select Group </option>
+                          <option>Veuillez sélectionner le groupe</option>
                           <option>B+</option>
                           <option>A+</option>
                           <option>O+</option>
@@ -115,32 +118,32 @@ const CreateStudent = () => {
                           Religion <span className="login-danger">*</span>
                         </label>
                         <select className="form-control select">
-                          <option>Please Select Religion </option>
-                          <option>Hindu</option>
-                          <option>Christian</option>
-                          <option>Others</option>
+                          <option>Veuillez sélectionner la religion</option>
+                          <option>Hindou</option>
+                          <option>Chrétien</option>
+                          <option>Autre</option>
                         </select>
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          E-Mail <span className="login-danger">*</span>
+                          E-mail <span className="login-danger">*</span>
                         </label>
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter Email Address"
+                          placeholder="Entrez l'adresse e-mail"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Class <span className="login-danger">*</span>
+                          Classe <span className="login-danger">*</span>
                         </label>
                         <select className="form-control select">
-                          <option>Please Select Class </option>
+                          <option>Veuillez sélectionner la classe</option>
                           <option>12</option>
                           <option>11</option>
                           <option>10</option>
@@ -153,7 +156,7 @@ const CreateStudent = () => {
                           Section <span className="login-danger">*</span>
                         </label>
                         <select className="form-control select">
-                          <option>Please Select Section </option>
+                          <option>Veuillez sélectionner la section</option>
                           <option>B</option>
                           <option>A</option>
                           <option>C</option>
@@ -162,30 +165,32 @@ const CreateStudent = () => {
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
-                        <label>Admission ID </label>
+                        <label>ID d'admission </label>
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter Admission ID"
+                          placeholder="Entrez l'ID d'admission"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
-                        <label>Phone </label>
+                        <label>Téléphone </label>
                         <input
                           className="form-control"
                           type="text"
-                          placeholder="Enter Phone Number"
+                          placeholder="Entrez le numéro de téléphone"
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group students-up-files">
-                        <label>Upload Student Photo (150px X 150px)</label>
+                        <label>
+                          Télécharger la photo de l'étudiant (150px X 150px)
+                        </label>
                         <div className="uplod">
                           <label className="file-upload image-upbtn mb-0">
-                            Choose File <input type="file" />
+                            Choisir un fichier <input type="file" />
                           </label>
                         </div>
                       </div>
@@ -193,7 +198,7 @@ const CreateStudent = () => {
                     <div className="col-12">
                       <div className="student-submit">
                         <button type="submit" className="btn btn-primary">
-                          Submit
+                          Ajouter
                         </button>
                       </div>
                     </div>

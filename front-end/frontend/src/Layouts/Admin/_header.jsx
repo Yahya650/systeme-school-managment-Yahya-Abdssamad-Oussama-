@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useContextApi } from "../../Context/ContextApi";
+import LoadingCircle from "../../Components/LoadingCircle";
 
 const _header = () => {
+  const { logout, setLoadingContaxt, user } = useContextApi();
+  // const [loading, setLoading] = useState(false);
+
   return (
     <header className="header">
       <div className="header-left">
         <Link to="/admin/dashboard" className="logo">
-          <img src="/assets/img/logo.png" alt="Logo" />
+          <img
+            src="/assets/img/gsb-logo.png"
+            style={{ maxHeight: "55px" }}
+            className="ms-lg-5"
+            alt="Logo"
+          />
         </Link>
         <Link to="#" className="logo logo-small">
           <img
-            src="/assets/img/logo-small.png"
+            src="/assets/img/gsb-logo-small.png"
             alt="Logo"
             width="30"
             height="30"
@@ -161,9 +171,9 @@ const _header = () => {
           </div>
         </li>
 
-        <li className="nav-item zoom-screen me-2">
+        <li onClick={toggleFullscreen} className="zoom-screen nav-item me-2">
           <Link to="#" className="nav-link header-nav-list win-maximize">
-            <img src="/assets/img/icons/header-icon-04.svg" alt="" />
+            <img src="/assets/img/icons/header-icon-04.svg" />
           </Link>
         </li>
 
@@ -181,7 +191,7 @@ const _header = () => {
                 alt="Soeng Souy"
               />
               <div className="user-text">
-                <h6>Soeng Souy</h6>
+                <h6>{user?.last_name + " " + user?.first_name}</h6>
                 <p className="text-muted mb-0">Administrator</p>
               </div>
             </span>
@@ -203,9 +213,16 @@ const _header = () => {
             <Link className="dropdown-item" to="#">
               My Profile
             </Link>
-            <Link className="dropdown-item" to="#">
+            <button
+              className="dropdown-item"
+              onClick={async () => {
+                setLoadingContaxt(true);
+                await logout("admin");
+                setLoadingContaxt(false);
+              }}
+            >
               Logout
-            </Link>
+            </button>
           </div>
         </li>
       </ul>

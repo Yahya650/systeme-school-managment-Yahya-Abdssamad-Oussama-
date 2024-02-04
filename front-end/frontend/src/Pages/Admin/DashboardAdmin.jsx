@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import _footer from "./../../Layouts/Admin/_footer";
+import { useContextApi } from "../../Context/ContextApi";
 
 const DashboardAdmin = () => {
+  const { user } = useContextApi();
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">
@@ -10,10 +12,15 @@ const DashboardAdmin = () => {
           <div className="row">
             <div className="col-sm-12">
               <div className="page-sub-header">
-                <h3 className="page-title">Bonjour Administrateur!</h3>
+                <h3 className="page-title">
+                  {new Date().getHours() >= 5 && new Date().getHours() < 18
+                    ? "Bonjour "
+                    : "Bonsoir "}
+                  {user?.last_name + " " + user?.first_name}!
+                </h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="#">Home</Link>
+                    <Link to="#">Accueil</Link>
                   </li>
                   <li className="breadcrumb-item active">Administrateur</li>
                 </ul>
@@ -28,13 +35,13 @@ const DashboardAdmin = () => {
               <div className="card-body">
                 <div className="db-widgets d-flex justify-content-between align-items-center">
                   <div className="db-info">
-                    <h6>Students</h6>
+                    <h6>Étudiants</h6>
                     <h3>50055</h3>
                   </div>
                   <div className="db-icon">
                     <img
                       src="/assets/img/icons/dash-icon-01.svg"
-                      alt="Dashboard Icon"
+                      alt="Icône du tableau de bord"
                     />
                   </div>
                 </div>
@@ -46,13 +53,13 @@ const DashboardAdmin = () => {
               <div className="card-body">
                 <div className="db-widgets d-flex justify-content-between align-items-center">
                   <div className="db-info">
-                    <h6>Awards</h6>
+                    <h6>Récompenses</h6>
                     <h3>50+</h3>
                   </div>
                   <div className="db-icon">
                     <img
                       src="/assets/img/icons/dash-icon-02.svg"
-                      alt="Dashboard Icon"
+                      alt="Icône du tableau de bord"
                     />
                   </div>
                 </div>
@@ -64,13 +71,13 @@ const DashboardAdmin = () => {
               <div className="card-body">
                 <div className="db-widgets d-flex justify-content-between align-items-center">
                   <div className="db-info">
-                    <h6>Department</h6>
+                    <h6>Département</h6>
                     <h3>30+</h3>
                   </div>
                   <div className="db-icon">
                     <img
                       src="/assets/img/icons/dash-icon-03.svg"
-                      alt="Dashboard Icon"
+                      alt="Icône du tableau de bord"
                     />
                   </div>
                 </div>
@@ -82,77 +89,16 @@ const DashboardAdmin = () => {
               <div className="card-body">
                 <div className="db-widgets d-flex justify-content-between align-items-center">
                   <div className="db-info">
-                    <h6>Revenue</h6>
-                    <h3>$505</h3>
+                    <h6>Revenu</h6>
+                    <h3>505$</h3>
                   </div>
                   <div className="db-icon">
                     <img
                       src="/assets/img/icons/dash-icon-04.svg"
-                      alt="Dashboard Icon"
+                      alt="Icône du tableau de bord"
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-12 col-lg-6">
-            <div className="card card-chart">
-              <div className="card-header">
-                <div className="row align-items-center">
-                  <div className="col-6">
-                    <h5 className="card-title">Overview</h5>
-                  </div>
-                  <div className="col-6">
-                    <ul className="chart-list-out">
-                      <li>
-                        <span className="circle-blue"></span>Teacher
-                      </li>
-                      <li>
-                        <span className="circle-green"></span>Student
-                      </li>
-                      <li className="star-menus">
-                        <Link to="#">
-                          <i className="fas fa-ellipsis-v"></i>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <div id="apexcharts-area"></div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12 col-lg-6">
-            <div className="card card-chart">
-              <div className="card-header">
-                <div className="row align-items-center">
-                  <div className="col-6">
-                    <h5 className="card-title">Number of Students</h5>
-                  </div>
-                  <div className="col-6">
-                    <ul className="chart-list-out">
-                      <li>
-                        <span className="circle-blue"></span>Girls
-                      </li>
-                      <li>
-                        <span className="circle-green"></span>Boys
-                      </li>
-                      <li className="star-menus">
-                        <Link to="#">
-                          <i className="fas fa-ellipsis-v"></i>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <div id="bar"></div>
               </div>
             </div>
           </div>
@@ -162,7 +108,7 @@ const DashboardAdmin = () => {
           <div className="col-xl-6 d-flex">
             <div className="card flex-fill student-space comman-shadow">
               <div className="card-header d-flex align-items-center">
-                <h5 className="card-title">Star Students</h5>
+                <h5 className="card-title">Étudiants Stars</h5>
                 <ul className="chart-list-out student-ellips">
                   <li className="star-menus">
                     <Link to="#">
@@ -177,10 +123,10 @@ const DashboardAdmin = () => {
                     <thead className="thead-light">
                       <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th className="text-center">Marks</th>
-                        <th className="text-center">Percentage</th>
-                        <th className="text-end">Year</th>
+                        <th>Nom</th>
+                        <th className="text-center">Notes</th>
+                        <th className="text-center">Pourcentage</th>
+                        <th className="text-end">Année</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -298,7 +244,7 @@ const DashboardAdmin = () => {
           <div className="col-xl-6 d-flex">
             <div className="card flex-fill comman-shadow">
               <div className="card-header d-flex align-items-center">
-                <h5 className="card-title ">Student Activity </h5>
+                <h5 className="card-title">Activité des Étudiants</h5>
                 <ul className="chart-list-out student-ellips">
                   <li className="star-menus">
                     <Link to="#">
@@ -378,7 +324,68 @@ const DashboardAdmin = () => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
+          <div className="col-md-12 col-lg-6">
+            <div className="card card-chart">
+              <div className="card-header">
+                <div className="row align-items-center">
+                  <div className="col-6">
+                    <h5 className="card-title">Overview</h5>
+                  </div>
+                  <div className="col-6">
+                    <ul className="chart-list-out">
+                      <li>
+                        <span className="circle-blue"></span>Teacher
+                      </li>
+                      <li>
+                        <span className="circle-green"></span>Student
+                      </li>
+                      <li className="star-menus">
+                        <Link to="#">
+                          <i className="fas fa-ellipsis-v"></i>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="card-body">
+                <div id="apexcharts-area"></div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12 col-lg-6">
+            <div className="card card-chart">
+              <div className="card-header">
+                <div className="row align-items-center">
+                  <div className="col-6">
+                    <h5 className="card-title">Number of Students</h5>
+                  </div>
+                  <div className="col-6">
+                    <ul className="chart-list-out">
+                      <li>
+                        <span className="circle-blue"></span>Girls
+                      </li>
+                      <li>
+                        <span className="circle-green"></span>Boys
+                      </li>
+                      <li className="star-menus">
+                        <Link to="#">
+                          <i className="fas fa-ellipsis-v"></i>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="card-body">
+                <div id="bar"></div>
+              </div>
+            </div>
+          </div>
+        </div> */}
+
+        {/* <div className="row">
           <div className="col-xl-3 col-sm-6 col-12">
             <div className="card flex-fill fb sm-box">
               <div className="social-likes">
@@ -435,7 +442,7 @@ const DashboardAdmin = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <_footer />
     </div>

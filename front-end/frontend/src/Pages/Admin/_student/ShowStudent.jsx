@@ -10,12 +10,14 @@ const ShowStudent = () => {
           <div className="row">
             <div className="col-sm-12">
               <div className="page-sub-header">
-                <h3 className="page-title">Student Details</h3>
+                <h3 className="page-title">Détails de l'étudiant</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="#">Student</Link>
+                    <Link to="#">Étudiants</Link>
                   </li>
-                  <li className="breadcrumb-item active">Student Details</li>
+                  <li className="breadcrumb-item active">
+                    Détails de l'étudiant
+                  </li>
                 </ul>
               </div>
             </div>
@@ -37,7 +39,7 @@ const ShowStudent = () => {
                 </div>
                 <div className="student-profile-head">
                   <div className="profile-bg-img">
-                    <img src="/assets/img/profile-bg.jpg" alt="Profile" />
+                    <img src="/assets/img/profile-bg.jpg" alt="Profil" />
                   </div>
                   <div className="row">
                     <div className="col-lg-4 col-md-4">
@@ -45,7 +47,7 @@ const ShowStudent = () => {
                         <div className="profile-user-img">
                           <img
                             src="/assets/img/profile-user.jpg"
-                            alt="Profile"
+                            alt="Profil"
                           />
                           <div className="form-group students-up-files profile-edit-icon mb-0">
                             <div className="uplod d-flex">
@@ -58,22 +60,22 @@ const ShowStudent = () => {
                         </div>
                         <div className="names-profiles">
                           <h4>Bruce Willis</h4>
-                          <h5>Computer Science</h5>
+                          <h5>Informatique</h5>
                         </div>
                       </div>
                     </div>
                     <div className="col-lg-4 col-md-4 d-flex align-items-center">
                       <div className="follow-group">
                         <div className="students-follows">
-                          <h5>Followers</h5>
+                          <h5>Abonnés</h5>
                           <h4>2850</h4>
                         </div>
                         <div className="students-follows">
-                          <h5>Followers</h5>
+                          <h5>Abonnés</h5>
                           <h4>2850</h4>
                         </div>
                         <div className="students-follows">
-                          <h5>Followers</h5>
+                          <h5>Abonnés</h5>
                           <h4>2850</h4>
                         </div>
                       </div>
@@ -84,7 +86,7 @@ const ShowStudent = () => {
                           type="submit"
                           className="btn btn-info follow-btns"
                         >
-                          Follow
+                          Suivre
                         </button>
                         <button
                           type="submit"
@@ -104,14 +106,14 @@ const ShowStudent = () => {
                   <div className="card">
                     <div className="card-body">
                       <div className="heading-detail">
-                        <h4>Personal Details :</h4>
+                        <h4>Détails personnels :</h4>
                       </div>
                       <div className="personal-activity">
                         <div className="personal-icons">
                           <i className="feather-user"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Name</h4>
+                          <h4>Nom</h4>
                           <h5>Bruce Willis</h5>
                         </div>
                       </div>
@@ -123,8 +125,8 @@ const ShowStudent = () => {
                           />
                         </div>
                         <div className="views-personal">
-                          <h4>Department </h4>
-                          <h5>Computer Science</h5>
+                          <h4>Département</h4>
+                          <h5>Informatique</h5>
                         </div>
                       </div>
                       <div className="personal-activity">
@@ -132,7 +134,7 @@ const ShowStudent = () => {
                           <i className="feather-phone-call"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Mobile</h4>
+                          <h4>Téléphone mobile</h4>
                           <h5>+91 89657 48512</h5>
                         </div>
                       </div>
@@ -141,7 +143,7 @@ const ShowStudent = () => {
                           <i className="feather-mail"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Email</h4>
+                          <h4>E-mail</h4>
                           <h5>
                             <Link
                               to="#"
@@ -158,8 +160,8 @@ const ShowStudent = () => {
                           <i className="feather-user"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Gender</h4>
-                          <h5>Male</h5>
+                          <h4>Genre</h4>
+                          <h5>Homme</h5>
                         </div>
                       </div>
                       <div className="personal-activity">
@@ -167,8 +169,8 @@ const ShowStudent = () => {
                           <i className="feather-calendar"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Date of Birth</h4>
-                          <h5>22 Apr 1995</h5>
+                          <h4>Date de naissance</h4>
+                          <h5>22 avril 1995</h5>
                         </div>
                       </div>
                       <div className="personal-activity">
@@ -176,8 +178,8 @@ const ShowStudent = () => {
                           <i className="feather-italic"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Language</h4>
-                          <h5>English, French, Bangla</h5>
+                          <h4>Langue</h4>
+                          <h5>Anglais, Français, Bangla</h5>
                         </div>
                       </div>
                       <div className="personal-activity mb-0">
@@ -185,8 +187,8 @@ const ShowStudent = () => {
                           <i className="feather-map-pin"></i>
                         </div>
                         <div className="views-personal">
-                          <h4>Address</h4>
-                          <h5>480, Estern Avenue, New York</h5>
+                          <h4>Adresse</h4>
+                          <h5>480, avenue Estern, New York</h5>
                         </div>
                       </div>
                     </div>
@@ -196,7 +198,7 @@ const ShowStudent = () => {
                   <div className="card mb-0">
                     <div className="card-body">
                       <div className="heading-detail">
-                        <h4>Skills:</h4>
+                        <h4>Compétences :</h4>
                       </div>
                       <div className="skill-blk">
                         <div className="skill-statistics">
@@ -208,7 +210,7 @@ const ShowStudent = () => {
                             <div
                               className="progress-bar bg-photoshop"
                               role="progressbar"
-                              style={{"width": "90%"}}
+                              style={{ width: "90%" }}
                               aria-valuenow="90"
                               aria-valuemin="0"
                               aria-valuemax="100"
@@ -217,14 +219,14 @@ const ShowStudent = () => {
                         </div>
                         <div className="skill-statistics">
                           <div className="skills-head">
-                            <h5>Code editor</h5>
+                            <h5>Éditeur de code</h5>
                             <p>75%</p>
                           </div>
                           <div className="progress mb-0">
                             <div
                               className="progress-bar bg-editor"
                               role="progressbar"
-                              style={{"width": "75%"}}
+                              style={{ width: "75%" }}
                               aria-valuenow="75"
                               aria-valuemin="0"
                               aria-valuemax="100"
@@ -240,7 +242,7 @@ const ShowStudent = () => {
                             <div
                               className="progress-bar bg-illustrator"
                               role="progressbar"
-                              style={{"width": "95%"}}
+                              style={{ width: "95%" }}
                               aria-valuenow="95"
                               aria-valuemin="0"
                               aria-valuemax="100"
@@ -257,10 +259,10 @@ const ShowStudent = () => {
                   <div className="card mb-0">
                     <div className="card-body">
                       <div className="heading-detail">
-                        <h4>About Me</h4>
+                        <h4>À propos de moi</h4>
                       </div>
                       <div className="hello-park">
-                        <h5>Hello I am Daisy Parks</h5>
+                        <h5>Bonjour, je suis Daisy Parks</h5>
                         <p>
                           Lorem ipsum dolor sit amet, consectetur adipiscing
                           elit, sed do eiusmod tempor incididunt ut labore et
@@ -279,32 +281,32 @@ const ShowStudent = () => {
                         </p>
                       </div>
                       <div className="hello-park">
-                        <h5>Education</h5>
+                        <h5>Éducation</h5>
                         <div className="educate-year">
                           <h6>2008 - 2009</h6>
                           <p>
-                            Secondary Schooling at xyz school of secondary
-                            education, Mumbai.
+                            Scolarité secondaire à l'école secondaire xyz,
+                            Mumbai.
                           </p>
                         </div>
                         <div className="educate-year">
                           <h6>2011 - 2012</h6>
                           <p>
-                            Higher Secondary Schooling at xyz school of higher
-                            secondary education, Mumbai.
+                            Scolarité secondaire supérieure à l'école supérieure
+                            xyz, Mumbai.
                           </p>
                         </div>
                         <div className="educate-year">
                           <h6>2012 - 2015</h6>
                           <p>
-                            Bachelor of Science at Abc College of Art and
+                            Licence en sciences à l'Abc College of Art and
                             Science, Chennai.
                           </p>
                         </div>
                         <div className="educate-year">
                           <h6>2015 - 2017</h6>
                           <p className="mb-0">
-                            Master of Science at Cdm College of Engineering and
+                            Master en sciences à Cdm College of Engineering and
                             Technology, Pune.
                           </p>
                         </div>
