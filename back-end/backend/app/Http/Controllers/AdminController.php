@@ -150,7 +150,7 @@ class AdminController extends Controller
             ], 401);
         }
 
-        return response()->json(Admin::find($id)->with('school_levels')->get());
+        return response()->json(Admin::find($id));
     }
 
     /**
@@ -318,24 +318,24 @@ class AdminController extends Controller
     {
         if (!Admin::onlyTrashed()->find($id)) {
             return response()->json([
-                'message' => 'Cet parent d\'eleve non trouvé'
+                'message' => 'Cet administrateur non trouvé'
             ], 404);
         }
 
         if (request()->user()->cannot('restore', Admin::onlyTrashed()->find($id))) {
             return response()->json([
-                'message' => 'Vous n\'avez pas la permission de restaurer ce parent'
+                'message' => 'Vous n\'avez pas la permission de restaurer ce administrateur'
             ], 401);
         }
 
         if (!Admin::onlyTrashed()->find($id)->restore()) {
             return response()->json([
-                'message' => 'Cet parent d\'eleve non trouvé pour la restauration'
+                'message' => 'Cet administrateur non trouvé pour la restauration'
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Cet parent d\'eleve restaure avec succès'
+            'message' => 'Cet administrateur restaure avec succès'
         ]);
     }
 

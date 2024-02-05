@@ -25,6 +25,8 @@ class Admin extends Authenticatable
         return 'admin';
     }
 
+    protected $with = ['school_levels'];
+
     protected $fillable = [
         'profile_picture',
         'first_name',
@@ -57,7 +59,7 @@ class Admin extends Authenticatable
         ->withPivot('type')
         ->withTimestamps();
     }
-    
+
     // public function students()
     // {
     //     return $this->hasMany(Student::class);
@@ -74,7 +76,7 @@ class Admin extends Authenticatable
 
     public function examRecords()
     {
-        return $this->hasMany(ExamRecord::class);    
+        return $this->hasMany(ExamRecord::class);
     }
 
     public function reports()
