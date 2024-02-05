@@ -25,7 +25,7 @@ class Admin extends Authenticatable
         return 'admin';
     }
 
-    protected $with = ['school_levels'];
+    // protected $with = ['school_levels'];
 
     protected $fillable = [
         'profile_picture',

@@ -96,7 +96,7 @@ class AdminController extends Controller
 
             // loop for types
             for ($j = 0; $j < count($responsibility[$i]['types']); $j++) {
-                if (!SchoolLevel::find($responsibility[$i]['school_level_id']) || ! in_array($responsibility[$i]['types'][$j], ['financial', 'educational'])) {
+                if (!SchoolLevel::find($responsibility[$i]['school_level_id']) || !in_array($responsibility[$i]['types'][$j], ['financial', 'educational'])) {
                     return response()->json([
                         'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
                     ]);

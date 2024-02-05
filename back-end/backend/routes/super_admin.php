@@ -29,8 +29,8 @@ Route::middleware(['auth:super_admin'])->group(function () {
     Route::group(['prefix' => 'administrators'], function () {
         Route::get('/renew-password/{id}', [AdminController::class, 'renewPassword']);
         Route::get('/restore/{id}', [AdminController::class, 'restore']);
-        Route::post('/restore-all', [AdminController::class, 'restoreAll']);
-        Route::post('/trash', [AdminController::class, 'trash']);
+        Route::get('/restore-all', [AdminController::class, 'restoreAll']);
+        Route::get('/trash', [AdminController::class, 'trash']);
     });
 
     // Routes Teachers
