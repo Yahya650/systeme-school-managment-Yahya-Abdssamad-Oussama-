@@ -22,6 +22,7 @@ function App() {
         <Route path="*" element={<Page404 />} />
         {/* Guest Layout Routes */}
         <Route path="/" element={<GuestLayout />}>
+          <Route index element={'Guest'} /> 
           <Route path="admin/login" element={<LoginAdmin />} />
           <Route path="admin/forgot-password" element={<ForgotPasswordAdmin />} />
         </Route>

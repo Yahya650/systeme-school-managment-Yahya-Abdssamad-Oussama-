@@ -39,7 +39,7 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::get('/restore/{id}', [TeacherController::class, 'restore']);
         Route::post('/restore-all', [TeacherController::class, 'restoreAll']);
         Route::post('/trash', [TeacherController::class, 'trash']);
-        Route::post('/attach-teacher-to-classe/{idclasse}', [TeacherController::class, 'attachTeacherToClasse']); 
+        Route::post('/attach-teacher-to-classe/{idclasse}', [TeacherController::class, 'attachTeacherToClasse']);
     });
 });
 

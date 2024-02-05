@@ -58,7 +58,7 @@ class AdminController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('admins', 'phone_number')],
             'address' => 'nullable|string|max:255',
-            'responsibility' => 'required|array',
+            // 'responsibility' => 'required|array',
         ]);
 
 
@@ -83,20 +83,28 @@ class AdminController extends Controller
         $newAdmin->super_admin_id = $request->user('super_admin')->id;
         $newAdmin->save();
 
+        // default responsibility for remamber the structure of the how affect the responsibility
+        $responsibility = [
+            [
+                'types' => ['educational', 'financial'], // educational or financial
+                'school_level_id' => 1, // prescolaire or primaire or college or lycée
+            ]
+        ];
+
         // loop for school levels
-        for ($i = 0; $i < count($request->responsibility); $i++) {
+        for ($i = 0; $i < count($responsibility); $i++) {
 
             // loop for types
-            for ($j = 0; $j < count($request->responsibility[$i]['types']); $j++) {
-                if (!SchoolLevel::find($request->responsibility[$i]['school_level_id'] || !in_array($request->responsibility[$i]['types'][$j], ['financial', 'educational']))) {
+            for ($j = 0; $j < count($responsibility[$i]['types']); $j++) {
+                if (!SchoolLevel::find($responsibility[$i]['school_level_id']) || ! in_array($responsibility[$i]['types'][$j], ['financial', 'educational'])) {
                     return response()->json([
                         'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
                     ]);
                 }
                 $newRes = new Responsible();
                 $newRes->admin_id = $newAdmin->id;
-                $newRes->school_level_id = $request->responsibility[$i]['school_level_id'];
-                $newRes->type = $request->responsibility[$i]['types'][$j];
+                $newRes->school_level_id = $responsibility[$i]['school_level_id'];
+                $newRes->type = $responsibility[$i]['types'][$j];
                 $newRes->save();
             }
         }
