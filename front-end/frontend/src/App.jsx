@@ -20,6 +20,7 @@ import ForgotPasswordSuperAdmin from "./Pages/SuperAdmin/Auth/ForgotPasswordSupe
 import DashboardTeacher from "./Pages/Teacher/DashboardTeacher";
 import LoginTeacher from "./Pages/Teacher/Auth/LoginTeacher";
 import ForgotPasswordTeacher from "./Pages/Teacher/Auth/ForgotPasswordTeacher";
+import Page401 from "./Pages/errors/Page401";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
         <Route path="/" element={<GuestLayout />}>
           <Route index element={"Guest"} />
 
+          <Route path="error/401" element={<Page401 />} />
+          
           {/* routes admin if he is not logged */}
           <Route path="admin/login" element={<LoginAdmin />} />
           <Route

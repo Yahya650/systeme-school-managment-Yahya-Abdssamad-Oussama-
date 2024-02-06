@@ -42,7 +42,7 @@ const ContextApi = ({ children }) => {
     setLoadingContaxt(false);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getUserProfile();
   }, []);
 
@@ -75,7 +75,8 @@ const ContextApi = ({ children }) => {
       localStorage.removeItem("ud");
       navigate("/", { replace: true });
     } catch (error) {
-      console.log(error);
+      navigate("/error/401", { replace: true });
+      // console.log(error);
     }
   };
 
