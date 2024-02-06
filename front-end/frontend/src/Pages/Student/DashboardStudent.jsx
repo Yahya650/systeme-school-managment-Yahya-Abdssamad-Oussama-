@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import _footer from "../../Layouts/_footer";
 import { useContextApi } from "../../Context/ContextApi";
 
-const DashboardAdmin = () => {
+const DashboardStudent = () => {
   const { user } = useContextApi();
   return (
     <div className="page-wrapper">
@@ -22,7 +22,7 @@ const DashboardAdmin = () => {
                   <li className="breadcrumb-item">
                     <Link to="#">Accueil</Link>
                   </li>
-                  <li className="breadcrumb-item active">Administrateur</li>
+                  <li className="breadcrumb-item active">Etudiant</li>
                 </ul>
               </div>
             </div>
@@ -449,4 +449,4 @@ const DashboardAdmin = () => {
   );
 };
 
-export default DashboardAdmin;
+export default DashboardStudent;

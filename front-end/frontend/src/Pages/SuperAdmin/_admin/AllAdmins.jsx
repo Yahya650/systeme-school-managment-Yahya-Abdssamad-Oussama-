@@ -2,7 +2,7 @@ import React from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
 
-const AllStudents = () => {
+const AllAdmins = () => {
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">
@@ -172,4 +172,4 @@ const AllStudents = () => {
   );
 };
 
-export default AllStudents;
+export default AllAdmins;

@@ -206,7 +206,7 @@ const _header = () => {
                 />
               </div>
               <div className="user-text">
-                <h6>Soeng Souy</h6>
+                <h6>{user?.last_name + " " + user?.first_name}</h6>
                 <p className="text-muted mb-0">Administrator</p>
               </div>
             </div>

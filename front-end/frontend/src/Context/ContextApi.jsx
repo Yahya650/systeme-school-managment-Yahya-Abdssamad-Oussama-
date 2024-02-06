@@ -41,8 +41,9 @@ const ContextApi = ({ children }) => {
     }
     setLoadingContaxt(false);
   };
+
   useLayoutEffect(() => {
-    getUserProfile(location.pathname.split("/")[1]);
+    getUserProfile();
   }, []);
 
   const Login = async (guard, cin_email, password) => {
