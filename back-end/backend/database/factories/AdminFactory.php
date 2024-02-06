@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Classe;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -25,7 +26,7 @@ class AdminFactory extends Factory
             'gender' => $this->faker->randomElement(['male', 'female']),
             'email' => $this->faker->unique()->safeEmail,
             'cin' => $this->faker->unique()->regexify('[0-9]{8}'),
-            'password' => bcrypt('password'), // You may want to use a more secure password generation method
+            'password' => Hash::make('password'), // You may want to use a more secure password generation method
             'health_status' => $this->faker->optional()->word,
             'date_of_birth' => $this->faker->date,
             'blood_type' => $this->faker->optional()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
@@ -34,7 +35,6 @@ class AdminFactory extends Factory
             'last_login_date' => $this->faker->optional()->dateTimeThisMonth,
             'remember_token' => Str::random(10),
             'email_verified_at' => $this->faker->optional()->dateTimeThisDecade,
-            'deleted_at' => $this->faker->optional()->dateTimeThisMonth,
             'created_at' => $this->faker->dateTimeThisYear,
             'updated_at' => $this->faker->dateTimeThisYear,
         ];

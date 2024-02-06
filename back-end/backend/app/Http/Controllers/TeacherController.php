@@ -23,22 +23,15 @@ class TeacherController extends Controller
 
         if ($teacher = Teacher::where('email', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $teacher->password)) {
-                return response([
-                    'message' => 'Le mot de passe est incorrecte'
-                ], 422);
+                return response(['message' => 'Le mot de passe est incorrect', 'errors' => ['password' => ['Le mot de passe est incorrect']]], 422);
             }
         } else if ($teacher = Teacher::where('cin', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $teacher->password)) {
-                return response([
-                    'message' => 'Le mot de passe est incorrect'
-                ], 422);
+                return response(['message' => 'Le mot de passe est incorrect', 'errors' => ['password' => ['Le mot de passe est incorrect']]], 422);
             }
         } else {
-            return response([
-                'message' => 'Les identifiants fournis sont incorrects'
-            ], 422);
+            return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin_email' => 'Les identifiants fournis sont incorrects']], 422);
         }
-
         $teacher->last_login_date = date('Y-m-d H:i:s');
         $teacher->save();
 
@@ -98,10 +91,10 @@ class TeacherController extends Controller
 
     public function logout(Request $request)
     {
-            $request->user('teacher')->tokens()->delete();
-            return response([
-                'message' => 'Déconnexion réussie'
-            ], 200);
+        $request->user('teacher')->tokens()->delete();
+        return response([
+            'message' => 'Déconnexion réussie'
+        ], 200);
     }
 
 
@@ -257,7 +250,7 @@ class TeacherController extends Controller
             ], 401);
         }
 
-        $newPassword = Random::generate(8); 
+        $newPassword = Random::generate(8);
         $teacher = Teacher::find($id);
         $teacher->password = Hash::make($newPassword);
         $teacher->save();
@@ -267,7 +260,6 @@ class TeacherController extends Controller
             'new_password' => $newPassword,
             'message' => 'Mot de passe mis à jour avec succès'
         ]);
-        
     }
 
     public function restore($id)

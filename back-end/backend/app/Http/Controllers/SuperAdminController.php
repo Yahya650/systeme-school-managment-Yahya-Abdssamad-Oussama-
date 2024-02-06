@@ -19,20 +19,14 @@ class SuperAdminController extends Controller
         ]);
         if ($superAdmin = SuperAdmin::where('email', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $superAdmin->password)) {
-                return response([
-                    'message' => 'Le mot de passe est incorrecte'
-                ], 422);
+                return response(['message' => 'Le mot de passe est incorrect', 'errors' => ['password' => ['Le mot de passe est incorrect']]], 422);
             }
         } else if ($superAdmin = SuperAdmin::where('cin', $request->cin_email)->first()) {
             if (!Hash::check($request->password, $superAdmin->password)) {
-                return response([
-                    'message' => 'Le mot de passe est incorrect'
-                ], 422);
+                return response(['message' => 'Le mot de passe est incorrect', 'errors' => ['password' => ['Le mot de passe est incorrect']]], 422);
             }
         } else {
-            return response([
-                'message' => 'Les identifiants fournis sont incorrects'
-            ], 422);
+            return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin_email' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
         $superAdmin->last_login_date = date('Y-m-d H:i:s');
