@@ -30,8 +30,8 @@ return new class extends Migration
             $table->boolean('status_pay')->default(false);
             $table->rememberToken();
 
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->foreign('admin_id')->references('id')->on('admins')->nullOnDelete();
 
             $table->unsignedBigInteger('classe_id')->nullable();
             $table->foreign('classe_id')->references('id')->on('classes')->nullOnDelete();

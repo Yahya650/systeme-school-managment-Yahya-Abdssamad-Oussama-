@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
 import LoadingCircle from "../../../Components/LoadingCircle";
 
-const LoginStudent = () => {
+const LoginParent = () => {
   const [loading, setLoading] = useState(false);
   const { Login, errors } = useContextApi();
   const handelLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await Login("student", e.target.code_massar.value, e.target.password.value);
+    await Login("student-parent", e.target.cin.value, e.target.password.value);
     setLoading(false);
   };
 
@@ -35,20 +35,20 @@ const LoginStudent = () => {
                 <form onSubmit={handelLogin}>
                   <div className="form-group">
                     <label>
-                      Code Massar
+                      CIN
                       <span className="login-danger">*</span>
                     </label>
                     <input
                       className="form-control"
                       type="text"
-                      name="code_massar"
+                      name="cin"
                     />
                     <span className="profile-views">
                       <i className="fas fa-user-circle"></i>
                     </span>
                     {errors && (
                       <span className="text text-danger">
-                        {errors.code_massar}
+                        {errors.cin}
                       </span>
                     )}
                   </div>
@@ -68,7 +68,7 @@ const LoginStudent = () => {
                     )}
                   </div>
                   <div className="forgotpass">
-                    <Link to="/student/forgot-password">
+                    <Link to="/student-parent/forgot-password">
                       Mot de passe oublié ?
                     </Link>
                   </div>
@@ -91,4 +91,4 @@ const LoginStudent = () => {
   );
 };
 
-export default LoginStudent;
+export default LoginParent;

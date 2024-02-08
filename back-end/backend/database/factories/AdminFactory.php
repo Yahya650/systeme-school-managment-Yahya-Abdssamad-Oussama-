@@ -20,23 +20,23 @@ class AdminFactory extends Factory
     public function definition(): array
     {
         return [
-            'profile_picture' => $this->faker->imageUrl(),
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'gender' => $this->faker->randomElement(['male', 'female']),
-            'email' => $this->faker->unique()->safeEmail,
-            'cin' => $this->faker->unique()->regexify('[0-9]{8}'),
+            'profile_picture' => fake()->imageUrl(),
+            'first_name' => fake()->firstName,
+            'last_name' => fake()->lastName,
+            'gender' => fake()->randomElement(['male', 'female']),
+            'email' => fake()->unique()->safeEmail,
+            'cin' => fake()->unique()->regexify('[0-9]{8}'),
             'password' => Hash::make('password'), // You may want to use a more secure password generation method
-            'health_status' => $this->faker->optional()->word,
-            'date_of_birth' => $this->faker->date,
-            'blood_type' => $this->faker->optional()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-            'phone_number' => $this->faker->unique()->phoneNumber,
-            'address' => $this->faker->optional()->address,
-            'last_login_date' => $this->faker->optional()->dateTimeThisMonth,
+            'health_status' => fake()->optional()->word,
+            'date_of_birth' => fake()->date,
+            'blood_type' => fake()->optional()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+            'phone_number' => fake()->unique()->phoneNumber,
+            'address' => fake()->optional()->address,
+            'last_login_date' => fake()->optional()->dateTimeThisMonth,
             'remember_token' => Str::random(10),
-            'email_verified_at' => $this->faker->optional()->dateTimeThisDecade,
-            'created_at' => $this->faker->dateTimeThisYear,
-            'updated_at' => $this->faker->dateTimeThisYear,
+            'email_verified_at' => fake()->optional()->dateTimeThisDecade,
+            'created_at' => fake()->dateTimeThisYear,
+            'updated_at' => fake()->dateTimeThisYear,
         ];
     }
 }

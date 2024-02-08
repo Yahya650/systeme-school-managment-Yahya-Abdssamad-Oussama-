@@ -8,6 +8,7 @@ import React, {
 import { AxiosClient, BACKEND_URL } from "../Api/AxiosClient";
 import { useNavigate } from "react-router-dom";
 import LoadingCircleContext from "../Components/LoadingCircleContext";
+import cryptString from "./../security/cryptString";
 
 const Context = createContext({
   errors: null,
@@ -46,25 +47,64 @@ const ContextApi = ({ children }) => {
     getUserProfile();
   }, []);
 
-  const Login = async (guard, cin_email, password) => {
+  const Login = async (guard, username, password) => {
     try {
-      const { data } = await AxiosClient.post("/" + guard + "/login", {
-        cin_email,
-        password,
-      });
-      setErrors(null);
-      localStorage.setItem(
-        "ud",
-        JSON.stringify({ role: guard, _token: data.token })
-      );
-      await getUserProfile();
-      navigate("/" + guard + "/dashboard", { replace: true });
-    } catch (error) {
-      if (error.response.status === 422) {
-        setErrors({
-          cin_email: error.response.data.errors.cin_email,
-          password: error.response.data.errors.password,
+      if (guard != "student" && guard != "student-parent") {
+        const { data } = await AxiosClient.post("/" + guard + "/login", {
+          cin_email: username,
+          password,
         });
+        setErrors(null);
+        localStorage.setItem(
+          "ud",
+          JSON.stringify({ role: guard, _token: cryptString(data.token) })
+        );
+        await getUserProfile();
+        navigate("/" + guard + "/dashboard", { replace: true });
+      } else if (guard == "student") {
+        const { data } = await AxiosClient.post("/" + guard + "/login", {
+          code_massar: username,
+          password,
+        });
+        setErrors(null);
+        localStorage.setItem(
+          "ud",
+          JSON.stringify({ role: guard, _token: cryptString(data.token) })
+        );
+        await getUserProfile();
+        navigate("/" + guard + "/dashboard", { replace: true });
+      } else if (guard == "student-parent") {
+        const { data } = await AxiosClient.post("/" + guard + "/login", {
+          cin: username,
+          password,
+        });
+        setErrors(null);
+        localStorage.setItem(
+          "ud",
+          JSON.stringify({ role: guard, _token: cryptString(data.token) })
+        );
+        await getUserProfile();
+        navigate("/" + guard + "/dashboard", { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 422) {
+        if (guard != "student" && guard != "student-parent") {
+          setErrors({
+            cin_email: error.response.data.errors.cin_email,
+            password: error.response.data.errors.password,
+          });
+        } else if (guard == "student") {
+          setErrors({
+            code_massar: error.response.data.errors.code_massar,
+            password: error.response.data.errors.password,
+          });
+        } else if (guard == "student-parent") {
+          setErrors({
+            cin: error.response.data.errors.cin,
+            password: error.response.data.errors.password,
+          });
+        }
       }
     }
   };

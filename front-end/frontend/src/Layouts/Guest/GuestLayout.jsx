@@ -21,6 +21,16 @@ const GuestLayout = () => {
       JSON.parse(localStorage.getItem("ud")).role === "teacher"
     ) {
       navigate("/teacher/dashboard");
+    } else if (
+      localStorage.getItem("ud") &&
+      JSON.parse(localStorage.getItem("ud")).role === "student"
+    ) {
+      navigate("/student/dashboard");
+    } else if (
+      localStorage.getItem("ud") &&
+      JSON.parse(localStorage.getItem("ud")).role === "student-parent"
+    ) {
+      navigate("/student-parent/dashboard");
     }
     document.title = "GSB - Guest";
   }, []);

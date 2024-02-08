@@ -12,7 +12,7 @@ Route::middleware(['auth:student_parent'])->group(function () {
 
     // Routes Student Parent
     Route::get('/profile', function (Request $request) {
-        return $request->user('student_parent')->with('students', $request->user('student_parent')->students);
+        return $request->user('student_parent');
     });
     Route::get('/logout', [StudentParentController::class, 'logout']);
     Route::put('/change-password', [StudentParentController::class, 'changePassword']);

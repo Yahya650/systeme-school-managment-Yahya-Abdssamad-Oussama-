@@ -21,19 +21,36 @@ import DashboardTeacher from "./Pages/Teacher/DashboardTeacher";
 import LoginTeacher from "./Pages/Teacher/Auth/LoginTeacher";
 import ForgotPasswordTeacher from "./Pages/Teacher/Auth/ForgotPasswordTeacher";
 import Page401 from "./Pages/errors/Page401";
+import DashboardStudent from "./Pages/Student/DashboardStudent";
+import LoginStudent from "./Pages/Student/Auth/LoginStudent";
+import ForgotPasswordStudent from "./Pages/Student/Auth/ForgotPasswordStudent";
+import ForgotPasswordParent from "./Pages/ParentStudent/Auth/ForgotPasswordParent";
+import DashboardParent from "./Pages/ParentStudent/DashboardParent";
+import LoginParent from "./Pages/ParentStudent/Auth/LoginParent";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="*" element={<Page404 />} />
-
         {/* Guest Layout Routes */}
         <Route path="/" element={<GuestLayout />}>
-          <Route index element={"Guest"} />
+          <Route
+            index
+            element={
+              <div
+                style={{ height: "100vh" }}
+                className="w-100 d-flex justify-content-center align-items-center"
+              >
+                <h1>Guest</h1>
+              </div>
+            }
+          />
 
+          {/* routes error */}
+          <Route path="*" element={<Page404 />} />
           <Route path="error/401" element={<Page401 />} />
-          
+          <Route path="error/404" element={<Page404 />} />
+
           {/* routes admin if he is not logged */}
           <Route path="admin/login" element={<LoginAdmin />} />
           <Route
@@ -53,6 +70,20 @@ function App() {
           <Route
             path="teacher/forgot-password"
             element={<ForgotPasswordTeacher />}
+          />
+
+          {/* routes Student if he is not logged */}
+          <Route path="student/login" element={<LoginStudent />} />
+          <Route
+            path="student/forgot-password"
+            element={<ForgotPasswordStudent />}
+          />
+
+          {/* routes Student if he is not logged */}
+          <Route path="student-parent/login" element={<LoginParent />} />
+          <Route
+            path="student-parent/forgot-password"
+            element={<ForgotPasswordParent />}
           />
         </Route>
 
@@ -85,10 +116,21 @@ function App() {
         </Route>
 
         {/* ParentStudent Layout Routes */}
-        <Route path="/parent-student" element={<ParentStudentLayout />}></Route>
+        <Route path="/student-parent" element={<ParentStudentLayout />}>
+          <Route
+            index
+            element={<Navigate to="/student-parent/dashboard" replace />}
+          />
+
+          <Route path="dashboard" element={<DashboardParent />} />
+        </Route>
 
         {/* Student Layout Routes */}
-        <Route path="/student" element={<StudentLayout />}></Route>
+        <Route path="/student" element={<StudentLayout />}>
+          <Route index element={<Navigate to="/student/dashboard" replace />} />
+
+          <Route path="dashboard" element={<DashboardStudent />} />
+        </Route>
       </Routes>
     </>
   );

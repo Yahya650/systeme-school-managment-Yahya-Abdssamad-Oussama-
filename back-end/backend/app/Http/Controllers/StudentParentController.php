@@ -20,9 +20,7 @@ class StudentParentController extends Controller
 
         $studentParent = StudentParent::where('cin', $request->cin)->first();
         if (!$studentParent || !Hash::check($request->password, $studentParent->password)) {
-            return response([
-                'message' => 'Les identifiants fournis sont incorrects'
-            ], 422);
+            return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
         $studentParent->last_login_date = date('Y-m-d H:i:s');
@@ -30,7 +28,7 @@ class StudentParentController extends Controller
 
         return response([
             'token' => $studentParent->createToken('StudentParent', ['student_parent'])->plainTextToken
-        ], 200);
+        ]);
     }
 
     public function store(Request $request)
@@ -327,4 +325,3 @@ class StudentParentController extends Controller
 
 
 }
-

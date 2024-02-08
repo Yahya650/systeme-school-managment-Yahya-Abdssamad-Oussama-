@@ -1,6 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useContextApi } from "../../Context/ContextApi";
 
 const _header = () => {
+  const { user, setLoadingContaxt, logout } = useContextApi();
+
   return (
     <header className="header">
       <div className="header-left">

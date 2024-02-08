@@ -20,9 +20,7 @@ class StudentController extends Controller
 
         $student = Student::where('code_massar', $request->code_massar)->first();
         if (!$student || !Hash::check($request->password, $student->password)) {
-            return response([
-                'message' => 'Les identifiants fournis sont incorrects'
-            ], 422);
+            return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['code_massar' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
         $student->last_login_date = date('Y-m-d H:i:s');
@@ -30,7 +28,7 @@ class StudentController extends Controller
 
         return response([
             'token' => $student->createToken('Student', ['student'])->plainTextToken
-        ], 200);
+        ]);
     }
 
     public function store(Request $request)
@@ -47,7 +45,7 @@ class StudentController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required','size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('students', 'phone_number')],
+            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
             'student_parent_id' => 'nullable|exists:student_parents,id',
             'classe_id' => 'required|exists:classes,id',
@@ -298,7 +296,7 @@ class StudentController extends Controller
             'message' => 'Cet etudiant restaure avec succès'
         ]);
     }
-    
+
 
     public function restoreAll()
     {
@@ -329,5 +327,4 @@ class StudentController extends Controller
         $student = Student::find($id);
         return response()->json($student->with('payments')->with('examRecords.exam')->with('reports')->with('absences.course.teacher')->with('classe.exercises.teachers.courses.time_table')->with('payments')->get());
     }
-
 }

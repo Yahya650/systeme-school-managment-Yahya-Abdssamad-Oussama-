@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const ForgotPasswordStudent = () => {
+const ForgotPasswordParent = () => {
   return (
     <div className="main-wrapper login-body">
       <div className="login-wrapper">
@@ -36,7 +36,7 @@ const ForgotPasswordStudent = () => {
                   </div>
                   <div className="form-group mb-0">
                     <Link
-                      to="/student/login"
+                      to="/student-parent/login"
                       className="btn btn-primary primary-reset btn-block"
                     >
                       Connexion
@@ -52,4 +52,4 @@ const ForgotPasswordStudent = () => {
   );
 };
 
-export default ForgotPasswordStudent;
+export default ForgotPasswordParent;

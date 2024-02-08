@@ -11,7 +11,7 @@ const _sidebar = () => {
               <span>Main Menu</span>
             </li>
             <li className="active">
-              <Link to="/student/dashboard">
+              <Link to="/super-admin/dashboard">
                 <i className="feather-grid"></i> <span> Dashboard</span>
               </Link>
             </li>

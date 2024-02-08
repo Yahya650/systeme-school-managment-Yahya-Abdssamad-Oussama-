@@ -28,8 +28,8 @@ return new class extends Migration
             $table->date('last_login_date')->nullable();
             $table->rememberToken();
 
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->foreign('admin_id')->references('id')->on('admins')->nullOnDelete();
 
             $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();

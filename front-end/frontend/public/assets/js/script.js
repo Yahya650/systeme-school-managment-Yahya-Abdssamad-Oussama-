@@ -509,3 +509,16 @@ function toggleFullscreen() {
         }
     }
 }
+
+function togglePassword() {
+    var input = $(".pass-input");
+    if (input.attr("type") == "password") {
+        input.attr("type", "text");
+    } else {
+        input.attr("type", "password");
+    }
+}
+
+$('#toggle-password').on('click', function () {
+    togglePassword();
+})
