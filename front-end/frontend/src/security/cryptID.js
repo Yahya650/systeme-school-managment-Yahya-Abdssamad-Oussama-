@@ -1,6 +1,16 @@
-import { Buffer } from 'buffer'
+import Hashids from 'hashids';
+
+// Initialize Hashids instance
+const hashids = new Hashids('main', 10); // Adjust the salt and minimum length as needed
+
+// Function to encrypt the ID
 function cryptID(id) {
-    return Buffer.from(id).toString('base64')
+    try {
+        return hashids.encode(id.toString());
+    } catch (error) {
+        console.error('Encryption error:', error);
+        return null;
+    }
 }
 
-export default cryptID
+export default cryptID;

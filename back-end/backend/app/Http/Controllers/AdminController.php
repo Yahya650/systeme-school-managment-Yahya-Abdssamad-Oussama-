@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use Nette\Utils\Random;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
 use App\Models\Responsible;
 use App\Models\SchoolLevel;
+use Illuminate\Http\Request;
+use App\Helpers\HashidsHelper;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -53,7 +54,7 @@ class AdminController extends Controller
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => 'required|email|unique:admins,email',
             'cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:admins,cin',
-            'health_status' => 'nullable|string|max:255',
+            'health_status' => 'nullable|string|max:255|in:good,bad,middle',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('admins', 'phone_number')],
@@ -83,31 +84,31 @@ class AdminController extends Controller
         $newAdmin->super_admin_id = $request->user('super_admin')->id;
         $newAdmin->save();
 
-        // default responsibility for remamber the structure of the how affect the responsibility
-        $responsibility = [
-            [
-                'types' => ['educational', 'financial'], // educational or financial
-                'school_level_id' => 1, // prescolaire or primaire or college or lycée
-            ]
-        ];
+        // // default responsibility for remamber the structure of the how affect the responsibility
+        // $responsibility = [
+        //     [
+        //         'types' => ['educational', 'financial'], // educational or financial
+        //         'school_level_id' => 1, // prescolaire or primaire or college or lycée
+        //     ]
+        // ];
 
-        // loop for school levels
-        for ($i = 0; $i < count($responsibility); $i++) {
+        // // loop for school levels
+        // for ($i = 0; $i < count($responsibility); $i++) {
 
-            // loop for types
-            for ($j = 0; $j < count($responsibility[$i]['types']); $j++) {
-                if (!SchoolLevel::find($responsibility[$i]['school_level_id']) || !in_array($responsibility[$i]['types'][$j], ['financial', 'educational'])) {
-                    return response()->json([
-                        'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
-                    ]);
-                }
-                $newRes = new Responsible();
-                $newRes->admin_id = $newAdmin->id;
-                $newRes->school_level_id = $responsibility[$i]['school_level_id'];
-                $newRes->type = $responsibility[$i]['types'][$j];
-                $newRes->save();
-            }
-        }
+        //     // loop for types
+        //     for ($j = 0; $j < count($responsibility[$i]['types']); $j++) {
+        //         if (!SchoolLevel::find($responsibility[$i]['school_level_id']) || !in_array($responsibility[$i]['types'][$j], ['financial', 'educational'])) {
+        //             return response()->json([
+        //                 'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
+        //             ]);
+        //         }
+        //         $newRes = new Responsible();
+        //         $newRes->admin_id = $newAdmin->id;
+        //         $newRes->school_level_id = $responsibility[$i]['school_level_id'];
+        //         $newRes->type = $responsibility[$i]['types'][$j];
+        //         $newRes->save();
+        //     }
+        // }
 
         return response([
             'cin' => $request->cin,
@@ -179,12 +180,12 @@ class AdminController extends Controller
             'gender' => ['required', Rule::in(['male', 'female'])],
             'email' => ['required', 'email', Rule::unique('admins', 'email')->ignore($id)],
             'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('admins', 'cin')->ignore($id)],
-            'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'health_status' => 'nullable|string|max:255|in:good,bad,middle',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required', 'string', 'size:10', Rule::unique('admins', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
-            'responsibility' => 'array',
+            // 'responsibility' => 'array',
         ]);
 
         $admin = Admin::find($id);
@@ -208,22 +209,22 @@ class AdminController extends Controller
 
         $admin->save();
 
-        if ($res = Responsible::where('admin_id', $admin->id)) {
-            // loop for school levels
-            for ($i = 0; $i < $request->responsibility->count(); $i++) {
-                // loop for types
-                for ($j = 0; $j < $request->responsibility[$i]['types']->count(); $j++) {
-                    if (!SchoolLevel::find($request->responsibility[$i]['school_level_id'] || !in_array($request->responsibility[$i]['types'][$j], ['financial', 'educational']))) {
-                        return response()->json([
-                            'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
-                        ]);
-                    }
-                    $res->school_level_id = $request->responsibility[$i]['school_level_id'];
-                    $res->type = $request->responsibility[$i]['types'][$j];
-                    $res->save();
-                }
-            }
-        }
+        // if ($res = Responsible::where('admin_id', $admin->id)) {
+        //     // loop for school levels
+        //     for ($i = 0; $i < $request->responsibility->count(); $i++) {
+        //         // loop for types
+        //         for ($j = 0; $j < $request->responsibility[$i]['types']->count(); $j++) {
+        //             if (!SchoolLevel::find($request->responsibility[$i]['school_level_id'] || !in_array($request->responsibility[$i]['types'][$j], ['financial', 'educational']))) {
+        //                 return response()->json([
+        //                     'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
+        //                 ]);
+        //             }
+        //             $res->school_level_id = $request->responsibility[$i]['school_level_id'];
+        //             $res->type = $request->responsibility[$i]['types'][$j];
+        //             $res->save();
+        //         }
+        //     }
+        // }
 
         return response([
             'message' => "Administrateur mis à jour avec succès"

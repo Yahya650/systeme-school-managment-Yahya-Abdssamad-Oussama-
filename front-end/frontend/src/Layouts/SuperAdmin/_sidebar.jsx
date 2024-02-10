@@ -15,33 +15,20 @@ const _sidebar = () => {
                 <i className="feather-grid"></i> <span> Dashboard</span>
               </Link>
             </li>
-            {/* <li className="submenu">
+            <li className="submenu">
               <Link to={"#"} className="subdrop">
                 <i className="fas fa-graduation-cap"></i>
-                <span> Étudiants</span>
+                <span> Administrateurs</span>
                 <span className="menu-arrow"></span>
               </Link>
               <ul style={{ display: "block" }}>
                 <li>
                   <NavLink to="/super-admin/all-admins">
-                    Tous les Admins
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/super-admin/show-admin">Voir un Admin</NavLink>
-                </li>
-                <li>
-                  <NavLink to="/super-admin/create-admin">
-                    Ajouter un Admin
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/super-admin/update-admin">
-                    Modifier un Admin
+                    Tous les administrateurs
                   </NavLink>
                 </li>
               </ul>
-            </li> */}
+            </li>
 
             {/* <li className="submenu">
               <NavLink to="#">

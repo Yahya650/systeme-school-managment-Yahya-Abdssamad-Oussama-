@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
-import { Link } from "react-router-dom";
+import { Link, json, useParams } from "react-router-dom";
+import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
+import LoadingCircleContext from "../../../Components/LoadingCircleContext";
+import { AxiosClient } from "../../../Api/AxiosClient";
+import { useContextApi } from "../../../Context/ContextApi";
+import cryptID from "./../../../security/cryptID";
+import dcryptID from "./../../../security/dcryptID";
 
 const AllAdmins = () => {
+  const [loading, setLoading] = useState(true);
+  const { admins } = useContextApi();
+  const { getAdmins } = useCrudAdmins();
+
+  const fetchData = async () => {
+    await getAdmins();
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">
@@ -90,76 +109,92 @@ const AllAdmins = () => {
                 </div>
 
                 <div className="table-responsive">
-                  <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                    <thead className="student-thread">
-                      <tr>
-                        <th>
-                          <div className="form-check check-tables">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="something"
-                            />
-                          </div>
-                        </th>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Classe</th>
-                        <th>DOB</th>
-                        <th>Nom du Parent</th>
-                        <th>Numéro de téléphone</th>
-                        <th>Adresse</th>
-                        <th className="text-end">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div className="form-check check-tables">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              value="something"
-                            />
-                          </div>
-                        </td>
-                        <td>PRE2209</td>
-                        <td>
-                          <h2 className="table-avatar">
-                            <Link
-                              to="student-details.html"
-                              className="avatar avatar-sm me-2"
-                            >
-                              <img
-                                className="avatar-img rounded-circle"
-                                src="/assets/img/profiles/avatar-01.jpg"
-                                alt="Image de l'utilisateur"
-                              />
-                            </Link>
-                            <Link to="student-details.html">Aaliyah</Link>
-                          </h2>
-                        </td>
-                        <td>10 A</td>
-                        <td>2 Fév 2002</td>
-                        <td>Jeffrey Wong</td>
-                        <td>097 3584 5870</td>
-                        <td>911 Deer Ridge Drive, USA</td>
-                        <td className="text-end">
-                          <div className="actions ">
-                            <Link
-                              to=""
-                              className="btn btn-sm bg-success-light me-2 "
-                            >
-                              <i className="feather-eye"></i>
-                            </Link>
-                            <Link to="" className="btn btn-sm bg-danger-light">
-                              <i className="feather-edit"></i>
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {!loading ? (
+                    admins.length > 0 ? (
+                      <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                        <thead className="student-thread">
+                          <tr>
+                            <th>CIN</th>
+                            <th>Profile</th>
+                            <th>Nom et Prenom</th>
+                            <th>Gender</th>
+                            <th>date de dernière connexion</th>
+                            <th>Telephone</th>
+                            <th>date de naissance</th>
+                            <th className="text-end">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {admins.map((admin, index) => (
+                            <tr key={index}>
+                              <td>{admin.cin}</td>
+                              <td>
+                                <h2 className="table-avatar">
+                                  <Link
+                                    to="#"
+                                    className="avatar avatar-sm me-2"
+                                  >
+                                    <img
+                                      className="avatar-img rounded-circle"
+                                      src={
+                                        admin.profile
+                                          ? admin.profile
+                                          : admin.gender === "female"
+                                          ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                                          : "/assets/img/default-profile-picture-grey-male-icon.png"
+                                      }
+                                      alt="Image de l'utilisateur"
+                                    />
+                                  </Link>
+                                </h2>
+                              </td>
+                              <td>
+                                {admin.last_name + " " + admin.first_name}
+                              </td>
+                              <td>{admin.gender}</td>
+                              <td>
+                                {admin.last_login_date
+                                  ? admin.last_login_date
+                                  : "Pas de connexion"}
+                              </td>
+                              <td>{admin.phone_number}</td>
+                              <td>{admin.date_of_birth}</td>
+                              <td className="text-end">
+                                <div className="actions ">
+                                  <Link
+                                    to={
+                                      "/super-admin/show-admin/" +
+                                      cryptID(admin.id)
+                                    }
+                                    className="btn btn-sm bg-success-light me-2 "
+                                  >
+                                    <i className="feather-eye"></i>
+                                  </Link>
+                                  <Link
+                                    to={
+                                      "/super-admin/update-admin/" +
+                                      cryptID(admin.id)
+                                    }
+                                    className="btn btn-sm bg-danger-light"
+                                  >
+                                    <i className="feather-edit"></i>
+                                  </Link>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <div className="alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
+                      </div>
+                    )
+                  ) : (
+                    <div className="w-100 d-flex justify-content-center align-items-center my-5">
+                      <LoadingCircleContext />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

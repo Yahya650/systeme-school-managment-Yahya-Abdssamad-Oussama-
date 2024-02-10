@@ -35,6 +35,7 @@ class AdminFactory extends Factory
             'last_login_date' => fake()->optional()->dateTimeThisMonth,
             'remember_token' => Str::random(10),
             'email_verified_at' => fake()->optional()->dateTimeThisDecade,
+            'super_admin_id' => 1,
             'created_at' => fake()->dateTimeThisYear,
             'updated_at' => fake()->dateTimeThisYear,
         ];

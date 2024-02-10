@@ -12,11 +12,15 @@
   "dependencies": {
     "axios": "^1.6.6",
     "bootstrap": "^5.3.2",
+    "crypto-js": "^4.2.0",
     "fontawesome": "^5.6.3",
+    "hashids": "^2.3.0",
     "jquery": "^3.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.3"
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.21.3",
+    "sweetalert2": "^11.10.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

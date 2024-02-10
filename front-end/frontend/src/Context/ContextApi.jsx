@@ -1,14 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
-import { AxiosClient, BACKEND_URL } from "../Api/AxiosClient";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { AxiosClient } from "../Api/AxiosClient";
 import { useNavigate } from "react-router-dom";
 import LoadingCircleContext from "../Components/LoadingCircleContext";
-import cryptString from "./../security/cryptString";
+import cryptString from "../security/cryptString";
+import Swal from "sweetalert2";
+import { Toaster } from "react-hot-toast";
+// import "./styles.css";
 
 const Context = createContext({
   errors: null,
@@ -19,13 +16,60 @@ const Context = createContext({
   logout: () => {},
   getUserProfile: () => {},
   setLoadingContaxt: () => {},
+  students: null,
+  setStudents: () => {},
+  admins: null,
+  setAdmins: () => {},
+  admin: null,
+  setAdmin: () => {},
+  teachers: null,
+  setTeachers: () => {},
+  parents: null,
+  setParnets: () => {},
+  calculateAge: () => {},
+  Toast: null,
 });
 
-const ContextApi = ({ children }) => {
+export const ContextApi = ({ children }) => {
   const [errors, setErrors] = useState(null);
   const [loadingContaxt, setLoadingContaxt] = useState(false);
   const [user, setUser] = useState(null);
+  const [students, setStudents] = useState(null);
+  const [admins, setAdmins] = useState(null);
+  const [admin, setAdmin] = useState(null);
+  const [teachers, setTeachers] = useState(null);
+  const [parents, setParnets] = useState(null);
   const navigate = useNavigate();
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    iconColor: "white",
+    customClass: {
+      popup: "colored-toast",
+    },
+    showConfirmButton: false,
+    timer: 5000,
+    timerProgressBar: true,
+  });
+
+  // Function to calculate age based on date of birth
+  const calculateAge = (dateOfBirth) => {
+    const dob = new Date(dateOfBirth);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDifference = today.getMonth() - dob.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < dob.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  };
 
   const getUserProfile = async () => {
     if (localStorage.getItem("ud")) {
@@ -131,9 +175,33 @@ const ContextApi = ({ children }) => {
         setUser,
         getUserProfile,
         setLoadingContaxt,
+        setAdmins,
+        setTeachers,
+        setParnets,
+        setStudents,
+        setAdmin,
+        students,
+        admin,
+        admins,
+        teachers,
+        parents,
+        calculateAge,
+        Toast,
       }}
     >
-      {loadingContaxt ? <LoadingCircleContext /> : children}
+      {loadingContaxt ? (
+        <div
+          className="w-100 d-flex justify-content-center align-items-center"
+          style={{ height: "100vh" }}
+        >
+          <LoadingCircleContext />
+        </div>
+      ) : (
+        <>
+          {children}
+          <Toaster />
+        </>
+      )}
     </Context.Provider>
   );
 };

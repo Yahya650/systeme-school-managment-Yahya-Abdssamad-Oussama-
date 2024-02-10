@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use Database\Factories\AdminFactory;
+use Database\Factories\StudentFactory;
+use Database\Factories\TeacherFactory;
 use Illuminate\Database\Seeder;
 use Database\Seeders\CourseSeeder;
 use Database\Seeders\ModuleSeeder;
@@ -34,7 +37,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             CourseSeeder::class,
             ModuleSeeder::class,
-            SemesterSeeder::class,
+            SemesterSeeder::class
         ]);
     }
 }

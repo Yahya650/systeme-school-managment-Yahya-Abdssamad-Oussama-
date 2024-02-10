@@ -52,6 +52,8 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $with = ['school_levels'];
+
     public function school_levels()
     {
         return $this->belongsToMany(SchoolLevel::class, 'responsibles')

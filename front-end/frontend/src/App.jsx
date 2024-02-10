@@ -27,11 +27,18 @@ import ForgotPasswordStudent from "./Pages/Student/Auth/ForgotPasswordStudent";
 import ForgotPasswordParent from "./Pages/ParentStudent/Auth/ForgotPasswordParent";
 import DashboardParent from "./Pages/ParentStudent/DashboardParent";
 import LoginParent from "./Pages/ParentStudent/Auth/LoginParent";
+import AllAdmins from "./Pages/SuperAdmin/_admin/AllAdmins";
+import ShowAdmin from "./Pages/SuperAdmin/_admin/ShowAdmin";
+import UpdateAdmin from "./Pages/SuperAdmin/_admin/UpdateAdmin";
+import CreateAdmin from "./Pages/SuperAdmin/_admin/CreateAdmin";
 
 function App() {
   return (
     <>
       <Routes>
+        <Route path="*" element={<Page404 />} />
+        <Route path="error/404" element={<Page404 />} />
+
         {/* Guest Layout Routes */}
         <Route path="/" element={<GuestLayout />}>
           <Route
@@ -47,9 +54,7 @@ function App() {
           />
 
           {/* routes error */}
-          <Route path="*" element={<Page404 />} />
           <Route path="error/401" element={<Page401 />} />
-          <Route path="error/404" element={<Page404 />} />
 
           {/* routes admin if he is not logged */}
           <Route path="admin/login" element={<LoginAdmin />} />
@@ -94,6 +99,11 @@ function App() {
             element={<Navigate to="/super-admin/dashboard" replace />}
           />
           <Route path="dashboard" element={<DashboardSuperAdmin />} />
+
+          <Route path="create-admin" element={<CreateAdmin />} />
+          <Route path="update-admin/:id" element={<UpdateAdmin />} />
+          <Route path="show-admin/:id" element={<ShowAdmin />} />
+          <Route path="all-admins" element={<AllAdmins />} />
         </Route>
 
         {/* Admin Layout Routes */}
