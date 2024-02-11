@@ -30,28 +30,21 @@ const _sidebar = () => {
               </ul>
             </li>
 
-            {/* <li className="submenu">
-              <NavLink to="#">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span> Parents</span>
-                <span class="menu-arrow"></span>
+            <li className="submenu">
+              <NavLink to="#" className="subdrop">
+                <i className="fas fa-chalkboard-teacher"></i>
+                <span> Enseignants</span>
+                <span className="menu-arrow"></span>
               </NavLink>
-              <ul>
+              <ul style={{ display: "block" }}>
                 <li>
-                  <NavLink to="#">liste Parente</NavLink>
-                </li>
-                <li>
-                  <NavLink to="#">vue Parente</NavLink>
-                </li>
-                <li>
-                  <NavLink to="#">Ajouter un Parente</NavLink>
-                </li>
-                <li>
-                  <NavLink to="#">Modifier un Parente</NavLink>
+                  <NavLink to="/super-admin/all-teachers">
+                    liste des enseignants
+                  </NavLink>
                 </li>
               </ul>
             </li>
-            <li class="submenu">
+            {/* <li class="submenu">
               <NavLink to="#">
                 <i className="fas fa-building"></i> <span> Departments</span>
                 <span className="menu-arrow"></span>

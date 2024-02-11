@@ -31,6 +31,10 @@ import AllAdmins from "./Pages/SuperAdmin/_admin/AllAdmins";
 import ShowAdmin from "./Pages/SuperAdmin/_admin/ShowAdmin";
 import UpdateAdmin from "./Pages/SuperAdmin/_admin/UpdateAdmin";
 import CreateAdmin from "./Pages/SuperAdmin/_admin/CreateAdmin";
+import CreateTeacher from "./Pages/SuperAdmin/_teacher/CreateTeacher";
+import UpdateTeacher from "./Pages/SuperAdmin/_teacher/UpdateTeacher";
+import ShowTeacher from "./Pages/SuperAdmin/_teacher/ShowTeacher";
+import AllTeachers from "./Pages/SuperAdmin/_teacher/AllTeachers";
 
 function App() {
   return (
@@ -100,10 +104,17 @@ function App() {
           />
           <Route path="dashboard" element={<DashboardSuperAdmin />} />
 
+          {/* CRUD Admin */}
           <Route path="create-admin" element={<CreateAdmin />} />
           <Route path="update-admin/:id" element={<UpdateAdmin />} />
           <Route path="show-admin/:id" element={<ShowAdmin />} />
           <Route path="all-admins" element={<AllAdmins />} />
+
+          {/* CRUD Teacher */}
+          <Route path="create-teacher" element={<CreateTeacher />} />
+          <Route path="update-teacher/:id" element={<UpdateTeacher />} />
+          <Route path="show-teacher/:id" element={<ShowTeacher />} />
+          <Route path="all-teachers" element={<AllTeachers />} />
         </Route>
 
         {/* Admin Layout Routes */}

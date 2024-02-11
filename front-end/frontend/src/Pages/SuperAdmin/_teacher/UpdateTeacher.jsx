@@ -5,19 +5,20 @@ import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import dcryptID from "../../../security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
+import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 
-const UpdateAdmin = () => {
-  const { admin, errors, navigateTo, setErrors } = useContextApi();
+const UpdateTeacher = () => {
+  const { teacher, errors, navigateTo, setErrors } = useContextApi();
   const [loading, setLoading] = useState(true);
   const [loadingForm, setloadingForm] = useState(false);
-  const { getAdmin, updateAdmin } = useCrudAdmins();
+  const { getTeacher, updateTeacher } = useCrudTeachers();
   const { id } = useParams();
 
   const fetchData = async () => {
     if (dcryptID(id) === null) {
       navigateTo("/error/404");
     }
-    await getAdmin(dcryptID(id));
+    await getTeacher(dcryptID(id));
     setLoading(false);
   };
 
@@ -29,7 +30,7 @@ const UpdateAdmin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setloadingForm(true);
-    updateAdmin(dcryptID(id), {
+    updateTeacher(dcryptID(id), {
       cin: e.target.cin.value.toUpperCase(),
       email: e.target.email.value,
       first_name: e.target.first_name.value,
@@ -92,7 +93,7 @@ const UpdateAdmin = () => {
                             name="first_name"
                             className="form-control"
                             type="text"
-                            defaultValue={admin.first_name}
+                            defaultValue={teacher.first_name}
                           />
                           <span className="text-danger">
                             {errors?.first_name}
@@ -109,7 +110,7 @@ const UpdateAdmin = () => {
                             name="last_name"
                             className="form-control"
                             type="text"
-                            defaultValue={admin.last_name}
+                            defaultValue={teacher.last_name}
                           />
                           <span className="text-danger">
                             {errors?.last_name}
@@ -125,7 +126,7 @@ const UpdateAdmin = () => {
                             name="cin"
                             className="form-control"
                             type="text"
-                            defaultValue={admin.cin}
+                            defaultValue={teacher.cin}
                           />
                           <span className="text-danger">{errors?.cin}</span>
                         </div>
@@ -139,7 +140,7 @@ const UpdateAdmin = () => {
                             name="email"
                             className="form-control"
                             type="text"
-                            defaultValue={admin.email}
+                            defaultValue={teacher.email}
                           />
                           <span className="text-danger">{errors?.email}</span>
                         </div>
@@ -151,7 +152,7 @@ const UpdateAdmin = () => {
                           </label>
                           <select
                             className="form-control select"
-                            defaultValue={admin.gender}
+                            defaultValue={teacher.gender}
                             name="gender"
                           >
                             <option value={""}>Sélectionnez le genre</option>
@@ -172,7 +173,7 @@ const UpdateAdmin = () => {
                             className="form-control datetimepicker"
                             type="date"
                             placeholder="JJ-MM-AAAA"
-                            defaultValue={admin.date_of_birth}
+                            defaultValue={teacher.date_of_birth}
                           />
                           <span className="text-danger">
                             {errors?.date_of_birth}
@@ -187,7 +188,7 @@ const UpdateAdmin = () => {
                             className="form-control"
                             placeholder="Veuillez entrer votre adresse"
                             type="text"
-                            defaultValue={admin.address}
+                            defaultValue={teacher.address}
                           />
                           <span className="text-danger">{errors?.address}</span>
                         </div>
@@ -196,35 +197,59 @@ const UpdateAdmin = () => {
                         <div className="form-group local-forms">
                           <label>Blood Type</label>
                           <select
-                            defaultValue={admin.blood_type}
+                            defaultValue={teacher.blood_type}
                             className="form-control select"
                             name="blood_type"
                           >
                             <option value={""}>
                               Veuillez sélectionner un blood type
                             </option>
-                            <option value="A+" defaultValue={admin.blood_type}>
+                            <option
+                              value="A+"
+                              defaultValue={teacher.blood_type}
+                            >
                               A+
                             </option>
-                            <option value="A-" defaultValue={admin.blood_type}>
+                            <option
+                              value="A-"
+                              defaultValue={teacher.blood_type}
+                            >
                               A-
                             </option>
-                            <option value="B+" defaultValue={admin.blood_type}>
+                            <option
+                              value="B+"
+                              defaultValue={teacher.blood_type}
+                            >
                               B+
                             </option>
-                            <option value="B-" defaultValue={admin.blood_type}>
+                            <option
+                              value="B-"
+                              defaultValue={teacher.blood_type}
+                            >
                               B-
                             </option>
-                            <option value="AB+" defaultValue={admin.blood_type}>
+                            <option
+                              value="AB+"
+                              defaultValue={teacher.blood_type}
+                            >
                               AB+
                             </option>
-                            <option value="AB-" defaultValue={admin.blood_type}>
+                            <option
+                              value="AB-"
+                              defaultValue={teacher.blood_type}
+                            >
                               AB-
                             </option>
-                            <option value="O+" defaultValue={admin.blood_type}>
+                            <option
+                              value="O+"
+                              defaultValue={teacher.blood_type}
+                            >
                               O+
                             </option>
-                            <option value="O-" defaultValue={admin.blood_type}>
+                            <option
+                              value="O-"
+                              defaultValue={teacher.blood_type}
+                            >
                               O-
                             </option>
                           </select>
@@ -238,7 +263,7 @@ const UpdateAdmin = () => {
                         <div className="form-group local-forms">
                           <label>health status</label>
                           <select
-                            defaultValue={admin.health_status}
+                            defaultValue={teacher.health_status}
                             name="health_status"
                             className="form-control select"
                           >
@@ -265,7 +290,7 @@ const UpdateAdmin = () => {
                             name="phone_number"
                             className="form-control"
                             type="text"
-                            defaultValue={admin.phone_number}
+                            defaultValue={teacher.phone_number}
                           />
                           <span className="text-danger">
                             {errors?.phone_number}
@@ -282,7 +307,7 @@ const UpdateAdmin = () => {
                             {loadingForm ? <LoadingCircle /> : "Modifier"}
                           </button>
                           <Link
-                            to={"/super-admin/all-admins"}
+                            to={"/super-admin/all-teachers"}
                             className="border border-2 btn ms-2 rounded-4 bg-danger-light"
                           >
                             Annuler
@@ -305,4 +330,4 @@ const UpdateAdmin = () => {
   );
 };
 
-export default UpdateAdmin;
+export default UpdateTeacher;

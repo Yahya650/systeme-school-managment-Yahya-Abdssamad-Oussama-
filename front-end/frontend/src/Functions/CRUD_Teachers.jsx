@@ -1,42 +1,43 @@
-import toast from "react-hot-toast";
+import { createContext, useContext } from "react";
 import { AxiosClient } from "../Api/AxiosClient";
 import { useContextApi } from "../Context/ContextApi";
-import React, { createContext, useContext } from "react";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
-const CrudAdminsContext = createContext({
-  getAdmins: () => {},
-  getAdmin: () => {},
-  updateAdmin: () => {},
-  removeAdmin: () => {},
-  createAdmin: () => {},
+const CrudTeachersContext = createContext({
+  getTeachers: () => {},
+  updateTeacher: () => {},
+  removeTeacher: () => {},
+  createTeacher: () => {},
+  getTeacher: () => {},
 });
 
-const CRUD_Admins = ({ children }) => {
-  const { setAdmins, setAdmin, setErrors, navigateTo } = useContextApi();
+const CRUD_Teachers = ({ children }) => {
+  const { setTeachers, setTeacher, setErrors, navigateTo } = useContextApi();
 
-  async function getAdmins() {
+  async function getTeachers() {
     try {
-      const { data } = await AxiosClient.get("/super-admin/admins");
-      setAdmins(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function getAdmin(id) {
-    try {
-      const { data } = await AxiosClient.get("/super-admin/admins/" + id);
-      setAdmin(data);
+      const { data } = await AxiosClient.get("/super-admin/teachers");
+      setTeachers(data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function updateAdmin(id, dataForm) {
+  async function getTeacher(id) {
+    try {
+      const { data } = await AxiosClient.get("/super-admin/teachers/" + id);
+      setTeacher(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function updateTeacher(id, dataForm) {
     try {
       const { data } = await AxiosClient.put(
-        "/super-admin/admins/" + id,
+        "/super-admin/teachers/" + id,
         dataForm
       );
       toast.success(data.message, {
@@ -44,24 +45,24 @@ const CRUD_Admins = ({ children }) => {
         position: "top-right",
       });
       setErrors(null);
-      navigateTo("/super-admin/all-admins");
-      // getAdmins();
+      navigateTo("/super-admin/all-teachers");
+      // getTeachers();
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
     }
   }
 
-  async function removeAdmin(id) {
+  async function removeTeacher(id) {
     try {
-      const { data } = await AxiosClient.delete("/super-admin/admins/" + id);
-      await getAdmins();
+      const { data } = await AxiosClient.delete("/super-admin/teachers/" + id);
+      await getTeachers();
       toast.success(data.message, {
         duration: 4000,
         position: "top-center",
@@ -75,9 +76,12 @@ const CRUD_Admins = ({ children }) => {
     }
   }
 
-  async function createAdmin(dataForm) {
+  async function createTeacher(dataForm) {
     try {
-      const { data } = await AxiosClient.post("/super-admin/admins", dataForm);
+      const { data } = await AxiosClient.post(
+        "/super-admin/teachers",
+        dataForm
+      );
       withReactContent(Swal).fire({
         title: data.message,
         html: (
@@ -94,35 +98,34 @@ const CRUD_Admins = ({ children }) => {
         position: "top-right",
       });
       setErrors(null);
-      navigateTo("/super-admin/all-admins");
-      // getAdmins();
+      navigateTo("/super-admin/all-teachers");
+      // getTeachers();
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
     }
   }
-
   return (
-    <CrudAdminsContext.Provider
+    <CrudTeachersContext.Provider
       value={{
-        getAdmins,
-        getAdmin,
-        updateAdmin,
-        removeAdmin,
-        createAdmin,
+        getTeachers,
+        updateTeacher,
+        removeTeacher,
+        createTeacher,
+        getTeacher,
       }}
     >
       {children}
-    </CrudAdminsContext.Provider>
+    </CrudTeachersContext.Provider>
   );
 };
 
-export const useCrudAdmins = () => useContext(CrudAdminsContext);
+export const useCrudTeachers = () => useContext(CrudTeachersContext);
 
-export default CRUD_Admins;
+export default CRUD_Teachers;

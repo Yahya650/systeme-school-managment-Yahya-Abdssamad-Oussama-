@@ -20,7 +20,8 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.21.3",
-    "sweetalert2": "^11.10.5"
+    "sweetalert2": "^11.10.5",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

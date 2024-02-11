@@ -2,21 +2,21 @@ import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link, useParams } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import dcryptID from "../../../security/dcryptID";
+import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 
-const ShowAdmin = () => {
-  const { admin, navigateTo, calculateAge } = useContextApi();
+const ShowTeacher = () => {
+  const { teacher, navigateTo, calculateAge } = useContextApi();
   const [loading, setLoading] = useState(true);
-  const { getAdmin } = useCrudAdmins();
+  const { getTeacher } = useCrudTeachers();
   const { id } = useParams();
 
   const fetchData = async () => {
     if (dcryptID(id) === null) {
       navigateTo("/error/404");
     }
-    await getAdmin(dcryptID(id));
+    await getTeacher(dcryptID(id));
     setLoading(false);
   };
 
@@ -32,13 +32,13 @@ const ShowAdmin = () => {
             <div className="row">
               <div className="col-sm-12">
                 <div className="page-sub-header">
-                  <h3 className="page-title">Détails de l'étudiant</h3>
+                  <h3 className="page-title">Détails de Enseignant</h3>
                   <ul className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <Link to="#">Étudiants</Link>
+                      <Link to="#">Enseignants</Link>
                     </li>
                     <li className="breadcrumb-item active">
-                      Détails de l'étudiant
+                      Détails de l'enseignant
                     </li>
                   </ul>
                 </div>
@@ -70,9 +70,9 @@ const ShowAdmin = () => {
                             <img
                               className="bg-white"
                               src={
-                                admin.profile
-                                  ? admin.profile
-                                  : admin.gender == "male"
+                                teacher.profile
+                                  ? teacher.profile
+                                  : teacher.gender == "male"
                                   ? "/assets/img/default-profile-picture-grey-male-icon.png"
                                   : "/assets/img/default-profile-picture-grey-female-icon.png"
                               }
@@ -88,8 +88,10 @@ const ShowAdmin = () => {
                             </div>
                           </div>
                           <div className="names-profiles">
-                            <h4>{admin.first_name + " " + admin.last_name}</h4>
-                            <h5>Membre de la direction</h5>
+                            <h4>
+                              {teacher.first_name + " " + teacher.last_name}
+                            </h4>
+                            <h5>Enseignant</h5>
                           </div>
                         </div>
                       </div>
@@ -143,7 +145,9 @@ const ShowAdmin = () => {
                           </div>
                           <div className="views-personal">
                             <h4>Nom</h4>
-                            <h5>{admin.first_name + " " + admin.last_name}</h5>
+                            <h5>
+                              {teacher.first_name + " " + teacher.last_name}
+                            </h5>
                           </div>
                         </div>
                         <div className="personal-activity">
@@ -155,7 +159,7 @@ const ShowAdmin = () => {
                           </div>
                           <div className="views-personal">
                             <h4>Blood type</h4>
-                            <h5>{admin.blood_type}</h5>
+                            <h5>{teacher.blood_type}</h5>
                           </div>
                         </div>
                         <div className="personal-activity">
@@ -164,7 +168,7 @@ const ShowAdmin = () => {
                           </div>
                           <div className="views-personal">
                             <h4>Téléphone mobile</h4>
-                            <h5>{admin.phone_number}</h5>
+                            <h5>{teacher.phone_number}</h5>
                           </div>
                         </div>
                         <div className="personal-activity">
@@ -173,7 +177,7 @@ const ShowAdmin = () => {
                           </div>
                           <div className="views-personal">
                             <h4>E-mail</h4>
-                            <h5>{admin.email}</h5>
+                            <h5>{teacher.email}</h5>
                           </div>
                         </div>
                         <div className="personal-activity">
@@ -183,7 +187,7 @@ const ShowAdmin = () => {
                           <div className="views-personal">
                             <h4>Genre</h4>
                             <h5>
-                              {admin.gender == "male" ? "male" : "female"}
+                              {teacher.gender == "male" ? "male" : "female"}
                             </h5>
                           </div>
                         </div>
@@ -194,8 +198,8 @@ const ShowAdmin = () => {
                           <div className="views-personal">
                             <h4>Date de naissance</h4>
                             <h5>
-                              {admin.date_of_birth} (
-                              {calculateAge(admin.date_of_birth) + " ans"})
+                              {teacher.date_of_birth} (
+                              {calculateAge(teacher.date_of_birth) + " ans"})
                             </h5>
                           </div>
                         </div>
@@ -206,8 +210,8 @@ const ShowAdmin = () => {
                           <div className="views-personal">
                             <h4>Last Date Login</h4>
                             <h5>
-                              {admin.last_login_date
-                                ? admin.last_login_date
+                              {teacher.last_login_date
+                                ? teacher.last_login_date
                                 : "he is never LogIn"}
                             </h5>
                           </div>
@@ -218,7 +222,7 @@ const ShowAdmin = () => {
                           </div>
                           <div className="views-personal">
                             <h4>Adresse</h4>
-                            <h5>{admin.address}</h5>
+                            <h5>{teacher.address}</h5>
                           </div>
                         </div>
                       </div>
@@ -233,7 +237,7 @@ const ShowAdmin = () => {
                           <h4>Responsibles (Financial) :</h4>
                         </div>
                         <div className="table-responsive">
-                          {admin.school_levels.filter(
+                          {/* {teacher.school_levels.filter(
                             (school_level) =>
                               school_level.pivot.type === "financial"
                           ).length > 0 ? (
@@ -246,7 +250,7 @@ const ShowAdmin = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {admin.school_levels
+                                {teacher.school_levels
                                   .filter(
                                     (school_level) =>
                                       school_level.pivot.type === "financial"
@@ -274,14 +278,14 @@ const ShowAdmin = () => {
                                 You can start by adding a Responsible
                               </div>
                             </div>
-                          )}
+                          )} */}
                         </div>
 
                         <div className="heading-detail mt-5 ">
                           <h4>Responsibles (Educational) :</h4>
                         </div>
                         <div className="table-responsive">
-                          {admin.school_levels.filter(
+                          {/* {teacher.school_levels.filter(
                             (school_level) =>
                               school_level.pivot.type === "educational"
                           ).length > 0 ? (
@@ -294,7 +298,7 @@ const ShowAdmin = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {admin.school_levels
+                                {teacher.school_levels
                                   .filter(
                                     (school_level) =>
                                       school_level.pivot.type === "educational"
@@ -322,7 +326,7 @@ const ShowAdmin = () => {
                                 You can start by adding a Responsible
                               </div>
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
@@ -342,4 +346,4 @@ const ShowAdmin = () => {
   );
 };
 
-export default ShowAdmin;
+export default ShowTeacher;

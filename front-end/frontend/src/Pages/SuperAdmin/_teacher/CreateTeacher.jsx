@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import LoadingCircle from "../../../Components/LoadingCircle";
+import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 
-const CreateAdmin = () => {
+const CreateTeacher = () => {
   const { errors } = useContextApi();
   const [loadingForm, setloadingForm] = useState(false);
-  const { createAdmin } = useCrudAdmins();
+  const { createTeacher } = useCrudTeachers();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setloadingForm(true);
-    createAdmin({
+    createTeacher({
       cin: e.target.cin.value.toUpperCase(),
       email: e.target.email.value,
       first_name: e.target.first_name.value,
@@ -246,7 +246,7 @@ const CreateAdmin = () => {
                           {loadingForm ? <LoadingCircle /> : "Ajouter"}
                         </button>
                         <Link
-                          to={"/super-admin/all-admins"}
+                          to={"/super-admin/all-teachers"}
                           className="border border-2 btn ms-2 rounded-4 bg-danger-light"
                         >
                           Annuler
@@ -264,4 +264,4 @@ const CreateAdmin = () => {
   );
 };
 
-export default CreateAdmin;
+export default CreateTeacher;

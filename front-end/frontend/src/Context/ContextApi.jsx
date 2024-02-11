@@ -3,8 +3,7 @@ import { AxiosClient } from "../Api/AxiosClient";
 import { useNavigate } from "react-router-dom";
 import LoadingCircleContext from "../Components/LoadingCircleContext";
 import cryptString from "../security/cryptString";
-import Swal from "sweetalert2";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 // import "./styles.css";
 
 const Context = createContext({
@@ -27,7 +26,9 @@ const Context = createContext({
   parents: null,
   setParnets: () => {},
   calculateAge: () => {},
-  Toast: null,
+  teacher: null,
+  navigateTo: () => {},
+  setTeacher: () => {},
 });
 
 export const ContextApi = ({ children }) => {
@@ -38,20 +39,9 @@ export const ContextApi = ({ children }) => {
   const [admins, setAdmins] = useState(null);
   const [admin, setAdmin] = useState(null);
   const [teachers, setTeachers] = useState(null);
+  const [teacher, setTeacher] = useState(null);
   const [parents, setParnets] = useState(null);
   const navigate = useNavigate();
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    iconColor: "white",
-    customClass: {
-      popup: "colored-toast",
-    },
-    showConfirmButton: false,
-    timer: 5000,
-    timerProgressBar: true,
-  });
 
   // Function to calculate age based on date of birth
   const calculateAge = (dateOfBirth) => {
@@ -81,7 +71,7 @@ export const ContextApi = ({ children }) => {
         setUser(data);
       } catch (error) {
         localStorage.removeItem("ud");
-        // navigate('/')
+        navigate("/");
       }
     }
     setLoadingContaxt(false);
@@ -132,6 +122,10 @@ export const ContextApi = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
       if (error.response.status === 422) {
         if (guard != "student" && guard != "student-parent") {
           setErrors({
@@ -168,10 +162,10 @@ export const ContextApi = ({ children }) => {
     <Context.Provider
       value={{
         Login,
-        errors,
-        setErrors,
         logout,
+        errors,
         user,
+        setErrors,
         setUser,
         getUserProfile,
         setLoadingContaxt,
@@ -180,13 +174,15 @@ export const ContextApi = ({ children }) => {
         setParnets,
         setStudents,
         setAdmin,
+        setTeacher,
         students,
         admin,
         admins,
         teachers,
+        teacher,
         parents,
         calculateAge,
-        Toast,
+        navigateTo: navigate,
       }}
     >
       {loadingContaxt ? (
@@ -199,7 +195,23 @@ export const ContextApi = ({ children }) => {
       ) : (
         <>
           {children}
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  background: "green",
+                },
+              },
+              error: {
+                style: {
+                  background: "#CC0000",
+                },
+              },
+              style: {
+                color: "white",
+              },
+            }}
+          />
         </>
       )}
     </Context.Provider>

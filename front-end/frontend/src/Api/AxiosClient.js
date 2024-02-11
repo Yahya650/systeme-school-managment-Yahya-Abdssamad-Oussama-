@@ -1,5 +1,6 @@
-import axios, { formToJSON } from "axios";
+import axios from "axios";
 import dcryptString from './../security/dcryptString';
+import { useNavigate } from "react-router-dom";
 
 export const BACKEND_URL = "http://localhost:8000";
 export const AxiosClient = axios.create({
@@ -7,7 +8,9 @@ export const AxiosClient = axios.create({
     withCredentials: true
 })
 
-AxiosClient.interceptors.request.use(function (config) {
+// const navigate = useNavigate()
+
+AxiosClient.interceptors.request.use(async function (config) {
     const ud = JSON.parse(localStorage.getItem("ud"));
     if (ud) {
         config.headers.Authorization = 'Bearer ' + dcryptString(ud._token);

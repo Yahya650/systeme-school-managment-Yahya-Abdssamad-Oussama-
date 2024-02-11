@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import { useContextApi } from "../../../Context/ContextApi";
-import cryptID from "./../../../security/cryptID";
-import dcryptID from "./../../../security/dcryptID";
+import cryptID from "../../../security/cryptID";
+import dcryptID from "../../../security/dcryptID";
+import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 import toast from "react-hot-toast";
 
-const AllAdmins = () => {
+const AllTeachers = () => {
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const { admins } = useContextApi();
-  const { getAdmins, removeAdmin } = useCrudAdmins();
+  const { teachers } = useContextApi();
+  const { getTeachers, removeTeacher } = useCrudTeachers();
 
   const fetchData = async () => {
-    await getAdmins();
+    await getTeachers();
     setLoading(false);
   };
 
@@ -24,7 +24,7 @@ const AllAdmins = () => {
       style: { color: "black" },
     });
     setLoadingDelete(true);
-    await removeAdmin(dcryptID(id));
+    await removeTeacher(dcryptID(id));
     setLoadingDelete(false);
     toast.dismiss(toastId);
   };
@@ -40,13 +40,13 @@ const AllAdmins = () => {
           <div className="row">
             <div className="col-sm-12">
               <div className="page-sub-header">
-                <h3 className="page-title">Administrateurs</h3>
+                <h3 className="page-title">Enseignants</h3>
                 <ul className="breadcrumb">
                   <li className="breadcrumb-item">
-                    <Link to="#">Administrateurs</Link>
+                    <Link to="#">Enseignants</Link>
                   </li>
                   <li className="breadcrumb-item active">
-                    Tous les administrateurs
+                    Tous les enseignants
                   </li>
                 </ul>
               </div>
@@ -92,6 +92,7 @@ const AllAdmins = () => {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-sm-12">
             <div className="card card-table comman-shadow">
@@ -99,14 +100,14 @@ const AllAdmins = () => {
                 <div className="page-header">
                   <div className="row align-items-center">
                     <div className="col">
-                      <h3 className="page-title">Tous les administrateurs</h3>
+                      <h3 className="page-title">Tous les enseignants</h3>
                     </div>
                     <div className="col-auto text-end float-end ms-auto download-grp">
                       <Link to="#" className="btn btn-outline-primary me-2">
                         <i className="fas fa-download"></i> Télécharger
                       </Link>
                       <Link
-                        to="/super-admin/create-admin"
+                        to="/super-admin/create-teacher"
                         className="btn btn-primary"
                       >
                         <i className="fas fa-plus"></i>
@@ -117,7 +118,7 @@ const AllAdmins = () => {
 
                 <div className="table-responsive">
                   {!loading ? (
-                    admins.length > 0 ? (
+                    teachers.length > 0 ? (
                       <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
                         <thead className="student-thread">
                           <tr>
@@ -132,9 +133,9 @@ const AllAdmins = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {admins.map((admin, index) => (
+                          {teachers.map((teacher, index) => (
                             <tr key={index}>
-                              <td>{admin.cin}</td>
+                              <td>{teacher.cin}</td>
                               <td>
                                 <h2 className="table-avatar">
                                   <Link
@@ -144,9 +145,9 @@ const AllAdmins = () => {
                                     <img
                                       className="avatar-img rounded-circle"
                                       src={
-                                        admin.profile
-                                          ? admin.profile
-                                          : admin.gender === "female"
+                                        teacher.profile
+                                          ? teacher.profile
+                                          : teacher.gender === "female"
                                           ? "/assets/img/default-profile-picture-grey-female-icon.png"
                                           : "/assets/img/default-profile-picture-grey-male-icon.png"
                                       }
@@ -156,22 +157,22 @@ const AllAdmins = () => {
                                 </h2>
                               </td>
                               <td>
-                                {admin.last_name + " " + admin.first_name}
+                                {teacher.last_name + " " + teacher.first_name}
                               </td>
-                              <td>{admin.gender}</td>
+                              <td>{teacher.gender}</td>
                               <td>
-                                {admin.last_login_date
-                                  ? admin.last_login_date
+                                {teacher.last_login_date
+                                  ? teacher.last_login_date
                                   : "Pas de connexion"}
                               </td>
-                              <td>{admin.phone_number}</td>
-                              <td>{admin.date_of_birth}</td>
+                              <td>{teacher.phone_number}</td>
+                              <td>{teacher.date_of_birth}</td>
                               <td className="text-end">
                                 <div className="actions ">
                                   <Link
                                     to={
-                                      "/super-admin/show-admin/" +
-                                      cryptID(admin.id)
+                                      "/super-admin/show-teacher/" +
+                                      cryptID(teacher.id)
                                     }
                                     className="btn btn-sm bg-success-light me-2 "
                                   >
@@ -179,8 +180,8 @@ const AllAdmins = () => {
                                   </Link>
                                   <Link
                                     to={
-                                      "/super-admin/update-admin/" +
-                                      cryptID(admin.id)
+                                      "/super-admin/update-teacher/" +
+                                      cryptID(teacher.id)
                                     }
                                     className="btn btn-sm bg-danger-light"
                                   >
@@ -188,10 +189,10 @@ const AllAdmins = () => {
                                   </Link>
                                   <button
                                     onClick={() =>
-                                      handleDelete(cryptID(admin.id))
+                                      handleDelete(cryptID(teacher.id))
                                     }
                                     disabled={loadingDelete}
-                                    id={"delete_button" + admin.id}
+                                    id={"delete_button" + teacher.id}
                                     className="btn btn-sm bg-danger-light ms-2"
                                   >
                                     <i className="feather-trash"></i>
@@ -206,11 +207,10 @@ const AllAdmins = () => {
                       <div className="alert alert-danger" role="alert">
                         <div className="flex-grow-1 me-2">
                           <b>
-                            <i className="mdi mdi-alert"></i> Aucun
-                            administrateur
+                            <i className="mdi mdi-alert"></i> Aucun enseignant
                           </b>
                           <br />
-                          You can start by adding a Admin
+                          You can start by adding a new teacher.
                         </div>
                       </div>
                     )
@@ -231,4 +231,4 @@ const AllAdmins = () => {
   );
 };
 
-export default AllAdmins;
+export default AllTeachers;

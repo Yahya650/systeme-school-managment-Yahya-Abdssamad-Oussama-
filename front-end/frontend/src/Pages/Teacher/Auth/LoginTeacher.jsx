@@ -58,10 +58,9 @@ const LoginTeacher = () => {
                     </label>
                     <input
                       className="form-control pass-input"
-                      type="text"
+                      type="password"
                       name="password"
                     />
-                    <span className="profile-views feather-eye toggle-password"></span>
                     {errors && (
                       <span className="text text-danger">
                         {errors.password}
