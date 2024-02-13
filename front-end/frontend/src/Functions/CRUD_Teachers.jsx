@@ -14,12 +14,24 @@ const CrudTeachersContext = createContext({
 });
 
 const CRUD_Teachers = ({ children }) => {
-  const { setTeachers, setTeacher, setErrors, navigateTo } = useContextApi();
+  const {
+    setTeachers,
+    setTeacher,
+    setErrors,
+    navigateTo,
+    setPageCount,
+    setTotal,
+    currentPage,
+  } = useContextApi();
 
-  async function getTeachers() {
+  async function getTeachers(currentPage = 1) {
     try {
-      const { data } = await AxiosClient.get("/super-admin/teachers");
-      setTeachers(data);
+      const { data } = await AxiosClient.get(
+        "/super-admin/teachers?page=" + currentPage
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      setTeachers(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -60,9 +72,12 @@ const CRUD_Teachers = ({ children }) => {
   }
 
   async function removeTeacher(id) {
+    const toastId = toast.loading("Suppression en cours...", {
+      style: { color: "white", background: "black" },
+    });
     try {
       const { data } = await AxiosClient.delete("/super-admin/teachers/" + id);
-      await getTeachers();
+      await getTeachers(currentPage);
       toast.success(data.message, {
         duration: 4000,
         position: "top-center",
@@ -73,6 +88,8 @@ const CRUD_Teachers = ({ children }) => {
         duration: 4000,
         position: "top-center",
       });
+    } finally {
+      toast.dismiss(toastId);
     }
   }
 

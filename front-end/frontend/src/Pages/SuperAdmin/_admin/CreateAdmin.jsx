@@ -1,13 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
 import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import LoadingCircle from "../../../Components/LoadingCircle";
+import { AxiosClient } from "../../../Api/AxiosClient";
+import cryptID from "../../../security/cryptID";
 
 const CreateAdmin = () => {
   const { errors } = useContextApi();
+  const [schoolLevels, setSchoolLevels] = useState(null);
   const [loadingForm, setloadingForm] = useState(false);
   const { createAdmin } = useCrudAdmins();
+  const [selectedLevels, setSelectedLevels] = useState([]);
+  const [formData, setFormData] = useState([]);
+
+  const handleLevelCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setSelectedLevels([...selectedLevels, id]);
+      // If the school level is checked, add it to formData if not already present
+      // if (!formData.find((data) => data.school_level_id === id)) {
+      //   setFormData([...formData, { school_level_id: id, types: [] }]);
+      // }
+    } else {
+      setSelectedLevels(selectedLevels.filter((levelId) => levelId !== id));
+      // If the school level is unchecked, remove it from formData
+      setFormData(formData.filter((data) => data.school_level_id !== id));
+    }
+  };
+
+  const handleTypeCheckboxChange = (e, type, levelId) => {
+    const { checked } = e.target;
+
+    // Find the index of the data object in formData array with the matching school level ID
+    const index = formData.findIndex(
+      (data) => data.school_level_id === levelId
+    );
+
+    // If the data object with the school level ID is found
+    if (index !== -1) {
+      // If checkbox is checked, add the type to the types array, otherwise remove it
+      if (checked) {
+        const updatedTypes = [...formData[index].types, type];
+        const updatedData = { ...formData[index], types: updatedTypes };
+        setFormData([
+          ...formData.slice(0, index),
+          updatedData,
+          ...formData.slice(index + 1),
+        ]);
+      } else {
+        // If checkbox is unchecked, remove the type from the types array
+        const updatedTypes = formData[index].types.filter((t) => t !== type);
+        // If there are remaining types, update the data object, otherwise remove it
+        if (updatedTypes.length > 0) {
+          const updatedData = { ...formData[index], types: updatedTypes };
+          setFormData([
+            ...formData.slice(0, index),
+            updatedData,
+            ...formData.slice(index + 1),
+          ]);
+        } else {
+          setFormData([
+            ...formData.slice(0, index),
+            ...formData.slice(index + 1),
+          ]);
+        }
+      }
+    } else {
+      // If the data object with the school level ID is not found, create a new one and add it to formData array
+      if (checked) {
+        setFormData([...formData, { school_level_id: levelId, types: [type] }]);
+      }
+    }
+  };
+
+  // useEffect(() => console.log(formData), [formData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,10 +89,19 @@ const CreateAdmin = () => {
       date_of_birth: e.target.date_of_birth.value,
       blood_type: e.target.blood_type.value,
       health_status: e.target.health_status.value,
+      responsibility: formData,
     }).then(() => {
       setloadingForm(false);
     });
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await AxiosClient.get("/super-admin/school_levels");
+      setSchoolLevels(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -236,6 +311,85 @@ const CreateAdmin = () => {
                       </div>
                     </div>
 
+                    <div className="col-12 col-sm-12">
+                      <table className="table mb-5 table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Level Schools</th>
+                            <th>Type</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {schoolLevels?.map((schoolLevel, i) => (
+                            <tr key={i}>
+                              <td>
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  name={schoolLevel.name}
+                                  id={"level" + schoolLevel.id}
+                                  value={cryptID(schoolLevel.id)}
+                                  onChange={(e) =>
+                                    handleLevelCheckboxChange(e, schoolLevel.id)
+                                  }
+                                />
+                                <label htmlFor={"level" + schoolLevel.id}>
+                                  {schoolLevel.name}
+                                </label>
+                              </td>
+                              <td>
+                                {selectedLevels.includes(schoolLevel.id) && (
+                                  <div className="d-flex justify-content-evenly align-item-center gap-2">
+                                    <div>
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name={"type" + schoolLevel.id}
+                                        id={"financial" + schoolLevel.id}
+                                        value={"financial"}
+                                        onChange={(e) =>
+                                          handleTypeCheckboxChange(
+                                            e,
+                                            "financial",
+                                            schoolLevel.id
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        htmlFor={"financial" + schoolLevel.id}
+                                      >
+                                        Financiel
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name={"type" + schoolLevel.id}
+                                        id={"educational" + schoolLevel.id}
+                                        value={"educational"}
+                                        onChange={(e) =>
+                                          handleTypeCheckboxChange(
+                                            e,
+                                            "educational",
+                                            schoolLevel.id
+                                          )
+                                        }
+                                      />
+                                      <label
+                                        htmlFor={"educational" + schoolLevel.id}
+                                      >
+                                        Educationel
+                                      </label>
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                     <div className="col-12">
                       <div className="student-submit">
                         <button

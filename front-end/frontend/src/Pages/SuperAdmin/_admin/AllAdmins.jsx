@@ -7,26 +7,23 @@ import { useContextApi } from "../../../Context/ContextApi";
 import cryptID from "./../../../security/cryptID";
 import dcryptID from "./../../../security/dcryptID";
 import toast from "react-hot-toast";
+import ReactPaginate from "react-paginate";
 
 const AllAdmins = () => {
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const { admins } = useContextApi();
+  const { admins, pageCount, handlePageClick } = useContextApi();
   const { getAdmins, removeAdmin } = useCrudAdmins();
 
-  const fetchData = async () => {
-    await getAdmins();
+  const fetchData = async (val_currentPage) => {
+    await getAdmins(val_currentPage);
     setLoading(false);
   };
 
   const handleDelete = async (id) => {
-    const toastId = toast.loading("Suppression en cours...", {
-      style: { color: "black" },
-    });
     setLoadingDelete(true);
     await removeAdmin(dcryptID(id));
     setLoadingDelete(false);
-    toast.dismiss(toastId);
   };
 
   useEffect(() => {
@@ -118,90 +115,115 @@ const AllAdmins = () => {
                 <div className="table-responsive">
                   {!loading ? (
                     admins.length > 0 ? (
-                      <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                        <thead className="student-thread">
-                          <tr>
-                            <th>CIN</th>
-                            <th>Profile</th>
-                            <th>Nom et Prenom</th>
-                            <th>Gender</th>
-                            <th>date de dernière connexion</th>
-                            <th>Telephone</th>
-                            <th>date de naissance</th>
-                            <th className="text-center">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {admins.map((admin, index) => (
-                            <tr key={index}>
-                              <td>{admin.cin}</td>
-                              <td>
-                                <h2 className="table-avatar">
-                                  <Link
-                                    to="#"
-                                    className="avatar avatar-sm me-2"
-                                  >
-                                    <img
-                                      className="avatar-img rounded-circle"
-                                      src={
-                                        admin.profile
-                                          ? admin.profile
-                                          : admin.gender === "female"
-                                          ? "/assets/img/default-profile-picture-grey-female-icon.png"
-                                          : "/assets/img/default-profile-picture-grey-male-icon.png"
-                                      }
-                                      alt="Image de l'utilisateur"
-                                    />
-                                  </Link>
-                                </h2>
-                              </td>
-                              <td>
-                                {admin.last_name + " " + admin.first_name}
-                              </td>
-                              <td>{admin.gender}</td>
-                              <td>
-                                {admin.last_login_date
-                                  ? admin.last_login_date
-                                  : "Pas de connexion"}
-                              </td>
-                              <td>{admin.phone_number}</td>
-                              <td>{admin.date_of_birth}</td>
-                              <td className="text-end">
-                                <div className="actions ">
-                                  <Link
-                                    to={
-                                      "/super-admin/show-admin/" +
-                                      cryptID(admin.id)
-                                    }
-                                    className="btn btn-sm bg-success-light me-2 "
-                                  >
-                                    <i className="feather-eye"></i>
-                                  </Link>
-                                  <Link
-                                    to={
-                                      "/super-admin/update-admin/" +
-                                      cryptID(admin.id)
-                                    }
-                                    className="btn btn-sm bg-danger-light"
-                                  >
-                                    <i className="feather-edit"></i>
-                                  </Link>
-                                  <button
-                                    onClick={() =>
-                                      handleDelete(cryptID(admin.id))
-                                    }
-                                    disabled={loadingDelete}
-                                    id={"delete_button" + admin.id}
-                                    className="btn btn-sm bg-danger-light ms-2"
-                                  >
-                                    <i className="feather-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
+                      <>
+                        <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                          <thead className="student-thread">
+                            <tr>
+                              <th>CIN</th>
+                              <th>Profile</th>
+                              <th>Nom et Prenom</th>
+                              <th>Gender</th>
+                              <th>date de dernière connexion</th>
+                              <th>Telephone</th>
+                              <th>date de naissance</th>
+                              <th className="text-center">Action</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {admins.map((admin, index) => (
+                              <tr key={index}>
+                                <td>{admin.cin}</td>
+                                <td>
+                                  <h2 className="table-avatar">
+                                    <Link
+                                      to="#"
+                                      className="avatar avatar-sm me-2"
+                                    >
+                                      <img
+                                        className="avatar-img rounded-circle"
+                                        src={
+                                          admin.profile
+                                            ? admin.profile
+                                            : admin.gender === "female"
+                                            ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                                            : "/assets/img/default-profile-picture-grey-male-icon.png"
+                                        }
+                                        alt="Image de l'utilisateur"
+                                      />
+                                    </Link>
+                                  </h2>
+                                </td>
+                                <td>
+                                  {admin.last_name + " " + admin.first_name}
+                                </td>
+                                <td>{admin.gender}</td>
+                                <td>
+                                  {admin.last_login_date
+                                    ? admin.last_login_date
+                                    : "Pas de connexion"}
+                                </td>
+                                <td>{admin.phone_number}</td>
+                                <td>{admin.date_of_birth}</td>
+                                <td className="text-end">
+                                  <div className="actions ">
+                                    <Link
+                                      to={
+                                        "/super-admin/show-admin/" +
+                                        cryptID(admin.id)
+                                      }
+                                      className="btn btn-sm bg-success-light me-2 "
+                                    >
+                                      <i className="feather-eye"></i>
+                                    </Link>
+                                    <Link
+                                      to={
+                                        "/super-admin/update-admin/" +
+                                        cryptID(admin.id)
+                                      }
+                                      className="btn btn-sm bg-danger-light"
+                                    >
+                                      <i className="feather-edit"></i>
+                                    </Link>
+                                    <button
+                                      onClick={() =>
+                                        handleDelete(cryptID(admin.id))
+                                      }
+                                      disabled={loadingDelete}
+                                      id={"delete_button" + admin.id}
+                                      className="btn btn-sm bg-danger-light ms-2"
+                                    >
+                                      <i className="feather-trash"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <ReactPaginate
+                          previousLabel={"previous"}
+                          nextLabel={"next"}
+                          breakLabel={"..."}
+                          pageCount={pageCount}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={(page) =>
+                            handlePageClick(page, fetchData)
+                          }
+                          containerClassName={
+                            "pagination justify-content-center mt-2"
+                          }
+                          pageClassName={"page-item"}
+                          pageLinkClassName={"page-link"}
+                          previousClassName={"page-item"}
+                          previousLinkClassName={"page-link"}
+                          nextClassName={"page-item"}
+                          nextLinkClassName={"page-link"}
+                          breakClassName={"page-item"}
+                          breakLinkClassName={"page-link"}
+                          activeClassName={"active"}
+                        />
+                      </>
                     ) : (
                       <div className="alert alert-danger" role="alert">
                         <div className="flex-grow-1 me-2">

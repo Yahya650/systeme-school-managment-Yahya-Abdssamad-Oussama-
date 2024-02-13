@@ -14,12 +14,17 @@ const CrudAdminsContext = createContext({
 });
 
 const CRUD_Admins = ({ children }) => {
-  const { setAdmins, setAdmin, setErrors, navigateTo } = useContextApi();
+  const { setAdmins, setAdmin, setErrors, navigateTo, setPageCount, setTotal, currentPage } =
+    useContextApi();
 
-  async function getAdmins() {
+  async function getAdmins(currentPage = 1) {
     try {
-      const { data } = await AxiosClient.get("/super-admin/admins");
-      setAdmins(data);
+      const { data } = await AxiosClient.get(
+        "/super-admin/admins?page=" + currentPage
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      setAdmins(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -59,9 +64,12 @@ const CRUD_Admins = ({ children }) => {
   }
 
   async function removeAdmin(id) {
+    const toastId = toast.loading("Suppression en cours...", {
+      style: { color: "white", background: "black" },
+    });
     try {
       const { data } = await AxiosClient.delete("/super-admin/admins/" + id);
-      await getAdmins();
+      await getAdmins(currentPage);
       toast.success(data.message, {
         duration: 4000,
         position: "top-center",
@@ -72,6 +80,8 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-center",
       });
+    } finally {
+      toast.dismiss(toastId);
     }
   }
 

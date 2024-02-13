@@ -27,8 +27,15 @@ const Context = createContext({
   setParnets: () => {},
   calculateAge: () => {},
   teacher: null,
+  pageCount: null,
+  currentPage: null,
+  total: null,
   navigateTo: () => {},
+  setTotal: () => {},
   setTeacher: () => {},
+  setPageCount: () => {},
+  setCurrentPage: () => {},
+  handlePageClick: () => {},
 });
 
 export const ContextApi = ({ children }) => {
@@ -41,7 +48,22 @@ export const ContextApi = ({ children }) => {
   const [teachers, setTeachers] = useState(null);
   const [teacher, setTeacher] = useState(null);
   const [parents, setParnets] = useState(null);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [total, setTotal] = useState(null);
+
   const navigate = useNavigate();
+
+  const handlePageClick = async (page, fetchData) => {
+    const toastId1 = toast.loading("Loading...", {
+      style: { color: "white", background: "black" },
+    });
+    const { selected } = page;
+    const val_currentPage = selected + 1;
+    await fetchData(val_currentPage);
+    setCurrentPage(val_currentPage);
+    toast.dismiss(toastId1);
+  };
 
   // Function to calculate age based on date of birth
   const calculateAge = (dateOfBirth) => {
@@ -181,7 +203,14 @@ export const ContextApi = ({ children }) => {
         teachers,
         teacher,
         parents,
+        pageCount,
+        currentPage,
+        total,
         calculateAge,
+        setPageCount,
+        setCurrentPage,
+        setTotal,
+        handlePageClick,
         navigateTo: navigate,
       }}
     >

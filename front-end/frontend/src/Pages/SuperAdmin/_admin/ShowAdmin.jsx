@@ -237,12 +237,12 @@ const ShowAdmin = () => {
                             (school_level) =>
                               school_level.pivot.type === "financial"
                           ).length > 0 ? (
-                            <table className="datatable table table-stripped">
+                            <table className="datatable table table-stripped table-responsive">
                               <thead>
                                 <tr>
                                   <th>Type</th>
                                   <th>Name</th>
-                                  <th>Actions</th>
+                                  <th className="text text-center">Actions</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -259,6 +259,25 @@ const ShowAdmin = () => {
                                         </span>
                                       </td>
                                       <td>{school_level.name}</td>
+                                      <td>
+                                        <div className="text text-center">
+                                          <Link
+                                            to={"#"}
+                                            className="btn btn-sm bg-success-light me-2 "
+                                          >
+                                            <i className="feather-eye"></i>
+                                          </Link>
+                                          <Link
+                                            to={"#"}
+                                            className="btn btn-sm bg-danger-light"
+                                          >
+                                            <i className="feather-edit"></i>
+                                          </Link>
+                                          <button className="btn btn-sm bg-danger-light ms-2">
+                                            <i className="feather-trash"></i>
+                                          </button>
+                                        </div>
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -285,12 +304,12 @@ const ShowAdmin = () => {
                             (school_level) =>
                               school_level.pivot.type === "educational"
                           ).length > 0 ? (
-                            <table className="datatable table table-stripped">
+                            <table className="datatable table table-stripped table-responsive">
                               <thead>
                                 <tr>
                                   <th>Type</th>
                                   <th>Name</th>
-                                  <th>Actions</th>
+                                  <th className="text text-center">Actions</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -307,6 +326,25 @@ const ShowAdmin = () => {
                                         </span>
                                       </td>
                                       <td>{school_level.name}</td>
+                                      <td>
+                                        <div className="text text-center">
+                                          <Link
+                                            to={"#"}
+                                            className="btn btn-sm bg-success-light me-2 "
+                                          >
+                                            <i className="feather-eye"></i>
+                                          </Link>
+                                          <Link
+                                            to={"#"}
+                                            className="btn btn-sm bg-danger-light"
+                                          >
+                                            <i className="feather-edit"></i>
+                                          </Link>
+                                          <button className="btn btn-sm bg-danger-light ms-2">
+                                            <i className="feather-trash"></i>
+                                          </button>
+                                        </div>
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>

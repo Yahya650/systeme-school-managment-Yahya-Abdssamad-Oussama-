@@ -7,26 +7,23 @@ import cryptID from "../../../security/cryptID";
 import dcryptID from "../../../security/dcryptID";
 import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 import toast from "react-hot-toast";
+import ReactPaginate from "react-paginate";
 
 const AllTeachers = () => {
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const { teachers } = useContextApi();
+  const { teachers, pageCount, handlePageClick } = useContextApi();
   const { getTeachers, removeTeacher } = useCrudTeachers();
 
-  const fetchData = async () => {
-    await getTeachers();
+  const fetchData = async (val_currentPage) => {
+    await getTeachers(val_currentPage);
     setLoading(false);
   };
 
   const handleDelete = async (id) => {
-    const toastId = toast.loading("Suppression en cours...", {
-      style: { color: "black" },
-    });
     setLoadingDelete(true);
     await removeTeacher(dcryptID(id));
     setLoadingDelete(false);
-    toast.dismiss(toastId);
   };
 
   useEffect(() => {
@@ -119,90 +116,115 @@ const AllTeachers = () => {
                 <div className="table-responsive">
                   {!loading ? (
                     teachers.length > 0 ? (
-                      <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                        <thead className="student-thread">
-                          <tr>
-                            <th>CIN</th>
-                            <th>Profile</th>
-                            <th>Nom et Prenom</th>
-                            <th>Gender</th>
-                            <th>date de dernière connexion</th>
-                            <th>Telephone</th>
-                            <th>date de naissance</th>
-                            <th className="text-center">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {teachers.map((teacher, index) => (
-                            <tr key={index}>
-                              <td>{teacher.cin}</td>
-                              <td>
-                                <h2 className="table-avatar">
-                                  <Link
-                                    to="#"
-                                    className="avatar avatar-sm me-2"
-                                  >
-                                    <img
-                                      className="avatar-img rounded-circle"
-                                      src={
-                                        teacher.profile
-                                          ? teacher.profile
-                                          : teacher.gender === "female"
-                                          ? "/assets/img/default-profile-picture-grey-female-icon.png"
-                                          : "/assets/img/default-profile-picture-grey-male-icon.png"
-                                      }
-                                      alt="Image de l'utilisateur"
-                                    />
-                                  </Link>
-                                </h2>
-                              </td>
-                              <td>
-                                {teacher.last_name + " " + teacher.first_name}
-                              </td>
-                              <td>{teacher.gender}</td>
-                              <td>
-                                {teacher.last_login_date
-                                  ? teacher.last_login_date
-                                  : "Pas de connexion"}
-                              </td>
-                              <td>{teacher.phone_number}</td>
-                              <td>{teacher.date_of_birth}</td>
-                              <td className="text-end">
-                                <div className="actions ">
-                                  <Link
-                                    to={
-                                      "/super-admin/show-teacher/" +
-                                      cryptID(teacher.id)
-                                    }
-                                    className="btn btn-sm bg-success-light me-2 "
-                                  >
-                                    <i className="feather-eye"></i>
-                                  </Link>
-                                  <Link
-                                    to={
-                                      "/super-admin/update-teacher/" +
-                                      cryptID(teacher.id)
-                                    }
-                                    className="btn btn-sm bg-danger-light"
-                                  >
-                                    <i className="feather-edit"></i>
-                                  </Link>
-                                  <button
-                                    onClick={() =>
-                                      handleDelete(cryptID(teacher.id))
-                                    }
-                                    disabled={loadingDelete}
-                                    id={"delete_button" + teacher.id}
-                                    className="btn btn-sm bg-danger-light ms-2"
-                                  >
-                                    <i className="feather-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
+                      <>
+                        <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                          <thead className="student-thread">
+                            <tr>
+                              <th>CIN</th>
+                              <th>Profile</th>
+                              <th>Nom et Prenom</th>
+                              <th>Gender</th>
+                              <th>date de dernière connexion</th>
+                              <th>Telephone</th>
+                              <th>date de naissance</th>
+                              <th className="text-center">Action</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {teachers.map((teacher, index) => (
+                              <tr key={index}>
+                                <td>{teacher.cin}</td>
+                                <td>
+                                  <h2 className="table-avatar">
+                                    <Link
+                                      to="#"
+                                      className="avatar avatar-sm me-2"
+                                    >
+                                      <img
+                                        className="avatar-img rounded-circle"
+                                        src={
+                                          teacher.profile
+                                            ? teacher.profile
+                                            : teacher.gender === "female"
+                                            ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                                            : "/assets/img/default-profile-picture-grey-male-icon.png"
+                                        }
+                                        alt="Image de l'utilisateur"
+                                      />
+                                    </Link>
+                                  </h2>
+                                </td>
+                                <td>
+                                  {teacher.last_name + " " + teacher.first_name}
+                                </td>
+                                <td>{teacher.gender}</td>
+                                <td>
+                                  {teacher.last_login_date
+                                    ? teacher.last_login_date
+                                    : "Pas de connexion"}
+                                </td>
+                                <td>{teacher.phone_number}</td>
+                                <td>{teacher.date_of_birth}</td>
+                                <td className="text-end">
+                                  <div className="actions ">
+                                    <Link
+                                      to={
+                                        "/super-admin/show-teacher/" +
+                                        cryptID(teacher.id)
+                                      }
+                                      className="btn btn-sm bg-success-light me-2 "
+                                    >
+                                      <i className="feather-eye"></i>
+                                    </Link>
+                                    <Link
+                                      to={
+                                        "/super-admin/update-teacher/" +
+                                        cryptID(teacher.id)
+                                      }
+                                      className="btn btn-sm bg-danger-light"
+                                    >
+                                      <i className="feather-edit"></i>
+                                    </Link>
+                                    <button
+                                      onClick={() =>
+                                        handleDelete(cryptID(teacher.id))
+                                      }
+                                      disabled={loadingDelete}
+                                      id={"delete_button" + teacher.id}
+                                      className="btn btn-sm bg-danger-light ms-2"
+                                    >
+                                      <i className="feather-trash"></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <ReactPaginate
+                          previousLabel={"previous"}
+                          nextLabel={"next"}
+                          breakLabel={"..."}
+                          pageCount={pageCount}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={(page) =>
+                            handlePageClick(page, fetchData)
+                          }
+                          containerClassName={
+                            "pagination justify-content-center mt-2"
+                          }
+                          pageClassName={"page-item"}
+                          pageLinkClassName={"page-link"}
+                          previousClassName={"page-item"}
+                          previousLinkClassName={"page-link"}
+                          nextClassName={"page-item"}
+                          nextLinkClassName={"page-link"}
+                          breakClassName={"page-item"}
+                          breakLinkClassName={"page-link"}
+                          activeClassName={"active"}
+                        />
+                      </>
                     ) : (
                       <div className="alert alert-danger" role="alert">
                         <div className="flex-grow-1 me-2">
