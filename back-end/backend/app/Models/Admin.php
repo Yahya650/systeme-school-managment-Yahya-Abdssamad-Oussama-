@@ -57,9 +57,10 @@ class Admin extends Authenticatable
     public function school_levels()
     {
         return $this->belongsToMany(SchoolLevel::class, 'responsibles')
-        ->using(Responsible::class)
-        ->withPivot('type')
-        ->withTimestamps();
+            ->using(Responsible::class)
+            // ->wherePivot('deleted_at', null)
+            ->withPivot('type')
+            ->withTimestamps();
     }
 
     // public function students()

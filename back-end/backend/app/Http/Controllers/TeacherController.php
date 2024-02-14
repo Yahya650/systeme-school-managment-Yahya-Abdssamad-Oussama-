@@ -100,7 +100,7 @@ class TeacherController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json($request->user('super_admin')->teachers()->latest()->get());
+        return response()->json($request->user('super_admin')->teachers()->latest()->paginate(5));
     }
 
 

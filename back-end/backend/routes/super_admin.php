@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SchoolLevelController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::apiResource('admins', AdminController::class)->only(['index', 'show', 'update', 'store', 'destroy']);
     });
 
+    Route::apiResource('school_levels', SchoolLevelController::class);
+
 
     // Routes Admins
     Route::group(['prefix' => 'administrators'], function () {
@@ -37,8 +40,8 @@ Route::middleware(['auth:super_admin'])->group(function () {
     Route::group(['prefix' => 'professors'], function () {
         Route::get('/renew-password/{id}', [TeacherController::class, 'renewPassword']);
         Route::get('/restore/{id}', [TeacherController::class, 'restore']);
-        Route::post('/restore-all', [TeacherController::class, 'restoreAll']);
-        Route::post('/trash', [TeacherController::class, 'trash']);
+        Route::get('/restore-all', [TeacherController::class, 'restoreAll']);
+        Route::get('/trash', [TeacherController::class, 'trash']);
         Route::post('/attach-teacher-to-classe/{idclasse}', [TeacherController::class, 'attachTeacherToClasse']);
     });
 });

@@ -12,7 +12,8 @@ class SchoolLevelController extends Controller
      */
     public function index()
     {
-        //
+        $school_levels = SchoolLevel::all();
+        return response()->json($school_levels);
     }
 
     /**
