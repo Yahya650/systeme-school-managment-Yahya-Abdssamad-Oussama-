@@ -41,6 +41,7 @@ class Exam extends Model
     {
         return $this->belongsToMany(Classe::class, 'exam_classes')
             ->using(ExamClasse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 

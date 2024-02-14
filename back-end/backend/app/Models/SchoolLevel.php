@@ -24,6 +24,7 @@ class SchoolLevel extends Model
     {
         return $this->belongsToMany(Admin::class, 'responsibles')
         ->using(Responsible::class)
+        ->wherePivot('deleted_at', null)
         ->withPivot('type')
         ->withTimestamps();
     }

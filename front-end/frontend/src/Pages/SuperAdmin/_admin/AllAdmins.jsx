@@ -8,6 +8,7 @@ import cryptID from "./../../../security/cryptID";
 import dcryptID from "./../../../security/dcryptID";
 import toast from "react-hot-toast";
 import ReactPaginate from "react-paginate";
+import { BACKEND_URL } from "../../../Api/AxiosClient";
 
 const AllAdmins = () => {
   const [loading, setLoading] = useState(true);
@@ -142,8 +143,8 @@ const AllAdmins = () => {
                                       <img
                                         className="avatar-img rounded-circle"
                                         src={
-                                          admin.profile
-                                            ? admin.profile
+                                          admin.profile_picture
+                                            ? BACKEND_URL + "/storage/" + admin.profile_picture
                                             : admin.gender === "female"
                                             ? "/assets/img/default-profile-picture-grey-female-icon.png"
                                             : "/assets/img/default-profile-picture-grey-male-icon.png"

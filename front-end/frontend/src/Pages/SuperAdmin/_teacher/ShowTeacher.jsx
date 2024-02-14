@@ -5,11 +5,14 @@ import { useContextApi } from "../../../Context/ContextApi";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import dcryptID from "../../../security/dcryptID";
 import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
+import LoadingCircle from "../../../Components/LoadingCircle";
+import { BACKEND_URL } from "../../../Api/AxiosClient";
 
 const ShowTeacher = () => {
-  const { teacher, navigateTo, calculateAge } = useContextApi();
+  const { teacher, navigateTo, calculateAge, loadingProfilePicture } =
+    useContextApi();
   const [loading, setLoading] = useState(true);
-  const { getTeacher } = useCrudTeachers();
+  const { getTeacher, updateProfilePicture } = useCrudTeachers();
   const { id } = useParams();
 
   const fetchData = async () => {
@@ -68,21 +71,36 @@ const ShowTeacher = () => {
                         <div className="profile-user-box">
                           <div className="profile-user-img">
                             <img
-                              className="bg-white"
+                              className="bg-white avatar-img rounded-circle"
+                              width={"141px"}
+                              height={"141px"}
                               src={
-                                teacher.profile
-                                  ? teacher.profile
+                                teacher.profile_picture
+                                  ? BACKEND_URL + "/storage/" + teacher.profile_picture
                                   : teacher.gender == "male"
                                   ? "/assets/img/default-profile-picture-grey-male-icon.png"
                                   : "/assets/img/default-profile-picture-grey-female-icon.png"
                               }
-                              alt="Profil"
+                              alt="Profile"
                             />
                             <div className="form-group students-up-files profile-edit-icon mb-0">
                               <div className="uplod d-flex">
                                 <label className="file-upload profile-upbtn mb-0">
                                   <i className="feather-edit-3"></i>
-                                  <input type="file" />
+                                  {loadingProfilePicture && <LoadingCircle />}
+                                  <input
+                                    disabled={loadingProfilePicture}
+                                    className="upload"
+                                    type="file"
+                                    accept="image/jpeg, image/png, image/jpg"
+                                    onChange={async (e) => {
+                                      await updateProfilePicture(
+                                        id,
+                                        e.target.files[0]
+                                      );
+                                    }}
+                                    name="profile_picture"
+                                  />
                                 </label>
                               </div>
                             </div>

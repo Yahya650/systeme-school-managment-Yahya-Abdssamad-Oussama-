@@ -30,12 +30,14 @@ const Context = createContext({
   pageCount: null,
   currentPage: null,
   total: null,
+  loadingProfilePicture: null,
   navigateTo: () => {},
   setTotal: () => {},
   setTeacher: () => {},
   setPageCount: () => {},
   setCurrentPage: () => {},
   handlePageClick: () => {},
+  setLoadingProfilePicture: () => {},
 });
 
 export const ContextApi = ({ children }) => {
@@ -51,6 +53,8 @@ export const ContextApi = ({ children }) => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
+  const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -207,6 +211,8 @@ export const ContextApi = ({ children }) => {
         currentPage,
         total,
         calculateAge,
+        setLoadingProfilePicture,
+        loadingProfilePicture,
         setPageCount,
         setCurrentPage,
         setTotal,

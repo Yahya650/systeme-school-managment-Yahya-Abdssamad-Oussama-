@@ -45,6 +45,7 @@ class Classe extends Model
     {
         return $this->belongsToMany(Teacher::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 
@@ -57,6 +58,7 @@ class Classe extends Model
     {
         return $this->belongsToMany(Exam::class, 'exam_classes')
             ->using(ExamClasse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 
@@ -64,6 +66,7 @@ class Classe extends Model
     {
         return $this->belongsToMany(Course::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 
@@ -71,6 +74,7 @@ class Classe extends Model
     {
         return $this->belongsToMany(Exercise::class, 'exercise_classes')
             ->using(ExerciseClasse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 }

@@ -53,8 +53,8 @@ class StudentParentController extends Controller
         $newStudentParent = new StudentParent();
 
         if ($request->profile_picture) {
-            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $newStudentParent->profile_picture = 'picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $newStudentParent->profile_picture = 'picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
         }
 
         $newStudentParent->profile_picture = $request->profile_picture;

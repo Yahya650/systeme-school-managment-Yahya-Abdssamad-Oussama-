@@ -8,6 +8,7 @@ import dcryptID from "../../../security/dcryptID";
 import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 import toast from "react-hot-toast";
 import ReactPaginate from "react-paginate";
+import { BACKEND_URL } from "../../../Api/AxiosClient";
 
 const AllTeachers = () => {
   const [loading, setLoading] = useState(true);
@@ -144,7 +145,7 @@ const AllTeachers = () => {
                                         className="avatar-img rounded-circle"
                                         src={
                                           teacher.profile
-                                            ? teacher.profile
+                                            ? BACKEND_URL + "/storage/" + teacher.profile
                                             : teacher.gender === "female"
                                             ? "/assets/img/default-profile-picture-grey-female-icon.png"
                                             : "/assets/img/default-profile-picture-grey-male-icon.png"

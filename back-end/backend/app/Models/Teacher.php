@@ -58,6 +58,7 @@ class Teacher extends Authenticatable
     {
         return $this->belongsToMany(Classe::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 
@@ -84,6 +85,7 @@ class Teacher extends Authenticatable
     {
         return $this->belongsToMany(Course::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 }

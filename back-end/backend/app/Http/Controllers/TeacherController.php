@@ -103,6 +103,44 @@ class TeacherController extends Controller
         return response()->json($request->user('super_admin')->teachers()->latest()->paginate(5));
     }
 
+    public function updatePictureProfile(Request $request, $id)
+    {
+        // Find the teacher by ID
+        $teacher = Teacher::find($id);
+        if (!$teacher) {
+            return response()->json([
+                'message' => 'Enseignant non trouvé'
+            ], 404);
+        }
+
+        // Validate the incoming request
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($teacher->profile_picture) {
+            Storage::disk('public')->delete($teacher->profile_picture);
+        }
+
+        // Store the profile picture in the storage
+        $imagePath = 'picture_profiles/teacher/' . $teacher->cin . '-' . $teacher->last_name . "_" . $teacher->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        // Update the teacher's profile picture URL
+        $teacher->profile_picture = $imagePath;
+
+        // Save the updated teacher data
+        if (!$teacher->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de la photo de profile'
+            ]);
+        }
+
+        return response()->json([
+            'message' => "Photo de profile mise à jour avec succès"
+        ], 200);
+    }
+
 
     public function show($id)
     {
@@ -157,8 +195,8 @@ class TeacherController extends Controller
 
         if ($request->profile_picture) {
             Storage::delete('public/' . $teacher->profile_picture);
-            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $teacher->profile_picture = 'picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." .  $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $teacher->profile_picture = 'picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." .  $request->profile_picture->extension();
         }
 
         $teacher->first_name = $request->first_name;

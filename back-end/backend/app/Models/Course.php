@@ -50,6 +50,7 @@ class Course extends Model
     {
         return $this->belongsToMany(Teacher::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 

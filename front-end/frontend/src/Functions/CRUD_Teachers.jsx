@@ -4,6 +4,7 @@ import { useContextApi } from "../Context/ContextApi";
 import toast from "react-hot-toast";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import dcryptID from "../security/dcryptID";
 
 const CrudTeachersContext = createContext({
   getTeachers: () => {},
@@ -11,6 +12,7 @@ const CrudTeachersContext = createContext({
   removeTeacher: () => {},
   createTeacher: () => {},
   getTeacher: () => {},
+  updateProfilePicture: () => {},
 });
 
 const CRUD_Teachers = ({ children }) => {
@@ -21,6 +23,7 @@ const CRUD_Teachers = ({ children }) => {
     navigateTo,
     setPageCount,
     setTotal,
+    setLoadingProfilePicture,
     currentPage,
   } = useContextApi();
 
@@ -34,6 +37,37 @@ const CRUD_Teachers = ({ children }) => {
       setTeachers(data.data);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async function updateProfilePicture(id, profile_picture) {
+    setLoadingProfilePicture(true);
+    try {
+      const formDataFile = new FormData();
+      formDataFile.append("profile_picture", profile_picture);
+
+      const { data } = await AxiosClient.post(
+        "/super-admin/professors/" + dcryptID(id) + "/update-profile-picture",
+        formDataFile, // Passing formData directly as the second argument
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      await getTeacher(dcryptID(id));
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      console.log(error);
+    } finally {
+      setLoadingProfilePicture(false);
     }
   }
 
@@ -135,6 +169,7 @@ const CRUD_Teachers = ({ children }) => {
         updateTeacher,
         removeTeacher,
         createTeacher,
+        updateProfilePicture,
         getTeacher,
       }}
     >

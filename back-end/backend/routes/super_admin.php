@@ -34,8 +34,9 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::get('/restore/{id}', [AdminController::class, 'restore']);
         Route::get('/restore-all', [AdminController::class, 'restoreAll']);
         Route::get('/trash', [AdminController::class, 'trash']);
+        Route::post('{id}/update-profile-picture', [AdminController::class, 'updatePictureProfile']);
     });
-
+    
     // Routes Teachers
     Route::group(['prefix' => 'professors'], function () {
         Route::get('/renew-password/{id}', [TeacherController::class, 'renewPassword']);
@@ -43,6 +44,7 @@ Route::middleware(['auth:super_admin'])->group(function () {
         Route::get('/restore-all', [TeacherController::class, 'restoreAll']);
         Route::get('/trash', [TeacherController::class, 'trash']);
         Route::post('/attach-teacher-to-classe/{idclasse}', [TeacherController::class, 'attachTeacherToClasse']);
+        Route::post('{id}/update-profile-picture', [TeacherController::class, 'updatePictureProfile']);
     });
 });
 

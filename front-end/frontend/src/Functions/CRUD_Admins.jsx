@@ -4,6 +4,7 @@ import { useContextApi } from "../Context/ContextApi";
 import React, { createContext, useContext } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import dcryptID from "../security/dcryptID";
 
 const CrudAdminsContext = createContext({
   getAdmins: () => {},
@@ -11,11 +12,20 @@ const CrudAdminsContext = createContext({
   updateAdmin: () => {},
   removeAdmin: () => {},
   createAdmin: () => {},
+  updateProfilePicture: () => {},
 });
 
 const CRUD_Admins = ({ children }) => {
-  const { setAdmins, setAdmin, setErrors, navigateTo, setPageCount, setTotal, currentPage } =
-    useContextApi();
+  const {
+    setAdmins,
+    setAdmin,
+    setErrors,
+    navigateTo,
+    setPageCount,
+    setTotal,
+    setLoadingProfilePicture,
+    currentPage,
+  } = useContextApi();
 
   async function getAdmins(currentPage = 1) {
     try {
@@ -26,6 +36,10 @@ const CRUD_Admins = ({ children }) => {
       setPageCount(data.last_page);
       setAdmins(data.data);
     } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
       console.log(error);
     }
   }
@@ -34,7 +48,43 @@ const CRUD_Admins = ({ children }) => {
       const { data } = await AxiosClient.get("/super-admin/admins/" + id);
       setAdmin(data);
     } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
       console.log(error);
+    }
+  }
+  async function updateProfilePicture(id, profile_picture) {
+    setLoadingProfilePicture(true);
+    try {
+      const formDataFile = new FormData();
+      formDataFile.append("profile_picture", profile_picture);
+
+      const { data } = await AxiosClient.post(
+        "/super-admin/administrators/" +
+          dcryptID(id) +
+          "/update-profile-picture",
+        formDataFile, // Passing formData directly as the second argument
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      await getAdmin(dcryptID(id));
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      console.log(error);
+    } finally {
+      setLoadingProfilePicture(false);
     }
   }
 
@@ -126,6 +176,7 @@ const CRUD_Admins = ({ children }) => {
         updateAdmin,
         removeAdmin,
         createAdmin,
+        updateProfilePicture,
       }}
     >
       {children}

@@ -141,6 +141,44 @@ class AdminController extends Controller
         return response()->json(Admin::find($id));
     }
 
+    public function updatePictureProfile(Request $request, $id)
+    {
+        // Find the admin by ID
+        $admin = Admin::find($id);
+        if (!$admin) {
+            return response()->json([
+                'message' => 'Administrateur non trouvé'
+            ], 404);
+        }
+
+        // Validate the incoming request
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($admin->profile_picture) {
+            Storage::disk('public')->delete($admin->profile_picture);
+        }
+
+        // Store the profile picture in the storage
+        $imagePath = 'picture_profiles/admin/' . $admin->cin . '-' . $admin->last_name . "_" . $admin->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        // Update the admin's profile picture URL
+        $admin->profile_picture = $imagePath;
+
+        // Save the updated admin data
+        if (!$admin->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de la photo de profil'
+            ]);
+        }
+
+        return response()->json([
+            'message' => "Photo de profil mise à jour avec succès"
+        ], 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -179,8 +217,8 @@ class AdminController extends Controller
 
         if ($request->profile_picture) {
             Storage::delete('public/' . $admin->profile_picture);
-            Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg", file_get_contents($request->profile_picture));
-            $admin->profile_picture = 'picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . ".jpg";
+            Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $admin->profile_picture = 'picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
         }
 
         $admin->first_name = $request->first_name;
