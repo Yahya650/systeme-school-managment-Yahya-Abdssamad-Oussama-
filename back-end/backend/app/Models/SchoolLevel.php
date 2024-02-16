@@ -15,18 +15,18 @@ class SchoolLevel extends Model
     public $fallable = [
         'name',
     ];
-    
-    public function classe_types(){
+
+    public function classe_types()
+    {
         return $this->hasMany(ClasseType::class);
     }
 
     public function admins()
     {
         return $this->belongsToMany(Admin::class, 'responsibles')
-        ->using(Responsible::class)
-        ->wherePivot('deleted_at', null)
-        ->withPivot('type')
-        ->withTimestamps();
+            ->using(Responsible::class)
+            ->wherePivot('deleted_at', null)
+            ->withPivot('types')
+            ->withTimestamps();
     }
-
 }

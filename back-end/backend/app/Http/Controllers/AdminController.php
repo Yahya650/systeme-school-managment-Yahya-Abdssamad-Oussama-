@@ -86,15 +86,12 @@ class AdminController extends Controller
 
         // loop for school levels
         for ($i = 0; $i < count($request->responsibility); $i++) {
-            // loop for types
-            for ($j = 0; $j < count($request->responsibility[$i]['types']); $j++) {
-                if (!SchoolLevel::find($request->responsibility[$i]['school_level_id']) || !in_array($request->responsibility[$i]['types'][$j], ['financial', 'educational'])) {
-                    return response()->json([
-                        'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
-                    ], 404);
-                }
-                $newAdmin->school_levels()->attach($request->responsibility[$i]['school_level_id'], ['type' => $request->responsibility[$i]['types'][$j]]);
+            if (!SchoolLevel::find($request->responsibility[$i]['school_level_id']) || !in_array('financial' || 'educational', $request->responsibility[$i]['types'])) {
+                return response()->json([
+                    'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
+                ], 404);
             }
+            $newAdmin->school_levels()->attach($request->responsibility[$i]['school_level_id'], ['types' => json_encode($request->responsibility[$i]['types'])]);
         }
 
         return response([
@@ -210,7 +207,7 @@ class AdminController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['required', 'string', 'size:10', Rule::unique('admins', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
-            // 'responsibility' => 'array',
+            'responsibility' => 'array',
         ]);
 
         $admin = Admin::find($id);
@@ -232,24 +229,22 @@ class AdminController extends Controller
         $admin->phone_number = $request->phone_number;
         $admin->address = $request->address;
 
-        $admin->save();
+        if (!$admin->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de l\'administrateur'
+            ]);
+        }
 
-        // if ($res = Responsible::where('admin_id', $admin->id)) {
-        //     // loop for school levels
-        //     for ($i = 0; $i < $request->responsibility->count(); $i++) {
-        //         // loop for types
-        //         for ($j = 0; $j < $request->responsibility[$i]['types']->count(); $j++) {
-        //             if (!SchoolLevel::find($request->responsibility[$i]['school_level_id'] || !in_array($request->responsibility[$i]['types'][$j], ['financial', 'educational']))) {
-        //                 return response()->json([
-        //                     'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct"
-        //                 ]);
-        //             }
-        //             $res->school_level_id = $request->responsibility[$i]['school_level_id'];
-        //             $res->type = $request->responsibility[$i]['types'][$j];
-        //             $res->save();
-        //         }
-        //     }
-        // }
+        Responsible::where('admin_id', $admin->id)->delete();
+        // loop for school levels
+        for ($i = 0; $i < count($request->responsibility); $i++) {
+            if (!SchoolLevel::find($request->responsibility[$i]['school_level_id']) || !in_array('financial' || 'educational', $request->responsibility[$i]['types'])) {
+                return response()->json([
+                    'message' => "Le niveau scolaire n'existe pas ou le type n'est pas correct ou le niveau scolaire ne doit pas être de type 'financial' ou 'educational'"
+                ], 404);
+            }
+            $admin->school_levels()->attach($request->responsibility[$i]['school_level_id'], ['types' => json_encode($request->responsibility[$i]['types'])]);
+        }
 
         return response([
             'message' => "Administrateur mis à jour avec succès"
@@ -335,7 +330,7 @@ class AdminController extends Controller
         return response()->json([
             'email' => $admin->email,
             'cin' => $admin->cin,
-            'new_password' => $newPassword,
+            'password' => $newPassword,
             'message' => 'Mot de passe mis à jour avec succès'
         ]);
     }

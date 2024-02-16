@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('responsibles', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['financial', 'educational']);
+            $table->string('types');
 
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->foreign('admin_id')->references('id')->on('admins')->nullOnDelete();

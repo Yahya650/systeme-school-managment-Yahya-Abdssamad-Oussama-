@@ -13,6 +13,7 @@ const CrudAdminsContext = createContext({
   removeAdmin: () => {},
   createAdmin: () => {},
   updateProfilePicture: () => {},
+  renewPassword: () => {},
 });
 
 const CRUD_Admins = ({ children }) => {
@@ -40,7 +41,6 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
     }
   }
   async function getAdmin(id) {
@@ -52,7 +52,6 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
     }
   }
   async function updateProfilePicture(id, profile_picture) {
@@ -82,7 +81,6 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
     } finally {
       setLoadingProfilePicture(false);
     }
@@ -99,14 +97,13 @@ const CRUD_Admins = ({ children }) => {
         position: "top-right",
       });
       setErrors(null);
-      navigateTo("/super-admin/all-admins");
+      navigateTo(-1);
       // getAdmins();
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -125,13 +122,43 @@ const CRUD_Admins = ({ children }) => {
         position: "top-center",
       });
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-center",
       });
     } finally {
       toast.dismiss(toastId);
+    }
+  }
+
+  async function renewPassword(id) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/administrators/" + dcryptID(id) + "/renew-password"
+      );
+      withReactContent(Swal).fire({
+        title: data.message,
+        html: (
+          <div>
+            <b>CIN : </b> {data.cin} <br />
+            <b>E-mail : </b> {data.email} <br />
+            <b>Password : </b> {data.password} <br />
+          </div>
+        ),
+        icon: "success",
+      });
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
     }
   }
 
@@ -161,7 +188,6 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -177,6 +203,7 @@ const CRUD_Admins = ({ children }) => {
         removeAdmin,
         createAdmin,
         updateProfilePicture,
+        renewPassword,
       }}
     >
       {children}

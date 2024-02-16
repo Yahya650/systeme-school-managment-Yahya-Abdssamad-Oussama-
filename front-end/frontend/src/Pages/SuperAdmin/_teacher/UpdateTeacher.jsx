@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
 import dcryptID from "../../../security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
@@ -306,12 +305,13 @@ const UpdateTeacher = () => {
                           >
                             {loadingForm ? <LoadingCircle /> : "Modifier"}
                           </button>
-                          <Link
-                            to={"/super-admin/all-teachers"}
+                          <button
+                            type="button"
+                            onClick={() => navigateTo(-1)}
                             className="border border-2 btn ms-2 rounded-4 bg-danger-light"
                           >
                             Annuler
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>

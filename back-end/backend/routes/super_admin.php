@@ -30,17 +30,17 @@ Route::middleware(['auth:super_admin'])->group(function () {
 
     // Routes Admins
     Route::group(['prefix' => 'administrators'], function () {
-        Route::get('/renew-password/{id}', [AdminController::class, 'renewPassword']);
-        Route::get('/restore/{id}', [AdminController::class, 'restore']);
+        Route::get('{id}/renew-password', [AdminController::class, 'renewPassword']);
+        Route::get('{id}/restore', [AdminController::class, 'restore']);
         Route::get('/restore-all', [AdminController::class, 'restoreAll']);
         Route::get('/trash', [AdminController::class, 'trash']);
         Route::post('{id}/update-profile-picture', [AdminController::class, 'updatePictureProfile']);
     });
-    
+
     // Routes Teachers
     Route::group(['prefix' => 'professors'], function () {
-        Route::get('/renew-password/{id}', [TeacherController::class, 'renewPassword']);
-        Route::get('/restore/{id}', [TeacherController::class, 'restore']);
+        Route::get('{id}/renew-password', [TeacherController::class, 'renewPassword']);
+        Route::get('{id}/restore', [TeacherController::class, 'restore']);
         Route::get('/restore-all', [TeacherController::class, 'restoreAll']);
         Route::get('/trash', [TeacherController::class, 'trash']);
         Route::post('/attach-teacher-to-classe/{idclasse}', [TeacherController::class, 'attachTeacherToClasse']);

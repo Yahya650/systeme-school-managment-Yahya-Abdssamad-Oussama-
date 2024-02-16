@@ -27,7 +27,6 @@ class AdminFactory extends Factory
             'email' => fake()->unique()->safeEmail,
             'cin' => fake()->unique()->regexify('[0-9]{8}'),
             'password' => Hash::make('password'), // You may want to use a more secure password generation method
-            'health_status' => fake()->optional()->word,
             'date_of_birth' => fake()->date,
             'blood_type' => fake()->optional()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
             'phone_number' => fake()->unique()->phoneNumber,

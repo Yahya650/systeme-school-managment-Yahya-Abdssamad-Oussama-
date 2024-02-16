@@ -5,7 +5,7 @@ import LoadingCircle from "../../../Components/LoadingCircle";
 import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 
 const CreateTeacher = () => {
-  const { errors } = useContextApi();
+  const { errors, navigateTo } = useContextApi();
   const [loadingForm, setloadingForm] = useState(false);
   const { createTeacher } = useCrudTeachers();
 
@@ -245,12 +245,13 @@ const CreateTeacher = () => {
                         >
                           {loadingForm ? <LoadingCircle /> : "Ajouter"}
                         </button>
-                        <Link
-                          to={"/super-admin/all-teachers"}
+                        <button
+                          type="button"
+                          onClick={() => navigateTo(-1)}
                           className="border border-2 btn ms-2 rounded-4 bg-danger-light"
                         >
                           Annuler
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>

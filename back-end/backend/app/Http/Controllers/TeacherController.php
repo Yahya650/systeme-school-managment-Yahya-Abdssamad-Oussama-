@@ -295,7 +295,7 @@ class TeacherController extends Controller
         return response()->json([
             'email' => $teacher->email,
             'cin' => $teacher->cin,
-            'new_password' => $newPassword,
+            'password' => $newPassword,
             'message' => 'Mot de passe mis à jour avec succès'
         ]);
     }

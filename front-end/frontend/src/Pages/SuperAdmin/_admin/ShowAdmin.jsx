@@ -13,7 +13,8 @@ const ShowAdmin = () => {
   const { admin, navigateTo, calculateAge, loadingProfilePicture } =
     useContextApi();
   const [loading, setLoading] = useState(true);
-  const { getAdmin, updateProfilePicture } = useCrudAdmins();
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const { getAdmin, updateProfilePicture, renewPassword } = useCrudAdmins();
   const { id } = useParams();
 
   const fetchData = async () => {
@@ -114,8 +115,8 @@ const ShowAdmin = () => {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="col-lg-4 col-md-4 d-flex align-items-center">
-                        <div className="follow-group">
+                      <div className="col-lg-4 col-md-4 d-flex align-items-center">
+                        {/* <div className="follow-group">
                           <div className="students-follows">
                             <h5>Abonnés</h5>
                             <h4>2850</h4>
@@ -128,24 +129,37 @@ const ShowAdmin = () => {
                             <h5>Abonnés</h5>
                             <h4>2850</h4>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-lg-4 col-md-4 d-flex align-items-center">
                         <div className="follow-btn-group">
-                          <button
-                            type="submit"
-                            className="btn btn-info follow-btns"
+                          <Link
+                            to={
+                              "/super-admin/update-admin/" + cryptID(admin.id)
+                            }
+                            className="btn btn-primary"
                           >
-                            Suivre
-                          </button>
+                            <i className="feather-edit-3"></i>
+                          </Link>
+
                           <button
+                            disabled={resetPasswordLoading}
+                            onClick={async () => {
+                              setResetPasswordLoading(true);
+                              await renewPassword(cryptID(admin.id));
+                              setResetPasswordLoading(false);
+                            }}
                             type="submit"
-                            className="btn btn-info message-btns"
+                            className="btn btn-primary mx-3"
                           >
-                            Message
+                            {resetPasswordLoading ? (
+                              <LoadingCircle />
+                            ) : (
+                              "Reset Password"
+                            )}
                           </button>
                         </div>
-                      </div> */}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -251,36 +265,40 @@ const ShowAdmin = () => {
                     <div className="card mb-0">
                       <div className="card-body">
                         <div className="heading-detail">
-                          <h4>Responsibles (Financial) :</h4>
+                          <h4>Responsibles :</h4>
                         </div>
                         <div className="table-responsive">
-                          {admin.school_levels.filter(
-                            (school_level) =>
-                              school_level.pivot.type === "financial"
-                          ).length > 0 ? (
+                          {admin.school_levels.length > 0 ? (
                             <table className="datatable table table-stripped table-responsive">
                               <thead>
                                 <tr>
                                   <th>Type</th>
-                                  <th>Name</th>
-                                  <th className="text text-center">Actions</th>
+                                  <th className="text text-center">Name</th>
+                                  {/* <th className="text text-center">Actions</th> */}
                                 </tr>
                               </thead>
                               <tbody>
-                                {admin.school_levels
-                                  .filter(
-                                    (school_level) =>
-                                      school_level.pivot.type === "financial"
-                                  )
-                                  .map((school_level, index) => (
+                                {admin.school_levels.map(
+                                  (school_level, index) => (
                                     <tr key={index}>
-                                      <td>
-                                        <span className="badge rounded-pill bg-success">
-                                          {school_level.pivot.type}
-                                        </span>
-                                      </td>
                                       <td>{school_level.name}</td>
-                                      <td>
+                                      <td className="text text-center">
+                                        {JSON.parse(
+                                          school_level.pivot.types
+                                        ).map((type, i) => (
+                                          <span
+                                            key={i}
+                                            className={
+                                              type === "financial"
+                                                ? "badge rounded-pill mx-2 bg-success"
+                                                : "badge rounded-pill mx-2 bg-info"
+                                            }
+                                          >
+                                            {type}
+                                          </span>
+                                        ))}
+                                      </td>
+                                      {/* <td>
                                         <div className="text text-center">
                                           <Link
                                             to={"#"}
@@ -298,76 +316,10 @@ const ShowAdmin = () => {
                                             <i className="feather-trash"></i>
                                           </button>
                                         </div>
-                                      </td>
+                                      </td> */}
                                     </tr>
-                                  ))}
-                              </tbody>
-                            </table>
-                          ) : (
-                            <div className="alert alert-danger" role="alert">
-                              <div className="flex-grow-1 me-2">
-                                <b>
-                                  This membre de la direction is not Responsible
-                                  Financial to any school level
-                                </b>
-                                <br />
-                                You can start by adding a Responsible
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="heading-detail mt-5 ">
-                          <h4>Responsibles (Educational) :</h4>
-                        </div>
-                        <div className="table-responsive">
-                          {admin.school_levels.filter(
-                            (school_level) =>
-                              school_level.pivot.type === "educational"
-                          ).length > 0 ? (
-                            <table className="datatable table table-stripped table-responsive">
-                              <thead>
-                                <tr>
-                                  <th>Type</th>
-                                  <th>Name</th>
-                                  <th className="text text-center">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {admin.school_levels
-                                  .filter(
-                                    (school_level) =>
-                                      school_level.pivot.type === "educational"
                                   )
-                                  .map((school_level, index) => (
-                                    <tr key={index}>
-                                      <td>
-                                        <span className="badge rounded-pill bg-info">
-                                          {school_level.pivot.type}
-                                        </span>
-                                      </td>
-                                      <td>{school_level.name}</td>
-                                      <td>
-                                        <div className="text text-center">
-                                          <Link
-                                            to={"#"}
-                                            className="btn btn-sm bg-success-light me-2 "
-                                          >
-                                            <i className="feather-eye"></i>
-                                          </Link>
-                                          <Link
-                                            to={"#"}
-                                            className="btn btn-sm bg-danger-light"
-                                          >
-                                            <i className="feather-edit"></i>
-                                          </Link>
-                                          <button className="btn btn-sm bg-danger-light ms-2">
-                                            <i className="feather-trash"></i>
-                                          </button>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
+                                )}
                               </tbody>
                             </table>
                           ) : (

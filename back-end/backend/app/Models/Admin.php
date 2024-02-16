@@ -59,7 +59,7 @@ class Admin extends Authenticatable
         return $this->belongsToMany(SchoolLevel::class, 'responsibles')
             ->using(Responsible::class)
             ->wherePivot('deleted_at', null)
-            ->withPivot('type')
+            ->withPivot('types')
             ->withTimestamps();
     }
 

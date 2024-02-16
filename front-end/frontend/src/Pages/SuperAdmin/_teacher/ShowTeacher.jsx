@@ -7,12 +7,14 @@ import dcryptID from "../../../security/dcryptID";
 import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { BACKEND_URL } from "../../../Api/AxiosClient";
+import cryptID from "../../../security/cryptID";
 
 const ShowTeacher = () => {
   const { teacher, navigateTo, calculateAge, loadingProfilePicture } =
     useContextApi();
   const [loading, setLoading] = useState(true);
-  const { getTeacher, updateProfilePicture } = useCrudTeachers();
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const { getTeacher, updateProfilePicture, renewPassword } = useCrudTeachers();
   const { id } = useParams();
 
   const fetchData = async () => {
@@ -76,7 +78,9 @@ const ShowTeacher = () => {
                               height={"141px"}
                               src={
                                 teacher.profile_picture
-                                  ? BACKEND_URL + "/storage/" + teacher.profile_picture
+                                  ? BACKEND_URL +
+                                    "/storage/" +
+                                    teacher.profile_picture
                                   : teacher.gender == "male"
                                   ? "/assets/img/default-profile-picture-grey-male-icon.png"
                                   : "/assets/img/default-profile-picture-grey-female-icon.png"
@@ -113,8 +117,8 @@ const ShowTeacher = () => {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="col-lg-4 col-md-4 d-flex align-items-center">
-                        <div className="follow-group">
+                      <div className="col-lg-4 col-md-4 d-flex align-items-center">
+                        {/* <div className="follow-group">
                           <div className="students-follows">
                             <h5>Abonnés</h5>
                             <h4>2850</h4>
@@ -127,24 +131,38 @@ const ShowTeacher = () => {
                             <h5>Abonnés</h5>
                             <h4>2850</h4>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-lg-4 col-md-4 d-flex align-items-center">
                         <div className="follow-btn-group">
-                          <button
-                            type="submit"
-                            className="btn btn-info follow-btns"
+                          <Link
+                            to={
+                              "/super-admin/update-teacher/" +
+                              cryptID(teacher.id)
+                            }
+                            className="btn btn-primary"
                           >
-                            Suivre
-                          </button>
+                            <i className="feather-edit-3"></i>
+                          </Link>
+
                           <button
+                            disabled={resetPasswordLoading}
+                            onClick={async () => {
+                              setResetPasswordLoading(true);
+                              await renewPassword(cryptID(teacher.id));
+                              setResetPasswordLoading(false);
+                            }}
                             type="submit"
-                            className="btn btn-info message-btns"
+                            className="btn btn-primary mx-3"
                           >
-                            Message
+                            {resetPasswordLoading ? (
+                              <LoadingCircle />
+                            ) : (
+                              "Reset Password"
+                            )}
                           </button>
                         </div>
-                      </div> */}
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import { AxiosClient } from "../../../Api/AxiosClient";
 import cryptID from "../../../security/cryptID";
 
 const CreateAdmin = () => {
-  const { errors } = useContextApi();
+  const { errors, navigateTo } = useContextApi();
   const [schoolLevels, setSchoolLevels] = useState(null);
   const [loadingForm, setloadingForm] = useState(false);
   const { createAdmin } = useCrudAdmins();
@@ -17,28 +17,18 @@ const CreateAdmin = () => {
   const handleLevelCheckboxChange = (e, id) => {
     if (e.target.checked) {
       setSelectedLevels([...selectedLevels, id]);
-      // If the school level is checked, add it to formData if not already present
-      // if (!formData.find((data) => data.school_level_id === id)) {
-      //   setFormData([...formData, { school_level_id: id, types: [] }]);
-      // }
     } else {
       setSelectedLevels(selectedLevels.filter((levelId) => levelId !== id));
-      // If the school level is unchecked, remove it from formData
       setFormData(formData.filter((data) => data.school_level_id !== id));
     }
   };
 
   const handleTypeCheckboxChange = (e, type, levelId) => {
     const { checked } = e.target;
-
-    // Find the index of the data object in formData array with the matching school level ID
     const index = formData.findIndex(
       (data) => data.school_level_id === levelId
     );
-
-    // If the data object with the school level ID is found
     if (index !== -1) {
-      // If checkbox is checked, add the type to the types array, otherwise remove it
       if (checked) {
         const updatedTypes = [...formData[index].types, type];
         const updatedData = { ...formData[index], types: updatedTypes };
@@ -48,9 +38,7 @@ const CreateAdmin = () => {
           ...formData.slice(index + 1),
         ]);
       } else {
-        // If checkbox is unchecked, remove the type from the types array
         const updatedTypes = formData[index].types.filter((t) => t !== type);
-        // If there are remaining types, update the data object, otherwise remove it
         if (updatedTypes.length > 0) {
           const updatedData = { ...formData[index], types: updatedTypes };
           setFormData([
@@ -66,14 +54,11 @@ const CreateAdmin = () => {
         }
       }
     } else {
-      // If the data object with the school level ID is not found, create a new one and add it to formData array
       if (checked) {
         setFormData([...formData, { school_level_id: levelId, types: [type] }]);
       }
     }
   };
-
-  // useEffect(() => console.log(formData), [formData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -399,12 +384,13 @@ const CreateAdmin = () => {
                         >
                           {loadingForm ? <LoadingCircle /> : "Ajouter"}
                         </button>
-                        <Link
-                          to={"/super-admin/all-admins"}
+                        <button
+                          type="button"
+                          onClick={() => navigateTo(-1)}
                           className="border border-2 btn ms-2 rounded-4 bg-danger-light"
                         >
                           Annuler
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>

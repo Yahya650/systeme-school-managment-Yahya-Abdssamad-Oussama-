@@ -55,9 +55,7 @@ export const ContextApi = ({ children }) => {
   const [total, setTotal] = useState(null);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
 
-
   const navigate = useNavigate();
-
   const handlePageClick = async (page, fetchData) => {
     const toastId1 = toast.loading("Loading...", {
       style: { color: "white", background: "black" },
@@ -147,7 +145,6 @@ export const ContextApi = ({ children }) => {
         navigate("/" + guard + "/dashboard", { replace: true });
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
@@ -180,7 +177,7 @@ export const ContextApi = ({ children }) => {
       navigate("/", { replace: true });
     } catch (error) {
       navigate("/error/401", { replace: true });
-      // console.log(error);
+      //
     }
   };
 

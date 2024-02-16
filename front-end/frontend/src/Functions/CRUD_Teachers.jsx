@@ -13,6 +13,7 @@ const CrudTeachersContext = createContext({
   createTeacher: () => {},
   getTeacher: () => {},
   updateProfilePicture: () => {},
+  renewPassword: () => {},
 });
 
 const CRUD_Teachers = ({ children }) => {
@@ -36,7 +37,41 @@ const CRUD_Teachers = ({ children }) => {
       setPageCount(data.last_page);
       setTeachers(data.data);
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
+  }
+
+  async function renewPassword(id) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/professors/" + dcryptID(id) + "/renew-password"
+      );
+      withReactContent(Swal).fire({
+        title: data.message,
+        html: (
+          <div>
+            <b>CIN : </b> {data.cin} <br />
+            <b>E-mail : </b> {data.email} <br />
+            <b>Password : </b> {data.password} <br />
+          </div>
+        ),
+        icon: "success",
+      });
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
     }
   }
 
@@ -65,7 +100,6 @@ const CRUD_Teachers = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-      console.log(error);
     } finally {
       setLoadingProfilePicture(false);
     }
@@ -76,7 +110,10 @@ const CRUD_Teachers = ({ children }) => {
       const { data } = await AxiosClient.get("/super-admin/teachers/" + id);
       setTeacher(data);
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
     }
   }
 
@@ -91,10 +128,9 @@ const CRUD_Teachers = ({ children }) => {
         position: "top-right",
       });
       setErrors(null);
-      navigateTo("/super-admin/all-teachers");
+      navigateTo(-1);
       // getTeachers();
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
@@ -117,7 +153,6 @@ const CRUD_Teachers = ({ children }) => {
         position: "top-center",
       });
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-center",
@@ -152,7 +187,6 @@ const CRUD_Teachers = ({ children }) => {
       navigateTo("/super-admin/all-teachers");
       // getTeachers();
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
@@ -171,6 +205,7 @@ const CRUD_Teachers = ({ children }) => {
         createTeacher,
         updateProfilePicture,
         getTeacher,
+        renewPassword,
       }}
     >
       {children}
