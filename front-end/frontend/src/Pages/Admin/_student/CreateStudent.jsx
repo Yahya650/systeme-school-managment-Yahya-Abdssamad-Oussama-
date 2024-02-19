@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const CreateStudent = () => {
+
+
+  // l2a9sam wl 2aba2 llikaynin
+
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">

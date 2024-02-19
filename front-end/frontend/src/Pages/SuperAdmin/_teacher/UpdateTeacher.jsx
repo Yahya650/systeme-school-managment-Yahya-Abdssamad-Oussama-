@@ -308,7 +308,11 @@ const UpdateTeacher = () => {
                           <button
                             type="button"
                             onClick={() => navigateTo(-1)}
-                            className="border border-2 btn ms-2 rounded-4 bg-danger-light"
+                            className="border border-2 btn bg-danger-light"
+                            style={{
+                              minWidth: "160px",
+                              borderRadius: "10px",
+                            }}
                           >
                             Annuler
                           </button>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
+import { useAdminContext } from "../../../Functions/AdminContext";
 import dcryptID from "../../../security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
@@ -11,7 +11,7 @@ const UpdateAdmin = () => {
   const { admin, errors, navigateTo, setErrors } = useContextApi();
   const [loading, setLoading] = useState(true);
   const [loadingForm, setLoadingForm] = useState(false);
-  const { getAdmin, updateAdmin } = useCrudAdmins();
+  const { getAdmin, updateAdmin } = useAdminContext();
   const { id } = useParams();
   const [schoolLevels, setSchoolLevels] = useState(null);
   const [selectedLevels, setSelectedLevels] = useState([]);
@@ -493,7 +493,11 @@ const UpdateAdmin = () => {
                           <button
                             type="button"
                             onClick={() => navigateTo(-1)}
-                            className="border border-2 btn ms-2 rounded-4 bg-danger-light"
+                            className="border border-2 btn bg-danger-light"
+                            style={{
+                              minWidth: "160px",
+                              borderRadius: "10px",
+                            }}
                           >
                             Annuler
                           </button>

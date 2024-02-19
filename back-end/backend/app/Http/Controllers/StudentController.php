@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\StudentParent;
 use Nette\Utils\Random;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -107,6 +108,15 @@ class StudentController extends Controller
     {
         $students = collect([]);
 
+        // ila bghit njib gha hadok lli mkalf bihom educationnel 
+        // foreach ($request->user('admin')->school_levels()->wherePivot('types', 'like', '%educational%')->get() as $school_level) {
+        //     foreach ($school_level->classe_types as $classe_type) {
+        //         foreach ($classe_type->classes as $classe) {
+        //             $students = $students->merge($classe->students);
+        //         }
+        //     }
+        // }
+
         foreach ($request->user('admin')->school_levels as $school_level) {
             foreach ($school_level->classe_types as $classe_type) {
                 foreach ($classe_type->classes as $classe) {
@@ -140,11 +150,13 @@ class StudentController extends Controller
             ], 404);
         }
 
-        if (request()->user()->cannot('view', Student::find($id))) {
-            return response()->json([
-                'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
-            ], 401);
-        }
+
+        // comontit hadi dyal permission 7it ymkan ykon l etudiant makin f7ta chi 9ist so hadchi ghadi ykhalini man9darch n checki if student kin fl niveau lli mklaf bih l dak ladmin or not
+        // if (request()->user()->cannot('view', Student::find($id))) {
+        //     return response()->json([
+        //         'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
+        //     ], 401);
+        // }
 
         return response()->json(Student::find($id));
     }
@@ -206,6 +218,96 @@ class StudentController extends Controller
 
         return response([
             'message' => "Étudiant mis à jour avec succès"
+        ], 200);
+    }
+    public function updateWithParent(Request $request, $id)
+    {
+        $student = Student::find($id);
+        $parent = Student::find($student->parent->id);
+
+        if (!$student || !StudentParent::find($student->parent->id)) {
+            return response()->json([
+                'message' => 'Étudiant ou Parent non trouvé'
+            ], 404);
+        }
+
+        // khas wa7d mn l2abna2 dyal parent ikon dimna hadok lli mklaf bihom dak ladmin lli bgha ydir l'action 3lih (ghadi nzidha fl policies dyal studentParent)
+        if (request()->user()->cannot('update', Student::find($id)) || request()->user()->cannot('update', StudentParent::find($parent->id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de modifier ce Étudiant ou ce Parent'
+            ], 401);
+        }
+
+        $request->validate([
+            // validate student data
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('students', 'email')->ignore($id)],
+            'cin' => ['nullable', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('students', 'cin')->ignore($id)],
+            'code_massar' => ['required', 'string', Rule::unique('students', 'code_massar')->ignore($id), 'regex:/^[A-Z]\d{9}$/'],
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', 'size:10', Rule::unique('students', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+
+            // validate parent data
+            'parent_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'parent_first_name' => 'required|string|max:255',
+            'parent_last_name' => 'required|string|max:255',
+            'parent_gender' => ['required', Rule::in(['male', 'female'])],
+            'parent_email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($parent->id)],
+            'parent_cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($parent->id)],
+            'parent_health_status' => 'nullable|string|max:255',
+            'parent_date_of_birth' => 'required|date',
+            'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'parent_phone_number' => ['required', 'string', 'size:10', Rule::unique('student_parents', 'phone_number')->ignore($parent->id)],
+            'parent_address' => 'nullable|string|max:255',
+        ]);
+
+
+        if ($request->profile_picture) {
+            Storage::delete('public/' . $student->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $student->profile_picture = 'picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        if ($request->parent_profile_picture) {
+            Storage::delete('public/' . $parent->parent_profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->parent_cin . '_' . $request->parent_last_name . "-" . $request->parent_first_name . $request->parent_profile_picture->extension(), file_get_contents($request->parent_profile_picture));
+            $parent->parent_profile_picture = 'picture_profiles/student_parents/' . $request->parent_cin . '_' . $request->parent_last_name . "-" . $request->parent_first_name . $request->parent_profile_picture->extension();
+        }
+
+
+        $parent->first_name = $request->parent_first_name;
+        $parent->last_name = $request->parent_last_name;
+        $parent->gender = $request->parent_gender;
+        $parent->email = $request->parent_email;
+        $parent->cin = $request->parent_cin;
+        $parent->health_status = $request->parent_health_status;
+        $parent->date_of_birth = $request->parent_date_of_birth;
+        $parent->blood_type = $request->parent_blood_type;
+        $parent->phone_number = $request->parent_phone_number;
+        $parent->address = $request->parent_address;
+        $parent->save();
+
+        $student->first_name = $request->first_name;
+        $student->last_name = $request->last_name;
+        $student->gender = $request->gender;
+        $student->email = $request->email;
+        $student->cin = $request->cin;
+        $student->code_massar = $request->code_massar;
+        $student->health_status = $request->health_status;
+        $student->date_of_birth = $request->date_of_birth;
+        $student->blood_type = $request->blood_type;
+        $student->phone_number = $request->phone_number;
+        $student->address = $request->address;
+        $student->save();
+
+        return response([
+            'message' => "Étudiant et Parent mis à jour avec succès"
         ], 200);
     }
 

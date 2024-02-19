@@ -30,6 +30,7 @@ Route::middleware(['auth:admin'])->group(function () {
     // CRUD for students and student parents
     Route::middleware(['abilities:can-crud_students,can-crud_student_parents'])->group(function () {
         Route::apiResource('students', StudentController::class)->only(['index', 'show', 'update', 'store', 'destroy']);
+        Route::put('students/{id}/upadte-with-parent', [StudentController::class, 'updateWithParent']);
         Route::apiResource('student-parents', StudentParentController::class)->only(['index', 'show', 'update', 'store', 'destroy']);
     });
 

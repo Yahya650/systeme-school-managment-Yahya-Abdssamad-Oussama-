@@ -4,15 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Classe;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 
 class ClasseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Classe::all();
+
+        $classes = [];
+
+        foreach ($request->user('admin')->school_levels as $school_level) {
+            foreach ($school_level->classe_types as $classe_type) {
+                foreach ($classe_type->classes as $classe) {
+                    $classes[] = $classe;
+                }
+            }
+        }
+
+        return response()->json($classes);
     }
 
     /**

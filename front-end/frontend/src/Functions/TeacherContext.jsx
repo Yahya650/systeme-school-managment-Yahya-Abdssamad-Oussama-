@@ -6,7 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import dcryptID from "../security/dcryptID";
 
-const Context = createContext({
+const ContextTeacher = createContext({
   getTeachers: () => {},
   updateTeacher: () => {},
   removeTeacher: () => {},
@@ -197,7 +197,7 @@ const TeacherContext = ({ children }) => {
     }
   }
   return (
-    <Context.Provider
+    <ContextTeacher.Provider
       value={{
         getTeachers,
         updateTeacher,
@@ -209,10 +209,10 @@ const TeacherContext = ({ children }) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </ContextTeacher.Provider>
   );
 };
 
-export const useTeachersContext = () => useContext(Context);
+export const useTeachersContext = () => useContext(ContextTeacher);
 
 export default TeacherContext;

@@ -5,14 +5,15 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { AxiosClient } from "../Api/AxiosClient";
 
-const Context = createContext({
+const ContextStudent = createContext({
   getStudents: () => {},
   renewPassword: () => {},
   updateProfilePicture: () => {},
   getStudent: () => {},
   updateStudent: () => {},
   removeStudent: () => {},
-  createStudent: () => {},
+  // createStudent: () => {},
+  updateStudentWithParent: () => {},
 });
 
 const StudentContext = ({ children }) => {
@@ -116,16 +117,18 @@ const StudentContext = ({ children }) => {
     }
   }
 
-  async function updateStudent(id, dataForm) {
+  async function updateStudentWithParent(id, dataForm) {
     try {
-      const { data } = await AxiosClient.put("/admin/students/" + id, dataForm);
+      const { data } = await AxiosClient.put(
+        "/admin/students/" + id + "/upadte-with-parent",
+        dataForm
+      );
       toast.success(data.message, {
         duration: 4000,
         position: "top-right",
       });
       setErrors(null);
       navigateTo(-1);
-      // getStudents();
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
@@ -190,22 +193,23 @@ const StudentContext = ({ children }) => {
     }
   }
   return (
-    <Context.Provider
+    <ContextStudent.Provider
       value={{
         getStudents,
         renewPassword,
         updateProfilePicture,
         getStudent,
-        updateStudent,
+        // updateStudent,
+        updateStudentWithParent,
         removeStudent,
         createStudent,
       }}
     >
       {children}
-    </Context.Provider>
+    </ContextStudent.Provider>
   );
 };
 
-export const useStudentContext = () => useContext(Context);
+export const useStudentContext = () => useContext(ContextStudent);
 
 export default StudentContext;

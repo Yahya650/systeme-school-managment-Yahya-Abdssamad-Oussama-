@@ -8,7 +8,7 @@ const _header = () => {
   // const [loading, setLoading] = useState(false);
 
   return (
-    <header className="header">
+    <header className="header" style={{ zIndex: 9999 }}>
       <div className="header-left">
         <Link to="/admin/dashboard" className="logo">
           <img

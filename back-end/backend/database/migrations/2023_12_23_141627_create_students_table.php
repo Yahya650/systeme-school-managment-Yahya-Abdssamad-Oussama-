@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('code_massar')->unique();
             $table->string('cin')->unique()->nullable();
             $table->string('password');
-            $table->string('health_status')->nullable();
+            $table->enum('health_status', ['good', 'bad', 'middle'])->nullable();
             $table->date('date_of_birth');
             $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable();
             $table->string('phone_number')->unique();

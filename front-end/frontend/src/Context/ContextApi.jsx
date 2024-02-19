@@ -58,6 +58,7 @@ export const ContextApi = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
+
   const navigate = useNavigate();
 
   const getUserProfile = async () => {
@@ -232,9 +233,9 @@ export const ContextApi = ({ children }) => {
         pageCount,
         currentPage,
         total,
+        loadingProfilePicture,
         calculateAge,
         setLoadingProfilePicture,
-        loadingProfilePicture,
         setPageCount,
         setCurrentPage,
         setTotal,
@@ -269,6 +270,7 @@ export const ContextApi = ({ children }) => {
               },
               style: {
                 color: "white",
+                zIndex: 99999,
               },
             }}
           />

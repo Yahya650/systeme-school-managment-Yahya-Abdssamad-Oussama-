@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import dcryptID from "../security/dcryptID";
 
-const Context = createContext({
+const ContextAdmin = createContext({
   getAdmins: () => {},
   getAdmin: () => {},
   updateAdmin: () => {},
@@ -195,7 +195,7 @@ const AdminContext = ({ children }) => {
   }
 
   return (
-    <Context.Provider
+    <ContextAdmin.Provider
       value={{
         getAdmins,
         getAdmin,
@@ -207,10 +207,10 @@ const AdminContext = ({ children }) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </ContextAdmin.Provider>
   );
 };
 
-export const useAdminContext = () => useContext(Context);
+export const useAdminContext = () => useContext(ContextAdmin);
 
 export default AdminContext;

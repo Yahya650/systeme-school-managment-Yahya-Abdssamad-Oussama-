@@ -120,7 +120,10 @@ const AllStudents = () => {
                         <Link to="#" className="btn btn-outline-primary me-2">
                           <i className="fas fa-download"></i> Télécharger
                         </Link>
-                        <Link to="#" className="btn btn-primary">
+                        <Link
+                          to="/admin/create-student"
+                          className="btn btn-primary"
+                        >
                           <i className="fas fa-plus"></i>
                         </Link>
                       </ul>
