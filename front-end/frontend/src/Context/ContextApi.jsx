@@ -17,6 +17,8 @@ const Context = createContext({
   setLoadingContaxt: () => {},
   students: null,
   setStudents: () => {},
+  setStudent: () => {},
+  student: null,
   admins: null,
   setAdmins: () => {},
   admin: null,
@@ -38,6 +40,7 @@ const Context = createContext({
   setCurrentPage: () => {},
   handlePageClick: () => {},
   setLoadingProfilePicture: () => {},
+  changePassword: () => {},
 });
 
 export const ContextApi = ({ children }) => {
@@ -45,6 +48,7 @@ export const ContextApi = ({ children }) => {
   const [loadingContaxt, setLoadingContaxt] = useState(false);
   const [user, setUser] = useState(null);
   const [students, setStudents] = useState(null);
+  const [student, setStudent] = useState(null);
   const [admins, setAdmins] = useState(null);
   const [admin, setAdmin] = useState(null);
   const [teachers, setTeachers] = useState(null);
@@ -54,8 +58,50 @@ export const ContextApi = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
-
   const navigate = useNavigate();
+
+  const getUserProfile = async () => {
+    setLoadingContaxt(true);
+    if (localStorage.getItem("ud")) {
+      try {
+        const { data } = await AxiosClient.get(
+          "/" + JSON.parse(localStorage.getItem("ud")).role + "/profile"
+        );
+        setUser(data);
+      } catch (error) {
+        localStorage.removeItem("ud");
+        navigate("/");
+      }
+    }
+    setLoadingContaxt(false);
+  };
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
+  const changePassword = async (guard, formData) => {
+    try {
+      const { data } = await AxiosClient.put(
+        "/" + guard + "/change-password",
+        formData
+      );
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      setErrors(null);
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
+    }
+  };
+
   const handlePageClick = async (page, fetchData) => {
     const toastId1 = toast.loading("Loading...", {
       style: { color: "white", background: "black" },
@@ -84,26 +130,6 @@ export const ContextApi = ({ children }) => {
 
     return age;
   };
-
-  const getUserProfile = async () => {
-    if (localStorage.getItem("ud")) {
-      try {
-        setLoadingContaxt(true);
-        const { data } = await AxiosClient.get(
-          "/" + JSON.parse(localStorage.getItem("ud")).role + "/profile"
-        );
-        setUser(data);
-      } catch (error) {
-        localStorage.removeItem("ud");
-        navigate("/");
-      }
-    }
-    setLoadingContaxt(false);
-  };
-
-  useEffect(() => {
-    getUserProfile();
-  }, []);
 
   const Login = async (guard, username, password) => {
     try {
@@ -177,7 +203,6 @@ export const ContextApi = ({ children }) => {
       navigate("/", { replace: true });
     } catch (error) {
       navigate("/error/401", { replace: true });
-      //
     }
   };
 
@@ -214,6 +239,9 @@ export const ContextApi = ({ children }) => {
         setCurrentPage,
         setTotal,
         handlePageClick,
+        changePassword,
+        setStudent,
+        student,
         navigateTo: navigate,
       }}
     >

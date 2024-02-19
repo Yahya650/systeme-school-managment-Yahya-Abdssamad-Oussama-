@@ -22,6 +22,8 @@ class Student extends Authenticatable
 
     protected $appends = ['role'];
 
+    protected $with = ['classe', 'parent'];
+
     public function getRoleAttribute()
     {
         return 'student';

@@ -25,19 +25,6 @@ const _sidebar = () => {
                 <li>
                   <NavLink to="/admin/all-students">Tous les étudiants</NavLink>
                 </li>
-                <li>
-                  <NavLink to="/admin/show-student">Voir un Étudiant</NavLink>
-                </li>
-                <li>
-                  <NavLink to="/admin/create-student">
-                    Ajouter un Étudiant
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/admin/update-student">
-                    Modifier un Étudiant
-                  </NavLink>
-                </li>
               </ul>
             </li>
 

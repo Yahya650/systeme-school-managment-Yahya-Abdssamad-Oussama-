@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
+import { useAdminContext } from "../../../Functions/AdminContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { AxiosClient } from "../../../Api/AxiosClient";
 import cryptID from "../../../security/cryptID";
@@ -10,7 +10,7 @@ const CreateAdmin = () => {
   const { errors, navigateTo } = useContextApi();
   const [schoolLevels, setSchoolLevels] = useState(null);
   const [loadingForm, setloadingForm] = useState(false);
-  const { createAdmin } = useCrudAdmins();
+  const { createAdmin } = useAdminContext();
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [formData, setFormData] = useState([]);
 

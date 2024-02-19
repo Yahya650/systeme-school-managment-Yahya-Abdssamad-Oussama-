@@ -3,6 +3,7 @@ import _header from "./_header";
 import _sidebar from "./_sidebar";
 import { Outlet, useNavigate } from "react-router-dom";
 import _footer from "../_footer.jsx";
+import StudentContext from "../../Functions/StudentContext.jsx";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ function AdminLayout() {
     <>
       <_header />
       <_sidebar />
-      <Outlet />
+      <StudentContext>
+        <Outlet />
+      </StudentContext>
     </>
   );
 }

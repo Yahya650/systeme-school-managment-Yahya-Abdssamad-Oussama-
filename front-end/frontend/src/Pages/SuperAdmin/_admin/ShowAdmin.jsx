@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link, useParams } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
+import { useAdminContext } from "../../../Functions/AdminContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import dcryptID from "../../../security/dcryptID";
 import cryptID from "../../../security/cryptID";
@@ -14,7 +14,7 @@ const ShowAdmin = () => {
     useContextApi();
   const [loading, setLoading] = useState(true);
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
-  const { getAdmin, updateProfilePicture, renewPassword } = useCrudAdmins();
+  const { getAdmin, updateProfilePicture, renewPassword } = useAdminContext();
   const { id } = useParams();
 
   const fetchData = async () => {

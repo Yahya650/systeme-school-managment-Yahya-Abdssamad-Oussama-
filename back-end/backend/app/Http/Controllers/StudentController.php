@@ -6,8 +6,10 @@ use App\Models\Student;
 use Nette\Utils\Random;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StudentController extends Controller
 {
@@ -98,14 +100,32 @@ class StudentController extends Controller
         }
     }
 
-
-
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        return response()->json($request->user('admin')->school_level()->first()->classe_types()->with('classes.students.parent')->get());
+        $students = collect([]);
+
+        foreach ($request->user('admin')->school_levels as $school_level) {
+            foreach ($school_level->classe_types as $classe_type) {
+                foreach ($classe_type->classes as $classe) {
+                    $students = $students->merge($classe->students);
+                }
+            }
+        }
+
+        $currentPage = Paginator::resolveCurrentPage('page');
+        $perPage = 8;
+        $studentsPaginated = $students->forPage($currentPage, $perPage);
+
+        return response()->json([
+            'data' => $studentsPaginated->values(), // Resetting the keys of the collection
+            'current_page' => $currentPage,
+            'per_page' => $perPage,
+            'total' => $students->count(),
+            'last_page' => ceil($students->count() / $perPage)
+        ]);
     }
 
     /**
@@ -126,7 +146,7 @@ class StudentController extends Controller
             ], 401);
         }
 
-        return response()->json(Student::find($id)->with('parent')->get());
+        return response()->json(Student::find($id));
     }
 
     /**
@@ -265,7 +285,7 @@ class StudentController extends Controller
         $student->save();
         return response()->json([
             'code_massar' => $student->code_massar,
-            'new_password' => $newPassword,
+            'password' => $newPassword,
             'message' => 'Mot de passe mis à jour avec succès'
         ]);
     }
@@ -326,5 +346,44 @@ class StudentController extends Controller
         }
         $student = Student::find($id);
         return response()->json($student->with('payments')->with('examRecords.exam')->with('reports')->with('absences.course.teacher')->with('classe.exercises.teachers.courses.time_table')->with('payments')->get());
+    }
+
+
+    public function updatePictureProfile(Request $request, $id)
+    {
+        // Find the student by ID
+        $student = Student::find($id);
+        if (!$student) {
+            return response()->json([
+                'message' => 'Étudiant non trouvé'
+            ], 404);
+        }
+
+        // Validate the incoming request
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($student->profile_picture) {
+            Storage::disk('public')->delete($student->profile_picture);
+        }
+
+        // Store the profile picture in the storage
+        $imagePath = 'picture_profiles/student/' . $student->code_massar . '-' . $student->last_name . "_" . $student->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        // Update the student's profile picture URL
+        $student->profile_picture = $imagePath;
+
+        // Save the updated student data
+        if (!$student->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de la photo de profile'
+            ]);
+        }
+
+        return response()->json([
+            'message' => "Photo de profile mise à jour avec succès"
+        ], 200);
     }
 }

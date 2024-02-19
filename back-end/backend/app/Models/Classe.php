@@ -26,6 +26,8 @@ class Classe extends Model
         'number_etud_max',
     ];
 
+    protected $with = ['classeType', 'filiere'];
+
     public function classeType()
     {
         return $this->belongsTo(ClasseType::class);

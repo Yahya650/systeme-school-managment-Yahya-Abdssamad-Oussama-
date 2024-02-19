@@ -7,7 +7,6 @@ import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { AxiosClient } from "../../../Api/AxiosClient";
 import cryptID from "../../../security/cryptID";
-
 const UpdateAdmin = () => {
   const { admin, errors, navigateTo, setErrors } = useContextApi();
   const [loading, setLoading] = useState(true);

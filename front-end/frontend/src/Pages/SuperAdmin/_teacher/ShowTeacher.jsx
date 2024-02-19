@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import dcryptID from "../../../security/dcryptID";
-import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
+import { useTeachersContext } from "../../../Functions/TeacherContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { BACKEND_URL } from "../../../Api/AxiosClient";
 import cryptID from "../../../security/cryptID";
@@ -14,7 +14,8 @@ const ShowTeacher = () => {
     useContextApi();
   const [loading, setLoading] = useState(true);
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
-  const { getTeacher, updateProfilePicture, renewPassword } = useCrudTeachers();
+  const { getTeacher, updateProfilePicture, renewPassword } =
+    useTeachersContext();
   const { id } = useParams();
 
   const fetchData = async () => {

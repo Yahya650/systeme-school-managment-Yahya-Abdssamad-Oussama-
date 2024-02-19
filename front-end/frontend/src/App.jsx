@@ -13,6 +13,9 @@ import LoadingCircleContext from "./Components/LoadingCircleContext";
 
 // Lazy load your pages
 const DashboardAdmin = React.lazy(() => import("./Pages/Admin/DashboardAdmin"));
+const ProfileSuperAdmin = React.lazy(() =>
+  import("./Pages/SuperAdmin/ProfileSuperAdmin")
+);
 const CreateStudent = React.lazy(() =>
   import("./Pages/Admin/_student/CreateStudent")
 );
@@ -107,6 +110,7 @@ const LezyLoadingSuspense = ({ component }) => (
     {component}
   </Suspense>
 );
+
 function App() {
   return (
     <Routes>
@@ -178,6 +182,10 @@ function App() {
           element={<Navigate to="/super-admin/dashboard" replace />}
         />
         <Route
+          path="profile"
+          element={<LezyLoadingSuspense component={<ProfileSuperAdmin />} />}
+        />
+        <Route
           path="dashboard"
           element={<LezyLoadingSuspense component={<DashboardSuperAdmin />} />}
         />
@@ -227,11 +235,11 @@ function App() {
           element={<LezyLoadingSuspense component={<CreateStudent />} />}
         />
         <Route
-          path="update-student"
+          path="update-student/:id"
           element={<LezyLoadingSuspense component={<UpdateStudent />} />}
         />
         <Route
-          path="show-student"
+          path="show-student/:id"
           element={<LezyLoadingSuspense component={<ShowStudent />} />}
         />
         <Route

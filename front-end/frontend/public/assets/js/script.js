@@ -522,3 +522,5 @@ function togglePassword() {
 $('#toggle-password').on('click', function () {
     togglePassword();
 })
+
+

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import _header from "./_header";
 import _sidebar from "./_sidebar";
-import CRUD_Admins from "../../Functions/CRUD_Admins";
-import CRUD_Teachers from "../../Functions/CRUD_Teachers";
+import AdminContext from "../../Functions/AdminContext";
+import TeacherContext from "../../Functions/TeacherContext";
 
 const SuperAdminLayout = () => {
   const navigate = useNavigate();
@@ -25,11 +25,11 @@ const SuperAdminLayout = () => {
       <_sidebar />
 
       {/* context for crud functions */}
-      <CRUD_Admins>
-        <CRUD_Teachers>
+      <AdminContext>
+        <TeacherContext>
           <Outlet />
-        </CRUD_Teachers>
-      </CRUD_Admins>
+        </TeacherContext>
+      </AdminContext>
     </>
   );
 };

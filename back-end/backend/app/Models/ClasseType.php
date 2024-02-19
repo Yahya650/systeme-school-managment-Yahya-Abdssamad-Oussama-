@@ -20,6 +20,9 @@ class ClasseType extends Model
         'code',
     ];
 
+    protected $with = ['school_level'];
+
+
     public function school_level()
     {
         return $this->belongsTo(SchoolLevel::class);

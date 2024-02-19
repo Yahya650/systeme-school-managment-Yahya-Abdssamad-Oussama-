@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
-import { useCrudAdmins } from "../../../Functions/CRUD_Admins";
+import { useAdminContext } from "../../../Functions/AdminContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import { useContextApi } from "../../../Context/ContextApi";
 import cryptID from "./../../../security/cryptID";
 import dcryptID from "./../../../security/dcryptID";
-import toast from "react-hot-toast";
 import ReactPaginate from "react-paginate";
 import { BACKEND_URL } from "../../../Api/AxiosClient";
 
@@ -14,7 +13,7 @@ const AllAdmins = () => {
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const { admins, pageCount, handlePageClick } = useContextApi();
-  const { getAdmins, removeAdmin } = useCrudAdmins();
+  const { getAdmins, removeAdmin } = useAdminContext();
 
   const fetchData = async (val_currentPage) => {
     await getAdmins(val_currentPage);
@@ -144,7 +143,9 @@ const AllAdmins = () => {
                                         className="avatar-img rounded-circle"
                                         src={
                                           admin.profile_picture
-                                            ? BACKEND_URL + "/storage/" + admin.profile_picture
+                                            ? BACKEND_URL +
+                                              "/storage/" +
+                                              admin.profile_picture
                                             : admin.gender === "female"
                                             ? "/assets/img/default-profile-picture-grey-female-icon.png"
                                             : "/assets/img/default-profile-picture-grey-male-icon.png"

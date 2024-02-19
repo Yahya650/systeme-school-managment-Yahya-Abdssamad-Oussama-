@@ -5,7 +5,7 @@ import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import { useContextApi } from "../../../Context/ContextApi";
 import cryptID from "../../../security/cryptID";
 import dcryptID from "../../../security/dcryptID";
-import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
+import { useTeachersContext } from "../../../Functions/TeacherContext";
 import toast from "react-hot-toast";
 import ReactPaginate from "react-paginate";
 import { BACKEND_URL } from "../../../Api/AxiosClient";
@@ -14,7 +14,7 @@ const AllTeachers = () => {
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const { teachers, pageCount, handlePageClick } = useContextApi();
-  const { getTeachers, removeTeacher } = useCrudTeachers();
+  const { getTeachers, removeTeacher } = useTeachersContext();
 
   const fetchData = async (val_currentPage) => {
     await getTeachers(val_currentPage);
@@ -145,7 +145,9 @@ const AllTeachers = () => {
                                         className="avatar-img rounded-circle"
                                         src={
                                           teacher.profile
-                                            ? BACKEND_URL + "/storage/" + teacher.profile
+                                            ? BACKEND_URL +
+                                              "/storage/" +
+                                              teacher.profile
                                             : teacher.gender === "female"
                                             ? "/assets/img/default-profile-picture-grey-female-icon.png"
                                             : "/assets/img/default-profile-picture-grey-male-icon.png"
@@ -167,7 +169,7 @@ const AllTeachers = () => {
                                 <td>{teacher.phone_number}</td>
                                 <td>{teacher.date_of_birth}</td>
                                 <td className="text-end">
-                                  <div className="actions ">
+                                  <div className="actions">
                                     <Link
                                       to={
                                         "/super-admin/show-teacher/" +

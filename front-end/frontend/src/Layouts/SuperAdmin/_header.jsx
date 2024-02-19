@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../Context/ContextApi";
-import LoadingCircle from "../../Components/LoadingCircle";
 
 const _header = () => {
   const { logout, setLoadingContaxt, user } = useContextApi();
-  // const [loading, setLoading] = useState(false);
 
   return (
     <header className="header">
@@ -186,7 +184,13 @@ const _header = () => {
             <span className="user-img">
               <img
                 className="rounded-circle"
-                src="/assets/img/profiles/avatar-01.jpg"
+                src={
+                  user?.profile
+                    ? BACKEND_URL + "/storage/" + user?.profile
+                    : user?.gender === "female"
+                    ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                    : "/assets/img/default-profile-picture-grey-male-icon.png"
+                }
                 width="31"
                 alt="Soeng Souy"
               />
@@ -200,7 +204,13 @@ const _header = () => {
             <div className="user-header">
               <div className="avatar avatar-sm">
                 <img
-                  src="/assets/img/profiles/avatar-01.jpg"
+                  src={
+                    user?.profile
+                      ? BACKEND_URL + "/storage/" + user?.profile
+                      : user?.gender === "female"
+                      ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                      : "/assets/img/default-profile-picture-grey-male-icon.png"
+                  }
                   alt="User Image"
                   className="avatar-img rounded-circle"
                 />
@@ -210,7 +220,7 @@ const _header = () => {
                 <p className="text-muted mb-0">Direteur</p>
               </div>
             </div>
-            <Link className="dropdown-item" to="#">
+            <Link className="dropdown-item" to="/super-admin/profile">
               My Profile
             </Link>
             <button

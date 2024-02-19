@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../../Context/ContextApi";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
+import { useTeachersContext } from "../../../Functions/TeacherContext";
 
 const CreateTeacher = () => {
   const { errors, navigateTo } = useContextApi();
   const [loadingForm, setloadingForm] = useState(false);
-  const { createTeacher } = useCrudTeachers();
+  const { createTeacher } = useTeachersContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();

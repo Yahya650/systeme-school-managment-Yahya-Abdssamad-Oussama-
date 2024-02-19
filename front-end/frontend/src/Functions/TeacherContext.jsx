@@ -1,25 +1,25 @@
-import toast from "react-hot-toast";
+import { createContext, useContext } from "react";
 import { AxiosClient } from "../Api/AxiosClient";
 import { useContextApi } from "../Context/ContextApi";
-import React, { createContext, useContext } from "react";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 import dcryptID from "../security/dcryptID";
 
-const CrudAdminsContext = createContext({
-  getAdmins: () => {},
-  getAdmin: () => {},
-  updateAdmin: () => {},
-  removeAdmin: () => {},
-  createAdmin: () => {},
+const Context = createContext({
+  getTeachers: () => {},
+  updateTeacher: () => {},
+  removeTeacher: () => {},
+  createTeacher: () => {},
+  getTeacher: () => {},
   updateProfilePicture: () => {},
   renewPassword: () => {},
 });
 
-const CRUD_Admins = ({ children }) => {
+const TeacherContext = ({ children }) => {
   const {
-    setAdmins,
-    setAdmin,
+    setTeachers,
+    setTeacher,
     setErrors,
     navigateTo,
     setPageCount,
@@ -28,14 +28,14 @@ const CRUD_Admins = ({ children }) => {
     currentPage,
   } = useContextApi();
 
-  async function getAdmins(currentPage = 1) {
+  async function getTeachers(currentPage = 1) {
     try {
       const { data } = await AxiosClient.get(
-        "/super-admin/admins?page=" + currentPage
+        "/super-admin/teachers?page=" + currentPage
       );
       setTotal(data.total);
       setPageCount(data.last_page);
-      setAdmins(data.data);
+      setTeachers(data.data);
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
@@ -43,17 +43,38 @@ const CRUD_Admins = ({ children }) => {
       });
     }
   }
-  async function getAdmin(id) {
+
+  async function renewPassword(id) {
     try {
-      const { data } = await AxiosClient.get("/super-admin/admins/" + id);
-      setAdmin(data);
+      const { data } = await AxiosClient.get(
+        "/super-admin/professors/" + dcryptID(id) + "/renew-password"
+      );
+      withReactContent(Swal).fire({
+        title: data.message,
+        html: (
+          <div>
+            <b>CIN : </b> {data.cin} <br />
+            <b>E-mail : </b> {data.email} <br />
+            <b>Password : </b> {data.password} <br />
+          </div>
+        ),
+        icon: "success",
+      });
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
         position: "top-right",
       });
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
     }
   }
+
   async function updateProfilePicture(id, profile_picture) {
     setLoadingProfilePicture(true);
     try {
@@ -61,17 +82,15 @@ const CRUD_Admins = ({ children }) => {
       formDataFile.append("profile_picture", profile_picture);
 
       const { data } = await AxiosClient.post(
-        "/super-admin/administrators/" +
-          dcryptID(id) +
-          "/update-profile-picture",
-        formDataFile, // Passing formData directly as the second argument
+        "/super-admin/professors/" + dcryptID(id) + "/update-profile-picture",
+        formDataFile,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      await getAdmin(dcryptID(id));
+      await getTeacher(dcryptID(id));
       toast.success(data.message, {
         duration: 4000,
         position: "top-right",
@@ -86,10 +105,22 @@ const CRUD_Admins = ({ children }) => {
     }
   }
 
-  async function updateAdmin(id, dataForm) {
+  async function getTeacher(id) {
+    try {
+      const { data } = await AxiosClient.get("/super-admin/teachers/" + id);
+      setTeacher(data);
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
+  }
+
+  async function updateTeacher(id, dataForm) {
     try {
       const { data } = await AxiosClient.put(
-        "/super-admin/admins/" + id,
+        "/super-admin/teachers/" + id,
         dataForm
       );
       toast.success(data.message, {
@@ -98,7 +129,7 @@ const CRUD_Admins = ({ children }) => {
       });
       setErrors(null);
       navigateTo(-1);
-      // getAdmins();
+      // getTeachers();
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
@@ -110,13 +141,13 @@ const CRUD_Admins = ({ children }) => {
     }
   }
 
-  async function removeAdmin(id) {
+  async function removeTeacher(id) {
     const toastId = toast.loading("Suppression en cours...", {
       style: { color: "white", background: "black" },
     });
     try {
-      const { data } = await AxiosClient.delete("/super-admin/admins/" + id);
-      await getAdmins(currentPage);
+      const { data } = await AxiosClient.delete("/super-admin/teachers/" + id);
+      await getTeachers(currentPage);
       toast.success(data.message, {
         duration: 4000,
         position: "top-center",
@@ -131,10 +162,11 @@ const CRUD_Admins = ({ children }) => {
     }
   }
 
-  async function renewPassword(id) {
+  async function createTeacher(dataForm) {
     try {
-      const { data } = await AxiosClient.get(
-        "/super-admin/administrators/" + dcryptID(id) + "/renew-password"
+      const { data } = await AxiosClient.post(
+        "/super-admin/teachers",
+        dataForm
       );
       withReactContent(Swal).fire({
         title: data.message,
@@ -151,38 +183,9 @@ const CRUD_Admins = ({ children }) => {
         duration: 4000,
         position: "top-right",
       });
-    } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
-      if (error.response.status === 422) {
-        setErrors(error.response.data.errors);
-      }
-    }
-  }
-
-  async function createAdmin(dataForm) {
-    try {
-      const { data } = await AxiosClient.post("/super-admin/admins", dataForm);
-      withReactContent(Swal).fire({
-        title: data.message,
-        html: (
-          <div>
-            <b>CIN : </b> {data.cin} <br />
-            <b>E-mail : </b> {data.email} <br />
-            <b>Password : </b> {data.password} <br />
-          </div>
-        ),
-        icon: "success",
-      });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
       setErrors(null);
-      navigateTo("/super-admin/all-admins");
-      // getAdmins();
+      navigateTo("/super-admin/all-teachers");
+      // getTeachers();
     } catch (error) {
       toast.error(error.response.data.message, {
         duration: 4000,
@@ -193,24 +196,23 @@ const CRUD_Admins = ({ children }) => {
       }
     }
   }
-
   return (
-    <CrudAdminsContext.Provider
+    <Context.Provider
       value={{
-        getAdmins,
-        getAdmin,
-        updateAdmin,
-        removeAdmin,
-        createAdmin,
+        getTeachers,
+        updateTeacher,
+        removeTeacher,
+        createTeacher,
         updateProfilePicture,
+        getTeacher,
         renewPassword,
       }}
     >
       {children}
-    </CrudAdminsContext.Provider>
+    </Context.Provider>
   );
 };
 
-export const useCrudAdmins = () => useContext(CrudAdminsContext);
+export const useTeachersContext = () => useContext(Context);
 
-export default CRUD_Admins;
+export default TeacherContext;

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\ExamRecordController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentParentController;
@@ -32,8 +33,11 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::apiResource('student-parents', StudentParentController::class)->only(['index', 'show', 'update', 'store', 'destroy']);
     });
 
+    Route::apiResource('classes', ClasseController::class);
+
+
     // Routes Students
-    Route::group(['prefix' => 'etudiant'], function () {
+    Route::group(['prefix' => 'etudiants'], function () {
         Route::post('/save-mark', [ExamRecordController::class, 'store']);
         Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);
         Route::post('/update-mark/{id}', [ExamRecordController::class, 'update']);
@@ -42,15 +46,16 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::apiResource('reports', ReportController::class)->only(['index', 'destroy', 'show']);
 
         Route::apiResource('absences', AbsenceController::class)->only(['index', 'show', 'destroy']);
-        Route::post('/update-absence/{id}', [AbsenceController::class, 'update']);
-        Route::get('/renew-password/{id}', [StudentController::class, 'renewPassword']);
-        Route::get('/restore/{id}', [StudentController::class, 'restore']);
+        Route::post('/{id}/update-absence', [AbsenceController::class, 'update']);
+        Route::get('/{id}/renew-password', [StudentController::class, 'renewPassword']);
+        Route::get('/{id}/restore', [StudentController::class, 'restore']);
         Route::post('/restore-all', [StudentController::class, 'restoreAll']);
         Route::post('/trash', [StudentController::class, 'trash']);
+        Route::post('/{id}/update-profile-picture', [StudentController::class, 'updatePictureProfile']);
     });
 
     // Routes Student Parents
-    Route::group(['prefix' => 'parent'], function () {
+    Route::group(['prefix' => 'parents'], function () {
         Route::get('/renew-password/{id}', [StudentParentController::class, 'renewPassword']);
         Route::get('/restore/{id}', [StudentParentController::class, 'restore']);
         Route::post('/restore-all', [StudentParentController::class, 'restoreAll']);

@@ -4,13 +4,13 @@ import { useContextApi } from "../../../Context/ContextApi";
 import dcryptID from "../../../security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { useCrudTeachers } from "../../../Functions/CRUD_Teachers";
+import { useTeachersContext } from "../../../Functions/TeacherContext";
 
 const UpdateTeacher = () => {
   const { teacher, errors, navigateTo, setErrors } = useContextApi();
   const [loading, setLoading] = useState(true);
   const [loadingForm, setloadingForm] = useState(false);
-  const { getTeacher, updateTeacher } = useCrudTeachers();
+  const { getTeacher, updateTeacher } = useTeachersContext();
   const { id } = useParams();
 
   const fetchData = async () => {
