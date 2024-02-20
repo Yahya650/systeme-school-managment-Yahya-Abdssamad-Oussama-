@@ -36,7 +36,7 @@ class AdminController extends Controller
             return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin_email' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
-        $admin->last_login_date = date('Y-m-d H:i:s');
+        $admin->last_login_date = now('Africa/Casablanca');
         $admin->save();
 
         return response([

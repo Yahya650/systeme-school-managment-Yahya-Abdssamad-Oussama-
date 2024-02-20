@@ -1,13 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import dcryptID from "../../../security/dcryptID";
+import { useContextApi } from "../../../Context/ContextApi";
+import { useStudentContext } from "../../../Functions/StudentContext";
+import { AxiosClient } from "../../../Api/AxiosClient";
+import cryptID from "../../../security/cryptID";
+import Select from "react-select";
+import LoadingCircle from "./../../../Components/LoadingCircle";
+import { axios } from "axios";
+import { isFunction } from "jquery";
 
 const CreateStudent = () => {
-
+  const { student, errors, navigateTo } = useContextApi();
+  const [loading, setLoading] = useState(true);
+  const [loadingForm, setLoadingForm] = useState(false);
+  const [classeOptions, setClasseOptions] = useState([]);
+  const [parentOptions, setParentOptions] = useState([]);
 
   // l2a9sam wl 2aba2 llikaynin
 
   useEffect(() => {
-    
+    const fetchData = async () => {
+      setLoading(true);
+
+      const parents = await AxiosClient.get("/admin/student-parents");
+      const options1 = parents.data.map((parent) => ({
+        value: cryptID(parent.id),
+        label: `${parent.cin} - ${parent.last_name} ${parent.first_name}`,
+      }));
+      setParentOptions(options1);
+
+      const classes = await AxiosClient.get("/admin/classes");
+      const options2 = classes.data.map((classe) => ({
+        value: cryptID(classe.id),
+        label:
+          classe.filiere_id !== null
+            ? `${classe.code} ${classe.classe_type.name} ${classe.classe_type.school_level.name} - (${classe.filiere.name})`
+            : `${classe.code} ${classe.classe_type.name} ${classe.classe_type.school_level.name}`,
+      }));
+      setClasseOptions(options2);
+
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   return (
@@ -35,7 +70,7 @@ const CreateStudent = () => {
           <div className="col-sm-12">
             <div className="card comman-shadow">
               <div className="card-body">
-                <form>
+                <form onSubmit={(e) => handleSubmit(e)}>
                   <div className="row">
                     <div className="col-12">
                       <h5 className="form-title student-info">
@@ -50,165 +85,507 @@ const CreateStudent = () => {
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Prénom <span className="login-danger">*</span>
+                          Code Massar <span className="login-danger">*</span>
                         </label>
                         <input
+                          name="code_massar"
                           className="form-control"
                           type="text"
-                          placeholder="Entrez le prénom"
+                          defaultValue={student?.code_massar}
                         />
+                        <span className="text-danger">
+                          {errors?.code_massar}
+                        </span>
                       </div>
                     </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Nom de famille <span className="login-danger">*</span>
-                        </label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Entrez le nom de famille"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Sexe <span className="login-danger">*</span>
-                        </label>
-                        <select className="form-control select">
-                          <option>Sélectionnez le genre</option>
-                          <option>Féminin</option>
-                          <option>Masculin</option>
-                          <option>Autre</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms calendar-icon">
-                        <label>
-                          Date de naissance{" "}
-                          <span className="login-danger">*</span>
-                        </label>
-                        <input
-                          className="form-control datetimepicker"
-                          type="text"
-                          placeholder="JJ-MM-AAAA"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>Roll </label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Entrez le numéro d'enregistrement"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Groupe sanguin <span className="login-danger">*</span>
-                        </label>
-                        <select className="form-control select">
-                          <option>Veuillez sélectionner le groupe</option>
-                          <option>B+</option>
-                          <option>A+</option>
-                          <option>O+</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Religion <span className="login-danger">*</span>
-                        </label>
-                        <select className="form-control select">
-                          <option>Veuillez sélectionner la religion</option>
-                          <option>Hindou</option>
-                          <option>Chrétien</option>
-                          <option>Autre</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          E-mail <span className="login-danger">*</span>
-                        </label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Entrez l'adresse e-mail"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
+                    <div className="col-12 col-sm-8" style={{ zIndex: 999 }}>
                       <div className="form-group local-forms">
                         <label>
                           Classe <span className="login-danger">*</span>
                         </label>
-                        <select className="form-control select">
-                          <option>Veuillez sélectionner la classe</option>
-                          <option>12</option>
-                          <option>11</option>
-                          <option>10</option>
-                        </select>
+                        <Select
+                          name="classe_id"
+                          isLoading={loading}
+                          options={classeOptions}
+                          placeholder="Veuillez sélectionner une classe"
+                          isSearchable={true}
+                        />
                       </div>
                     </div>
-                    <div className="col-12 col-sm-4">
+                    <div className="col-4 col-sm-4" style={{ zIndex: 999 }}>
                       <div className="form-group local-forms">
                         <label>
-                          Section <span className="login-danger">*</span>
+                          Parents <span className="login-danger">*</span>
                         </label>
-                        <select className="form-control select">
-                          <option>Veuillez sélectionner la section</option>
-                          <option>B</option>
-                          <option>A</option>
-                          <option>C</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>ID d'admission </label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Entrez l'ID d'admission"
+                        <Select
+                          name="student_parent_id"
+                          isLoading={loading}
+                          options={parentOptions}
+                          placeholder="Veuillez sélectionner une Parent"
+                          isSearchable={true}
                         />
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
-                        <label>Téléphone </label>
+                        <label>
+                          Prénom<span className="login-danger">*</span>
+                        </label>
                         <input
+                          name="first_name"
                           className="form-control"
                           type="text"
-                          placeholder="Entrez le numéro de téléphone"
+                          defaultValue={student?.first_name}
                         />
+                        <span className="text-danger">
+                          {errors?.first_name}
+                        </span>
                       </div>
                     </div>
                     <div className="col-12 col-sm-4">
-                      <div className="form-group students-up-files">
+                      <div className="form-group local-forms">
                         <label>
-                          Télécharger la photo de l'étudiant (150px X 150px)
+                          Nom de famille
+                          <span className="login-danger">*</span>
                         </label>
-                        <div className="uplod">
-                          <label className="file-upload image-upbtn mb-0">
-                            Choisir un fichier <input type="file" />
-                          </label>
+                        <input
+                          name="last_name"
+                          className="form-control"
+                          type="text"
+                          defaultValue={student?.last_name}
+                        />
+                        <span className="text-danger">{errors?.last_name}</span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Gender <span className="login-danger">*</span>
+                        </label>
+                        <select
+                          className="form-control select"
+                          defaultValue={student?.gender}
+                          name="gender"
+                        >
+                          <option value={""}>Sélectionnez le genre</option>
+                          <option value={"male"}>Masculin</option>
+                          <option value={"female"}>Féminin</option>
+                        </select>
+                        <span className="text-danger">{errors?.gender}</span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Date de naissance
+                          <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="date_of_birth"
+                          className="form-control datetimepicker"
+                          type="date"
+                          placeholder="JJ-MM-AAAA"
+                          defaultValue={student?.date_of_birth}
+                        />
+                        <span className="text-danger">
+                          {errors?.date_of_birth}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Téléphone <span className="login-danger">*</span>
+                        </label>
+
+                        <input
+                          name="phone_number"
+                          className="form-control"
+                          type="text"
+                          defaultValue={student?.phone_number}
+                        />
+                        <span className="text-danger">
+                          {errors?.phone_number}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>CIN</label>
+                        <input
+                          name="cin"
+                          className="form-control"
+                          type="text"
+                          defaultValue={student?.cin}
+                        />
+                        <span className="text-danger">{errors?.cin}</span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          E-mail {/* <span className="login-danger">*</span> */}
+                        </label>
+                        <input
+                          name="email"
+                          className="form-control"
+                          type="text"
+                          defaultValue={student?.email}
+                        />
+                        <span className="text-danger">{errors?.email}</span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-8">
+                      <div className="form-group local-forms">
+                        <label>Address</label>
+                        <input
+                          name="address"
+                          className="form-control"
+                          placeholder="Veuillez entrer votre adresse"
+                          type="text"
+                          defaultValue={student?.address}
+                        />
+                        <span className="text-danger">{errors?.address}</span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>Blood Type</label>
+                        <select
+                          defaultValue={student?.blood_type}
+                          className="form-control select"
+                          name="blood_type"
+                        >
+                          <option value={""}>
+                            Veuillez sélectionner un blood type
+                          </option>
+                          <option value="A+" defaultValue={student?.blood_type}>
+                            A+
+                          </option>
+                          <option value="A-" defaultValue={student?.blood_type}>
+                            A-
+                          </option>
+                          <option value="B+" defaultValue={student?.blood_type}>
+                            B+
+                          </option>
+                          <option value="B-" defaultValue={student?.blood_type}>
+                            B-
+                          </option>
+                          <option
+                            value="AB+"
+                            defaultValue={student?.blood_type}
+                          >
+                            AB+
+                          </option>
+                          <option
+                            value="AB-"
+                            defaultValue={student?.blood_type}
+                          >
+                            AB-
+                          </option>
+                          <option value="O+" defaultValue={student?.blood_type}>
+                            O+
+                          </option>
+                          <option value="O-" defaultValue={student?.blood_type}>
+                            O-
+                          </option>
+                        </select>
+                        <span className="text-danger">
+                          {errors?.blood_type}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-sm-8">
+                      <div className="form-group local-forms">
+                        <label>health status</label>
+                        <select
+                          defaultValue={student?.health_status}
+                          name="health_status"
+                          className="form-control select"
+                        >
+                          <option value={""}>
+                            Veuillez sélectionner une health status
+                          </option>
+                          <option value={"good"}>good</option>
+                          <option value={"middle"}>middle</option>
+                          <option value={"bad"}>bad</option>
+                        </select>
+                        <span className="text-danger">
+                          {errors?.health_status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="content container-fluid">
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <div className="card comman-shadow border bordered-2">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-12">
+                                <h5 className="form-title student-info">
+                                  Modifier les renseignements sur le Parent
+                                  <span>
+                                    <Link to="#">
+                                      <i className="feather-more-vertical"></i>
+                                    </Link>
+                                  </span>
+                                </h5>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    CIN <span className="login-danger">*</span>
+                                  </label>
+                                  <input
+                                    name="cin"
+                                    className="form-control"
+                                    type="text"
+                                    defaultValue={student?.parent.cin}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_cin}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    Prénom
+                                    <span className="login-danger">*</span>
+                                  </label>
+                                  <input
+                                    name="first_name"
+                                    className="form-control"
+                                    type="text"
+                                    defaultValue={student?.parent.first_name}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_first_name}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    Nom de famille
+                                    <span className="login-danger">*</span>
+                                  </label>
+                                  <input
+                                    name="last_name"
+                                    className="form-control"
+                                    type="text"
+                                    defaultValue={student?.parent.last_name}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_last_name}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    E-mail{" "}
+                                    <span className="login-danger">*</span>
+                                  </label>
+                                  <input
+                                    name="email"
+                                    className="form-control"
+                                    type="text"
+                                    defaultValue={student?.parent.email}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_email}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    Gender{" "}
+                                    <span className="login-danger">*</span>
+                                  </label>
+                                  <select
+                                    className="form-control select"
+                                    defaultValue={student?.parent.gender}
+                                    name="gender"
+                                  >
+                                    <option value={""}>
+                                      Sélectionnez le genre
+                                    </option>
+                                    <option value={"male"}>Masculin</option>
+                                    <option value={"female"}>Féminin</option>
+                                  </select>
+                                  <span className="text-danger">
+                                    {errors?.parent_gender}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    Date de naissance
+                                    <span className="login-danger">*</span>
+                                  </label>
+                                  <input
+                                    name="date_of_birth"
+                                    className="form-control datetimepicker"
+                                    type="date"
+                                    placeholder="JJ-MM-AAAA"
+                                    defaultValue={student?.parent.date_of_birth}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_date_of_birth}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>
+                                    Téléphone{" "}
+                                    <span className="login-danger">*</span>
+                                  </label>
+
+                                  <input
+                                    name="phone_number"
+                                    className="form-control"
+                                    type="text"
+                                    defaultValue={student?.parent.phone_number}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_phone_number}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>Blood Type</label>
+                                  <select
+                                    defaultValue={student?.parent.blood_type}
+                                    className="form-control select"
+                                    name="blood_type"
+                                  >
+                                    <option value={""}>
+                                      Veuillez sélectionner un blood type
+                                    </option>
+                                    <option
+                                      value="A+"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      A+
+                                    </option>
+                                    <option
+                                      value="A-"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      A-
+                                    </option>
+                                    <option
+                                      value="B+"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      B+
+                                    </option>
+                                    <option
+                                      value="B-"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      B-
+                                    </option>
+                                    <option
+                                      value="AB+"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      AB+
+                                    </option>
+                                    <option
+                                      value="AB-"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      AB-
+                                    </option>
+                                    <option
+                                      value="O+"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      O+
+                                    </option>
+                                    <option
+                                      value="O-"
+                                      defaultValue={student?.blood_type}
+                                    >
+                                      O-
+                                    </option>
+                                  </select>
+                                  <span className="text-danger">
+                                    {errors?.parent_blood_type}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-4">
+                                <div className="form-group local-forms">
+                                  <label>health status</label>
+                                  <select
+                                    defaultValue={student?.parent.health_status}
+                                    name="health_status"
+                                    className="form-control select"
+                                  >
+                                    <option value={""}>
+                                      Veuillez sélectionner une health status
+                                    </option>
+                                    <option value={"good"}>good</option>
+                                    <option value={"middle"}>middle</option>
+                                    <option value={"bad"}>bad</option>
+                                  </select>
+                                  <span className="text-danger">
+                                    {errors?.parent_health_status}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="col-12 col-sm-12">
+                                <div className="form-group local-forms">
+                                  <label>Address</label>
+                                  <input
+                                    name="address"
+                                    className="form-control"
+                                    placeholder="Veuillez entrer votre adresse"
+                                    type="text"
+                                    defaultValue={student?.parent.address}
+                                  />
+                                  <span className="text-danger">
+                                    {errors?.parent_address}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="col-12">
-                      <div className="student-submit">
-                        <button type="submit" className="btn btn-primary">
-                          Ajouter
-                        </button>
-                      </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="student-submit d-flex justify-content-center gap-2">
+                      <button
+                        type="submit"
+                        disabled={loadingForm}
+                        className="btn btn-primary"
+                      >
+                        {loadingForm ? <LoadingCircle /> : "Modifier"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigateTo(-1)}
+                        className="border border-2 btn bg-danger-light"
+                        style={{
+                          minWidth: "160px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        Annuler
+                      </button>
                     </div>
                   </div>
                 </form>
@@ -222,3 +599,22 @@ const CreateStudent = () => {
 };
 
 export default CreateStudent;
+
+const initState = [];
+async function fetchNotes() {
+  const { data } = await axios.get("/notes");
+  return data;
+}
+
+async function NoteReducer(state = initState, action) {
+  switch (action.type) {
+    case "ADD_NOTE":
+      await axios.post("/notes", action.payload.formData);
+      return [...state, await fetchNotes()];
+    case "REMOVE_NOTE":
+      await axios.delete("/notes/" + action.payload.id);
+      return [...state, await fetchNotes()];
+    default:
+      return state;
+  }
+}

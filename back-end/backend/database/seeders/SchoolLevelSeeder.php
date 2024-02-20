@@ -16,7 +16,7 @@ class SchoolLevelSeeder extends Seeder
         $schoolLevelsData = [
             ['name' => 'Préscolaire'],
             ['name' => 'Primaire'],
-            ['name' => 'College'],
+            ['name' => 'Collége'],
             ['name' => 'Lycée'],
         ];
 

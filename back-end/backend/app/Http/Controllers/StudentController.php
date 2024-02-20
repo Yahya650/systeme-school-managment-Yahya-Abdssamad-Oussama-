@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class StudentController extends Controller
 {
@@ -26,7 +25,7 @@ class StudentController extends Controller
             return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['code_massar' => 'Les identifiants fournis sont incorrects']], 422);
         }
 
-        $student->last_login_date = date('Y-m-d H:i:s');
+        $student->last_login_date = now('Africa/Casablanca');
         $student->save();
 
         return response([

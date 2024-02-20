@@ -18,12 +18,12 @@ class ClasseTypeSeeder extends Seeder
 
             // Préscolaire
             ['name' => 'Première Année', 'code' => 'DEPE', 'school_level_id' => 1],
-            ['name' => 'Deux Année', 'code' => '1PS', 'school_level_id' => 1],
+            ['name' => 'Deuxième Année', 'code' => '1PS', 'school_level_id' => 1],
             ['name' => 'Troisième Année', 'code' => '2PS', 'school_level_id' => 1],
 
             // Primaire
             ['name' => 'Première Année', 'code' => '1AP', 'school_level_id' => 2],
-            ['name' => 'Deux Année', 'code' => '2AP', 'school_level_id' => 2],
+            ['name' => 'Deuxième Année', 'code' => '2AP', 'school_level_id' => 2],
             ['name' => 'Troisième Année', 'code' => '3AP', 'school_level_id' => 2],
             ['name' => 'Quatrième Année', 'code' => '4AP', 'school_level_id' => 2],
             ['name' => 'Cinquième Année', 'code' => '5AP', 'school_level_id' => 2],

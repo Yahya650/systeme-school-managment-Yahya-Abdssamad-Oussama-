@@ -24,12 +24,18 @@ const UpdateStudent = () => {
       if (dcryptID(id) === null) {
         navigateTo("/error/404");
       }
+
       const { data } = await AxiosClient.get("/admin/classes");
+
       await getStudent(dcryptID(id));
       const options = data.map((classe) => ({
         value: cryptID(classe.id),
-        label: `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name} - (${classe.filiere.name})`,
+        label:
+          classe.filiere_id !== null
+            ? `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name} - (${classe.filiere.name})`
+            : `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name}`,
       }));
+
       setClasseOptions(options);
       setLoading(false);
     };

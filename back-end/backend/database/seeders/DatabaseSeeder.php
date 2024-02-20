@@ -24,20 +24,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
         $this->call([
+            SuperAdminSeeder::class,
             SchoolLevelSeeder::class,
+            AdminSeeder::class,
             ClasseTypeSeeder::class,
             FiliereSeeder::class,
-            SuperAdminSeeder::class,
             CourseSeeder::class,
             ModuleSeeder::class,
-            SemesterSeeder::class
+            SemesterSeeder::class,
+            ClasseSeeder::class,
+            TeacherSeeder::class,
+            StudentParentSeeder::class,
+            StudentSeeder::class,
         ]);
     }
 }

@@ -32,7 +32,7 @@ class TeacherController extends Controller
         } else {
             return response(['message' => 'Les identifiants fournis sont incorrects', 'errors' => ['cin_email' => 'Les identifiants fournis sont incorrects']], 422);
         }
-        $teacher->last_login_date = date('Y-m-d H:i:s');
+        $teacher->last_login_date = now('Africa/Casablanca');
         $teacher->save();
 
         return response([

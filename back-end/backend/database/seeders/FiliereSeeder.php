@@ -25,9 +25,9 @@ class FiliereSeeder extends Seeder
             ['name' => 'Générale', "code" => "G", 'classe_type_id' => 9],
 
             // Collège
-            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 10],
-            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 11],
-            ['name' => 'Parcours International', "code" => "I", 'classe_type_id' => 12],
+            ['name' => 'Parcours International', "code" => "IC", 'classe_type_id' => 10],
+            ['name' => 'Parcours International', "code" => "IC", 'classe_type_id' => 11],
+            ['name' => 'Parcours International', "code" => "IC", 'classe_type_id' => 12],
 
             ['name' => 'Sport Etude', "code" => "OSE", 'classe_type_id' => 10],
             ['name' => 'Sport Etude', "code" => "OSE", 'classe_type_id' => 11],
