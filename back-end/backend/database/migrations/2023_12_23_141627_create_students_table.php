@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('health_status', ['good', 'bad', 'middle'])->nullable();
             $table->date('date_of_birth');
             $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable();
-            $table->string('phone_number')->unique();
+            $table->string('phone_number')->unique()->nullable();
             $table->string('address')->nullable();
             $table->dateTime('last_login_date')->nullable();
             $table->boolean('status_pay')->default(false);

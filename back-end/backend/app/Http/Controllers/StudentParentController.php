@@ -47,9 +47,7 @@ class StudentParentController extends Controller
             'address' => 'nullable|string|max:255',
         ]);
 
-
         $password = Random::generate(8);
-
         $newStudentParent = new StudentParent();
 
         if ($request->profile_picture) {
@@ -135,18 +133,18 @@ class StudentParentController extends Controller
         }
 
         $request->validate([
-                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'gender' => ['required', Rule::in(['male', 'female'])],
-                'email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($id)],
-                'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($id)],
-                'health_status' => 'nullable|string|max:255',
-                'date_of_birth' => 'required|date',
-                'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-                'phone_number' => ['required', 'string', 'size:10', Rule::unique('student_parents', 'phone_number')->ignore($id)],
-                'address' => 'nullable|string|max:255',
-            ]);
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('student_parents', 'email')->ignore($id)],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('student_parents', 'cin')->ignore($id)],
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', Rule::unique('student_parents', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+        ]);
 
         $studentParent = StudentParent::find($id);
 

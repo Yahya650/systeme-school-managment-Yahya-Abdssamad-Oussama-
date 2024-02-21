@@ -58,7 +58,7 @@ const UpdateStudent = () => {
       date_of_birth: e.target.date_of_birth[0].value,
       blood_type: e.target.blood_type[0].value,
       health_status: e.target.health_status[0].value,
-      classe_id: dcryptID(e.target.classe_id.value),
+      classe_id: dcryptID(e.target.classe_id[0].value),
 
       // parent data
       parent_cin: e.target.cin[1].value?.toUpperCase(),

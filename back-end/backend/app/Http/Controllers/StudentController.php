@@ -33,6 +33,97 @@ class StudentController extends Controller
         ]);
     }
 
+    public function storeWithParent(Request $request)
+    {
+        $request->validate([
+            // validate student data
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => 'required|email|unique:students,email',
+            'cin' => 'nullable|string|regex:/^[A-Z]{1,2}\d+$/|unique:students,cin',
+            'code_massar' => 'required|string|unique:students,code_massar|regex:/^[A-Z]\d{9}$/',
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
+            'address' => 'nullable|string|max:255',
+            'classe_id' => 'required|exists:classes,id',
+
+            // validate parent data
+            'parent_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'parent_first_name' => 'required|string|max:255',
+            'parent_last_name' => 'required|string|max:255',
+            'parent_gender' => ['required', Rule::in(['male', 'female'])],
+            'parent_email' => 'required|email|unique:student_parents,email',
+            'parent_cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:student_parents,cin',
+            'parent_health_status' => 'nullable|string|max:255',
+            'parent_date_of_birth' => 'required|date',
+            'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'parent_phone_number' => 'required|unique:student_parents,phone_number',
+            'parent_address' => 'nullable|string|max:255',
+        ]);
+
+        $password = Random::generate(8);
+
+        do {
+            $parent_password = Random::generate(8);
+        } while ($parent_password == $password);
+
+        $newStudent = new Student();
+        $newStudentParent = new StudentParent();
+
+        if ($request->parent_profile_picture) {
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $newStudentParent->profile_picture = 'picture_profiles/student_parents/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+        if ($request->profile_picture) {
+            Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->parent_profile_picture));
+            $newStudent->profile_picture = 'picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        $newStudentParent->profile_picture = $request->parent_profile_picture;
+        $newStudentParent->first_name = $request->parent_first_name;
+        $newStudentParent->last_name = $request->parent_last_name;
+        $newStudentParent->gender = $request->parent_gender;
+        $newStudentParent->email = $request->parent_email;
+        $newStudentParent->cin = $request->parent_cin;
+        $newStudentParent->password = Hash::make($parent_password);
+        $newStudentParent->health_status = $request->parent_health_status;
+        $newStudentParent->date_of_birth = $request->parent_date_of_birth;
+        $newStudentParent->blood_type = $request->parent_blood_type;
+        $newStudentParent->phone_number = $request->parent_phone_number;
+        $newStudentParent->address = $request->parent_address;
+        $newStudentParent->admin_id = $request->user('admin')->id;
+        $newStudentParent->save();
+
+        $newStudent->first_name = $request->first_name;
+        $newStudent->last_name = $request->last_name;
+        $newStudent->gender = $request->gender;
+        $newStudent->email = $request->email;
+        $newStudent->cin = $request->cin;
+        $newStudent->code_massar = $request->code_massar;
+        $newStudent->password = Hash::make($password);
+        $newStudent->health_status = $request->health_status;
+        $newStudent->date_of_birth = $request->date_of_birth;
+        $newStudent->blood_type = $request->blood_type;
+        $newStudent->phone_number = $request->phone_number;
+        $newStudent->address = $request->address;
+        $newStudent->classe_id = $request->classe_id;
+        $newStudent->student_parent_id = $newStudentParent->id;
+        $newStudent->admin_id = $request->user('admin')->id;
+        $newStudent->save();
+
+        return response([
+            'code_massar' => $request->code_massar,
+            'email' => $request->email,
+            'password' => $password,
+            'cin' => $request->cin,
+            'parent_password' => $parent_password,
+            'message' => "Étudiant et Prent créé avec succès",
+        ], 201);
+    }
     public function store(Request $request)
     {
 
@@ -47,9 +138,9 @@ class StudentController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required', 'size:10', 'regex:/^(06|07)\d{8}$/', Rule::unique('students', 'phone_number')],
+            'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
-            'student_parent_id' => 'nullable|exists:student_parents,id',
+            'student_parent_id' => 'required|exists:student_parents,id',
             'classe_id' => 'required|exists:classes,id',
         ]);
 
@@ -150,12 +241,11 @@ class StudentController extends Controller
         }
 
 
-        // comontit hadi dyal permission 7it ymkan ykon l etudiant makin f7ta chi 9ist so hadchi ghadi ykhalini man9darch n checki if student kin fl niveau lli mklaf bih l dak ladmin or not
-        // if (request()->user()->cannot('view', Student::find($id))) {
-        //     return response()->json([
-        //         'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
-        //     ], 401);
-        // }
+        if (request()->user()->cannot('view', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de voir ce Étudiant'
+            ], 401);
+        }
 
         return response()->json(Student::find($id));
     }
@@ -189,8 +279,10 @@ class StudentController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required', 'string', 'size:10', Rule::unique('students', 'phone_number')->ignore($id)],
+            'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
+            'student_parent_id' => 'required|exists:parents,id',
+            'classe_id' => 'required|exists:classes,id',
         ]);
 
         $student = Student::find($id);
@@ -212,6 +304,9 @@ class StudentController extends Controller
         $student->blood_type = $request->blood_type;
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
+        $student->classe_id = $request->classe_id;
+        $student->student_parent_id = $request->student_parent_id;
+
 
         $student->save();
 
@@ -219,6 +314,7 @@ class StudentController extends Controller
             'message' => "Étudiant mis à jour avec succès"
         ], 200);
     }
+
     public function updateWithParent(Request $request, $id)
     {
         $student = Student::find($id);
@@ -249,8 +345,9 @@ class StudentController extends Controller
             'health_status' => 'nullable|string|max:255',
             'date_of_birth' => 'required|date',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'phone_number' => ['required', 'string', 'size:10', Rule::unique('students', 'phone_number')->ignore($id)],
+            'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
+            'classe_id' => 'required|exists:classes,id',
 
             // validate parent data
             'parent_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -262,7 +359,7 @@ class StudentController extends Controller
             'parent_health_status' => 'nullable|string|max:255',
             'parent_date_of_birth' => 'required|date',
             'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
-            'parent_phone_number' => ['required', 'string', 'size:10', Rule::unique('student_parents', 'phone_number')->ignore($parent->id)],
+            'parent_phone_number' => ['required', 'string', Rule::unique('student_parents', 'phone_number')->ignore($parent->id)],
             'parent_address' => 'nullable|string|max:255',
         ]);
 

@@ -38,22 +38,22 @@ class AdminSeeder extends Seeder
 
         $reponsibles = [
             [
-                'types' => "['educational','financial']",
+                'types' => json_encode(['educational','financial']),
                 'school_level_id' => 1,
                 'admin_id' => 1
             ],
             [
-                'types' => "['educational','financial']",
+                'types' => json_encode(['educational','financial']),
                 'school_level_id' => 2,
                 'admin_id' => 1
             ],
             [
-                'types' => "['educational','financial']",
+                'types' => json_encode(['educational','financial']),
                 'school_level_id' => 3,
                 'admin_id' => 1
             ],
             [
-                'types' => "['educational','financial']",
+                'types' =>json_encode(['educational','financial']),
                 'school_level_id' => 4,
                 'admin_id' => 1
             ],

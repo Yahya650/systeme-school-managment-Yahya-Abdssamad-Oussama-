@@ -14,6 +14,7 @@ const ContextStudent = createContext({
   removeStudent: () => {},
   // createStudent: () => {},
   updateStudentWithParent: () => {},
+  createStudentWithParent: () => {},
 });
 
 const StudentContext = ({ children }) => {
@@ -192,6 +193,48 @@ const StudentContext = ({ children }) => {
       }
     }
   }
+
+  async function createStudentWithParent(dataForm) {
+    try {
+      const { data } = await AxiosClient.post(
+        "/admin/etudiants/create-with-parent",
+        dataForm
+      );
+      withReactContent(Swal).fire({
+        title: data.message,
+        html: (
+          <div className="d-flex gap-2">
+            <div>
+              <h1>Etudiant Information</h1>
+              <b>Code Massar : </b> {data.code_massar} <br />
+              <b>UserName : </b> {data.email} <br />
+              <b>Password : </b> {data.password} <br />
+            </div>
+            <div>
+              <h1>Parent Information</h1>
+              <b>CIN : </b> {data.cin} <br />
+              <b>Password : </b> {data.parent_password} <br />
+            </div>
+          </div>
+        ),
+        icon: "success",
+      });
+      toast.success(data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      setErrors(null);
+      navigateTo(-1);
+    } catch (error) {
+      toast.error(error.response.data.message, {
+        duration: 4000,
+        position: "top-right",
+      });
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
+    }
+  }
   return (
     <ContextStudent.Provider
       value={{
@@ -200,9 +243,10 @@ const StudentContext = ({ children }) => {
         updateProfilePicture,
         getStudent,
         // updateStudent,
-        updateStudentWithParent,
         removeStudent,
         createStudent,
+        updateStudentWithParent,
+        createStudentWithParent,
       }}
     >
       {children}
