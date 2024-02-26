@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useAdminContext } from "../../../Functions/AdminContext";
-import dcryptID from "../../../security/dcryptID";
+import dcryptID from "../../../config/security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { AxiosClient } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
+import { AxiosClient } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
 const UpdateAdmin = () => {
   const { admin, errors, navigateTo, setErrors } = useContextApi();
   const [loading, setLoading] = useState(true);

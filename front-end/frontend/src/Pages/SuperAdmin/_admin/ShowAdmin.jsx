@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link, useParams } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useAdminContext } from "../../../Functions/AdminContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
-import dcryptID from "../../../security/dcryptID";
-import cryptID from "../../../security/cryptID";
+import dcryptID from "../../../config/security/dcryptID";
+import cryptID from "../../../config/security/cryptID";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { BACKEND_URL } from "../../../Api/AxiosClient";
+import { BACKEND_URL } from "../../../config/Api/AxiosClient";
 
 const ShowAdmin = () => {
   const { admin, navigateTo, calculateAge, loadingProfilePicture } =

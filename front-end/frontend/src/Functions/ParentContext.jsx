@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react";
-import { useContextApi } from "../Context/ContextApi";
+import { useContextApi } from "../config/Context/ContextApi";
 import toast from "react-hot-toast";
-import { AxiosClient } from "../Api/AxiosClient";
+import { AxiosClient } from "../config/Api/AxiosClient";
+import { errorToast, successToast } from "../config/Toasts/toasts";
 
 const ContextParent = createContext({ updateParent: () => {} });
 
@@ -17,10 +18,7 @@ const ParentContext = ({ children }) => {
       setPageCount(data.last_page);
       setAdmins(data.data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
 
@@ -30,10 +28,7 @@ const ParentContext = ({ children }) => {
         "/admin/student-parents/" + id,
         dataForm
       );
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
     } catch (error) {
@@ -48,7 +43,9 @@ const ParentContext = ({ children }) => {
   }
 
   return (
-    <ContextParent.Provider value={{ updateParent }}>{children}</ContextParent.Provider>
+    <ContextParent.Provider value={{ updateParent }}>
+      {children}
+    </ContextParent.Provider>
   );
 };
 

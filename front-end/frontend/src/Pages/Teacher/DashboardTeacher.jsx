@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import _footer from "../../Layouts/_footer";
-import { useContextApi } from "../../Context/ContextApi";
+import { useContextApi } from "../../config/Context/ContextApi";
 
 const DashboardTeacher = () => {
   const { user } = useContextApi();

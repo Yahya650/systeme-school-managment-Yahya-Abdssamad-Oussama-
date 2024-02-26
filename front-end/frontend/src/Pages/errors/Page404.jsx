@@ -1,5 +1,5 @@
 import React from "react";
-import { useContextApi } from "../../Context/ContextApi";
+import { useContextApi } from "../../config/Context/ContextApi";
 
 const Page404 = () => {
   const { navigateTo } = useContextApi();

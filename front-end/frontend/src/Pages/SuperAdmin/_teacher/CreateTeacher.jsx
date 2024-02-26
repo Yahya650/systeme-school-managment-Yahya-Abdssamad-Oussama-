@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { useTeachersContext } from "../../../Functions/TeacherContext";
 

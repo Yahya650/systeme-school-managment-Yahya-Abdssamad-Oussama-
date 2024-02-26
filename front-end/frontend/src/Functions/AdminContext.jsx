@@ -1,10 +1,11 @@
 import toast from "react-hot-toast";
-import { AxiosClient } from "../Api/AxiosClient";
-import { useContextApi } from "../Context/ContextApi";
+import { AxiosClient } from "../config/Api/AxiosClient";
+import { useContextApi } from "../config/Context/ContextApi";
 import React, { createContext, useContext } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import dcryptID from "../security/dcryptID";
+import dcryptID from "../config/security/dcryptID";
+import { errorToast, successToast } from "../config/Toasts/toasts";
 
 const ContextAdmin = createContext({
   getAdmins: () => {},
@@ -37,10 +38,7 @@ const AdminContext = ({ children }) => {
       setPageCount(data.last_page);
       setAdmins(data.data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
   async function getAdmin(id) {
@@ -48,10 +46,7 @@ const AdminContext = ({ children }) => {
       const { data } = await AxiosClient.get("/super-admin/admins/" + id);
       setAdmin(data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
   async function updateProfilePicture(id, profile_picture) {
@@ -72,15 +67,9 @@ const AdminContext = ({ children }) => {
         }
       );
       await getAdmin(dcryptID(id));
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     } finally {
       setLoadingProfilePicture(false);
     }
@@ -92,18 +81,12 @@ const AdminContext = ({ children }) => {
         "/super-admin/admins/" + id,
         dataForm
       );
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
       // getAdmins();
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -117,15 +100,9 @@ const AdminContext = ({ children }) => {
     try {
       const { data } = await AxiosClient.delete("/super-admin/admins/" + id);
       await getAdmins(currentPage);
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      successToast(data.message, 3000, "top-center");
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
     }
@@ -147,15 +124,9 @@ const AdminContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -176,18 +147,12 @@ const AdminContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo("/super-admin/all-admins");
       // getAdmins();
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }

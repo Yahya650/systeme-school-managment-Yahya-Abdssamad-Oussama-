@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
-import dcryptID from "../../../security/dcryptID";
+import { useContextApi } from "../../../config/Context/ContextApi";
+import dcryptID from "../../../config/security/dcryptID";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { useTeachersContext } from "../../../Functions/TeacherContext";

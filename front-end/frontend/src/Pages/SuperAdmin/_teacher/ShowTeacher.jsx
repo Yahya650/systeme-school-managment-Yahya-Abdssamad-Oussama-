@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link, useParams } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
-import dcryptID from "../../../security/dcryptID";
+import dcryptID from "../../../config/security/dcryptID";
 import { useTeachersContext } from "../../../Functions/TeacherContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { BACKEND_URL } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
+import { BACKEND_URL } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
 
 const ShowTeacher = () => {
   const { teacher, navigateTo, calculateAge, loadingProfilePicture } =

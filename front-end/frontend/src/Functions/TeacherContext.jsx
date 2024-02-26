@@ -1,10 +1,11 @@
 import { createContext, useContext } from "react";
-import { AxiosClient } from "../Api/AxiosClient";
-import { useContextApi } from "../Context/ContextApi";
+import { AxiosClient } from "../config/Api/AxiosClient";
+import { useContextApi } from "../config/Context/ContextApi";
 import toast from "react-hot-toast";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import dcryptID from "../security/dcryptID";
+import dcryptID from "../config/security/dcryptID";
+import { errorToast, successToast } from "../config/Toasts/toasts";
 
 const ContextTeacher = createContext({
   getTeachers: () => {},
@@ -37,10 +38,7 @@ const TeacherContext = ({ children }) => {
       setPageCount(data.last_page);
       setTeachers(data.data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
 
@@ -60,15 +58,9 @@ const TeacherContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -91,15 +83,9 @@ const TeacherContext = ({ children }) => {
         }
       );
       await getTeacher(dcryptID(id));
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     } finally {
       setLoadingProfilePicture(false);
     }
@@ -110,10 +96,7 @@ const TeacherContext = ({ children }) => {
       const { data } = await AxiosClient.get("/super-admin/teachers/" + id);
       setTeacher(data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
 
@@ -123,18 +106,12 @@ const TeacherContext = ({ children }) => {
         "/super-admin/teachers/" + id,
         dataForm
       );
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
       // getTeachers();
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -148,15 +125,9 @@ const TeacherContext = ({ children }) => {
     try {
       const { data } = await AxiosClient.delete("/super-admin/teachers/" + id);
       await getTeachers(currentPage);
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      successToast(data.message, 3000, "top-center");
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
     }
@@ -179,18 +150,12 @@ const TeacherContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo("/super-admin/all-teachers");
       // getTeachers();
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }

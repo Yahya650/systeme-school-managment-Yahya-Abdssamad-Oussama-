@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import LoadingCircle from "../../../Components/LoadingCircle";
 
 const LoginSuperAdmin = () => {
@@ -9,7 +9,11 @@ const LoginSuperAdmin = () => {
   const handelLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await Login("super-admin", e.target.cin_email.value, e.target.password.value);
+    await Login(
+      "super-admin",
+      e.target.cin_email.value,
+      e.target.password.value
+    );
     setLoading(false);
   };
 

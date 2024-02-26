@@ -1,9 +1,10 @@
 import React, { createContext, useContext } from "react";
 import toast from "react-hot-toast";
-import { useContextApi } from "../Context/ContextApi";
+import { useContextApi } from "../config/Context/ContextApi";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { AxiosClient } from "../Api/AxiosClient";
+import { AxiosClient } from "../config/Api/AxiosClient";
+import { errorToast, successToast } from "../config/Toasts/toasts";
 
 const ContextStudent = createContext({
   getStudents: () => {},
@@ -38,10 +39,7 @@ const StudentContext = ({ children }) => {
       setPageCount(data.last_page);
       setStudents(data.data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
 
@@ -61,15 +59,9 @@ const StudentContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -92,15 +84,9 @@ const StudentContext = ({ children }) => {
         }
       );
       await getStudent(dcryptID(id));
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     } finally {
       setLoadingProfilePicture(false);
     }
@@ -111,10 +97,7 @@ const StudentContext = ({ children }) => {
       const { data } = await AxiosClient.get("/admin/students/" + id);
       setStudent(data);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
     }
   }
 
@@ -124,17 +107,11 @@ const StudentContext = ({ children }) => {
         "/admin/students/" + id + "/upadte-with-parent",
         dataForm
       );
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -148,15 +125,9 @@ const StudentContext = ({ children }) => {
     try {
       const { data } = await AxiosClient.delete("/admin/students/" + id);
       await getStudents(currentPage);
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      successToast(data.message, 3000, "top-center");
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-center",
-      });
+      errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
     }
@@ -176,18 +147,12 @@ const StudentContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo("/admin/all-students");
       // getStudents();
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -219,17 +184,11 @@ const StudentContext = ({ children }) => {
         ),
         icon: "success",
       });
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }

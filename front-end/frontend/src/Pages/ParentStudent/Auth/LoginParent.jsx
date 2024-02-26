@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import LoadingCircle from "../../../Components/LoadingCircle";
 
 const LoginParent = () => {
@@ -38,18 +38,12 @@ const LoginParent = () => {
                       CIN
                       <span className="login-danger">*</span>
                     </label>
-                    <input
-                      className="form-control"
-                      type="text"
-                      name="cin"
-                    />
+                    <input className="form-control" type="text" name="cin" />
                     <span className="profile-views">
                       <i className="fas fa-user-circle"></i>
                     </span>
                     {errors && (
-                      <span className="text text-danger">
-                        {errors.cin}
-                      </span>
+                      <span className="text text-danger">{errors.cin}</span>
                     )}
                   </div>
                   <div className="form-group">

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useContextApi } from "../../Context/ContextApi";
+import React, { useState } from "react";
+import { useContextApi } from "../../config/Context/ContextApi";
 import { Link } from "react-router-dom";
-import { BACKEND_URL } from "../../Api/AxiosClient";
+import { BACKEND_URL } from "../../config/Api/AxiosClient";
 import LoadingCircle from "../../Components/LoadingCircle";
 import _footer from "./../../Layouts/_footer";
 

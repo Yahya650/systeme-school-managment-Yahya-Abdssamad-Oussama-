@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
-import { useContextApi } from "../../../Context/ContextApi";
-import cryptID from "../../../security/cryptID";
-import dcryptID from "../../../security/dcryptID";
+import { useContextApi } from "../../../config/Context/ContextApi";
+import cryptID from "../../../config/security/cryptID";
+import dcryptID from "../../../config/security/dcryptID";
 import { useTeachersContext } from "../../../Functions/TeacherContext";
 import toast from "react-hot-toast";
 import ReactPaginate from "react-paginate";
-import { BACKEND_URL } from "../../../Api/AxiosClient";
+import { BACKEND_URL } from "../../../config/Api/AxiosClient";
 
 const AllTeachers = () => {
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,7 @@ const AllTeachers = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Rechercher par ID ..."
+                  placeholder="Rechercher par CIN ..."
                 />
               </div>
             </div>
@@ -68,7 +68,7 @@ const AllTeachers = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Rechercher par nom ..."
+                  placeholder="Rechercher par nom et prenom ..."
                 />
               </div>
             </div>

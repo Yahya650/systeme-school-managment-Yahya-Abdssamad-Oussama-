@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useStudentContext } from "../../../Functions/StudentContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import ReactPaginate from "react-paginate";
-import { BACKEND_URL } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
-import dcryptID from "../../../security/dcryptID";
+import { BACKEND_URL } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
+import dcryptID from "../../../config/security/dcryptID";
 
 const AllStudents = () => {
   const [loading, setLoading] = useState(true);
@@ -55,7 +55,7 @@ const AllStudents = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Rechercher par ID ..."
+                  placeholder="Rechercher par Code massar ..."
                 />
               </div>
             </div>
@@ -73,7 +73,7 @@ const AllStudents = () => {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Rechercher par téléphone ..."
+                  placeholder="Rechercher par CIN de Parent ..."
                 />
               </div>
             </div>

@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AxiosClient } from "../Api/AxiosClient";
 import { useNavigate } from "react-router-dom";
-import LoadingCircleContext from "../Components/LoadingCircleContext";
+import LoadingCircleContext from "../../Components/LoadingCircleContext";
 import cryptString from "../security/cryptString";
 import toast, { Toaster } from "react-hot-toast";
-// import "./styles.css";
+import { errorToast, successToast } from "../Toasts/toasts";
 
 const Context = createContext({
   errors: null,
@@ -87,16 +87,10 @@ export const ContextApi = ({ children }) => {
         "/" + guard + "/change-password",
         formData
       );
-      toast.success(data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      successToast(data.message);
       setErrors(null);
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
       }
@@ -172,10 +166,8 @@ export const ContextApi = ({ children }) => {
         navigate("/" + guard + "/dashboard", { replace: true });
       }
     } catch (error) {
-      toast.error(error.response.data.message, {
-        duration: 4000,
-        position: "top-right",
-      });
+      errorToast(error.response.data.message);
+      
       if (error.response.status === 422) {
         if (guard != "student" && guard != "student-parent") {
           setErrors({

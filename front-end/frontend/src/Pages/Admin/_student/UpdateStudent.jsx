@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import dcryptID from "../../../security/dcryptID";
-import { useContextApi } from "../../../Context/ContextApi";
+import dcryptID from "../../../config/security/dcryptID";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useStudentContext } from "../../../Functions/StudentContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
-import { AxiosClient } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
+import { AxiosClient } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
 import Select from "react-select";
 import LoadingCircle from "./../../../Components/LoadingCircle";
 import { useParentContext } from "../../../Functions/ParentContext";
@@ -58,7 +58,7 @@ const UpdateStudent = () => {
       date_of_birth: e.target.date_of_birth[0].value,
       blood_type: e.target.blood_type[0].value,
       health_status: e.target.health_status[0].value,
-      classe_id: dcryptID(e.target.classe_id[0].value),
+      classe_id: dcryptID(e.target.classe_id.value),
 
       // parent data
       parent_cin: e.target.cin[1].value?.toUpperCase(),
@@ -217,7 +217,7 @@ const UpdateStudent = () => {
                       <div className="col-12 col-sm-4">
                         <div className="form-group local-forms">
                           <label>
-                            Téléphone <span className="login-danger">*</span>
+                            Téléphone
                           </label>
 
                           <input

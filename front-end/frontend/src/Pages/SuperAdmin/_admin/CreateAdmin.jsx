@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useContextApi } from "../../../Context/ContextApi";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useAdminContext } from "../../../Functions/AdminContext";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { AxiosClient } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
+import { AxiosClient } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
 
 const CreateAdmin = () => {
   const { errors, navigateTo } = useContextApi();

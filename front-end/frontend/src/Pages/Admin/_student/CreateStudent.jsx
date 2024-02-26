@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import dcryptID from "../../../security/dcryptID";
-import { useContextApi } from "../../../Context/ContextApi";
+import dcryptID from "../../../config/security/dcryptID";
+import { useContextApi } from "../../../config/Context/ContextApi";
 import { useStudentContext } from "../../../Functions/StudentContext";
-import { AxiosClient } from "../../../Api/AxiosClient";
-import cryptID from "../../../security/cryptID";
+import { AxiosClient } from "../../../config/Api/AxiosClient";
+import cryptID from "../../../config/security/cryptID";
 import Select from "react-select";
 import LoadingCircle from "./../../../Components/LoadingCircle";
 
