@@ -15,7 +15,9 @@ const Context = createContext({
   logout: () => {},
   getUserProfile: () => {},
   setLoadingContaxt: () => {},
+  setStudentsTrash: () => {},
   students: null,
+  studentsTrash: null,
   setStudents: () => {},
   setStudent: () => {},
   student: null,
@@ -41,6 +43,8 @@ const Context = createContext({
   handlePageClick: () => {},
   setLoadingProfilePicture: () => {},
   changePassword: () => {},
+  setIds: () => {},
+  ids: null,
 });
 
 export const ContextApi = ({ children }) => {
@@ -48,6 +52,7 @@ export const ContextApi = ({ children }) => {
   const [loadingContaxt, setLoadingContaxt] = useState(false);
   const [user, setUser] = useState(null);
   const [students, setStudents] = useState(null);
+  const [studentsTrash, setStudentsTrash] = useState(null);
   const [student, setStudent] = useState(null);
   const [admins, setAdmins] = useState(null);
   const [admin, setAdmin] = useState(null);
@@ -57,6 +62,7 @@ export const ContextApi = ({ children }) => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
+  const [ids, setIds] = useState([]);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
 
   const navigate = useNavigate();
@@ -103,7 +109,7 @@ export const ContextApi = ({ children }) => {
     });
     const { selected } = page;
     const val_currentPage = selected + 1;
-    await fetchData(val_currentPage);
+    await fetchData(false, val_currentPage);
     setCurrentPage(val_currentPage);
     toast.dismiss(toastId1);
   };
@@ -214,9 +220,11 @@ export const ContextApi = ({ children }) => {
         setTeachers,
         setParnets,
         setStudents,
+        setStudentsTrash,
         setAdmin,
         setTeacher,
         students,
+        studentsTrash,
         admin,
         admins,
         teachers,
@@ -226,7 +234,9 @@ export const ContextApi = ({ children }) => {
         currentPage,
         total,
         loadingProfilePicture,
+        ids,
         calculateAge,
+        setIds,
         setLoadingProfilePicture,
         setPageCount,
         setCurrentPage,

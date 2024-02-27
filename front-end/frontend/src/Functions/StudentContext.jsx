@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { AxiosClient } from "../config/Api/AxiosClient";
 import { errorToast, successToast } from "../config/Toasts/toasts";
+import dcryptID from "../config/security/dcryptID";
 
 const ContextStudent = createContext({
   getStudents: () => {},
@@ -13,21 +14,27 @@ const ContextStudent = createContext({
   getStudent: () => {},
   updateStudent: () => {},
   removeStudent: () => {},
+  getStudentsTrash: () => {},
   // createStudent: () => {},
   updateStudentWithParent: () => {},
+  restoreStudent: () => {},
   createStudentWithParent: () => {},
+  restoreStudentSelected: () => {},
+  deleteStudentSelected: () => {},
 });
 
 const StudentContext = ({ children }) => {
   const {
     setErrors,
     setStudents,
+    setStudentsTrash,
     setTotal,
     setPageCount,
     navigateTo,
     setLoadingProfilePicture,
     setStudent,
     currentPage,
+    setIds,
   } = useContextApi();
 
   async function getStudents(currentPage = 1) {
@@ -38,6 +45,18 @@ const StudentContext = ({ children }) => {
       setTotal(data.total);
       setPageCount(data.last_page);
       setStudents(data.data);
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
+  async function getStudentsTrash(currentPage = 1) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/admin/etudiants/trash?page=" + currentPage
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      setStudentsTrash(data.data);
     } catch (error) {
       errorToast(error.response.data.message);
     }
@@ -132,6 +151,64 @@ const StudentContext = ({ children }) => {
       toast.dismiss(toastId);
     }
   }
+  async function restoreStudent(id) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.get(
+        "/admin/etudiants/" + dcryptID(id) + "/restore"
+      );
+      await getStudentsTrash(currentPage);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function restoreStudentSelected(ids) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/admin/etudiants/restore-select",
+        {
+          ids,
+        }
+      );
+      await getStudentsTrash(currentPage);
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function deleteStudentSelected(ids) {
+    const toastId = toast.loading("Suppression en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/admin/etudiants/delete-select",
+        {
+          ids,
+        }
+      );
+      await getStudents(currentPage);
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
 
   async function createStudent(dataForm) {
     try {
@@ -203,9 +280,13 @@ const StudentContext = ({ children }) => {
         getStudent,
         // updateStudent,
         removeStudent,
+        restoreStudent,
+        getStudentsTrash,
         createStudent,
+        deleteStudentSelected,
         updateStudentWithParent,
         createStudentWithParent,
+        restoreStudentSelected,
       }}
     >
       {children}

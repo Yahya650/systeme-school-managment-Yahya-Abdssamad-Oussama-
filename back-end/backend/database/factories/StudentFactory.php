@@ -29,6 +29,8 @@ class StudentFactory extends Factory
             'blood_type' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
             'phone_number' => fake()->unique()->phoneNumber,
             'address' => fake()->address,
+            'classe_id' => 1,
+            'student_parent_id' => 1
         ];
     }
 }

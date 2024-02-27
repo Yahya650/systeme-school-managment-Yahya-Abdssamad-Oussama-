@@ -51,8 +51,10 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::post('/{id}/update-absence', [AbsenceController::class, 'update']);
         Route::get('/{id}/renew-password', [StudentController::class, 'renewPassword']);
         Route::get('/{id}/restore', [StudentController::class, 'restore']);
-        Route::post('/restore-all', [StudentController::class, 'restoreAll']);
-        Route::post('/trash', [StudentController::class, 'trash']);
+        Route::get('/restore-all', [StudentController::class, 'restoreAll']);
+        Route::post('/restore-select', [StudentController::class, 'restoreSelect']);
+        Route::post('/delete-select', [StudentController::class, 'deleteSelect']);
+        Route::get('/trash', [StudentController::class, 'trash']);
         Route::post('/{id}/update-profile-picture', [StudentController::class, 'updatePictureProfile']);
     });
 

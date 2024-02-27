@@ -198,16 +198,7 @@ class StudentController extends Controller
     {
         $students = collect([]);
 
-        // ila bghit njib gha hadok lli mkalf bihom educationnel 
-        // foreach ($request->user('admin')->school_levels()->wherePivot('types', 'like', '%educational%')->get() as $school_level) {
-        //     foreach ($school_level->classe_types as $classe_type) {
-        //         foreach ($classe_type->classes as $classe) {
-        //             $students = $students->merge($classe->students);
-        //         }
-        //     }
-        // }
-
-        foreach ($request->user('admin')->school_levels as $school_level) {
+        foreach ($request->user('admin')->school_levels()->wherePivot('types', 'like', '%educational%')->get() as $school_level) {
             foreach ($school_level->classe_types as $classe_type) {
                 foreach ($classe_type->classes as $classe) {
                     $students = $students->merge($classe->students);
@@ -215,12 +206,20 @@ class StudentController extends Controller
             }
         }
 
+        // foreach ($request->user('admin')->school_levels as $school_level) {
+        //     foreach ($school_level->classe_types as $classe_type) {
+        //         foreach ($classe_type->classes as $classe) {
+        //             $students = $students->merge($classe->students);
+        //         }
+        //     }
+        // }
+
         $currentPage = Paginator::resolveCurrentPage('page');
         $perPage = 8;
         $studentsPaginated = $students->forPage($currentPage, $perPage);
 
         return response()->json([
-            'data' => $studentsPaginated->values(), // Resetting the keys of the collection
+            'data' => $studentsPaginated->values(),
             'current_page' => $currentPage,
             'per_page' => $perPage,
             'total' => $students->count(),
@@ -529,10 +528,84 @@ class StudentController extends Controller
         ]);
     }
 
-    public function trash()
+    public function restoreSelect(Request $request)
     {
-        return response()->json(request()->user()->students()->onlyTrashed()->latest()->get());
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun étudiant sélectionné'
+            ], 404);
+        }
+
+        // Ensure all selected students exist and are trashed
+        $students = Student::onlyTrashed()->whereIn('id', $request->ids)->get();
+        if ($students->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas détruits'
+            ], 404);
+        }
+
+        // Restore selected students
+        foreach ($students as $student) {
+            $student->restore();
+        }
+
+        return response()->json([
+            'message' => 'Tous les étudiants sélectionnés ont été restaurés avec succès'
+        ]);
     }
+
+    public function deleteSelect(Request $request)
+    {
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun étudiant sélectionné'
+            ], 404);
+        }
+
+        // Ensure all selected students exist
+        $students = Student::whereIn('id', $request->ids)->get();
+        if ($students->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas supprimés'
+            ], 404);
+        }
+
+        // delete selected students
+        foreach ($students as $student) {
+            $student->delete();
+        }
+
+        return response()->json([
+            'message' => 'Tous les étudiants sélectionnés ont été supprimés avec succès'
+        ]);
+    }
+
+
+    public function trash(Request $request)
+    {
+        $students = collect([]);
+
+        foreach ($request->user('admin')->school_levels as $school_level) {
+            foreach ($school_level->classe_types as $classe_type) {
+                foreach ($classe_type->classes as $classe) {
+                    $students = $students->merge($classe->students()->onlyTrashed()->get());
+                }
+            }
+        }
+
+        $currentPage = Paginator::resolveCurrentPage('page');
+        $perPage = 10;
+        $studentsPaginated = $students->forPage($currentPage, $perPage);
+
+        return response()->json([
+            'data' => $studentsPaginated->values(), // Resetting the keys of the collection
+            'current_page' => $currentPage,
+            'per_page' => $perPage,
+            'total' => $students->count(),
+            'last_page' => ceil($students->count() / $perPage)
+        ]);
+    }
+
 
 
     public function getStudentWithAllInfo($id)
