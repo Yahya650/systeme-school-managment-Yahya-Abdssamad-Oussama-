@@ -58,10 +58,9 @@ class StudentParent extends Authenticatable
     {
         return $this->belongsTo(Admin::class, 'admin_id');
     }
-    
+
     public function payments()
     {
         return $this->hasMany(Payment::class);
     }
-
 }

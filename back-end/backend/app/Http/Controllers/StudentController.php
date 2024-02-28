@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use App\Models\StudentParent;
 use Nette\Utils\Random;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\StudentParent;
 use Illuminate\Validation\Rule;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Hash;
@@ -119,11 +120,12 @@ class StudentController extends Controller
             'code_massar' => $request->code_massar,
             'email' => $request->email,
             'password' => $password,
-            'cin' => $request->cin,
+            'cin' => $request->parent_cin,
             'parent_password' => $parent_password,
-            'message' => "Étudiant et Prent créé avec succès",
+            'message' => "Étudiant et Parent créé avec succès",
         ], 201);
     }
+
     public function store(Request $request)
     {
 
@@ -196,26 +198,24 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $students = collect([]);
-
-        foreach ($request->user('admin')->school_levels()->wherePivot('types', 'like', '%educational%')->get() as $school_level) {
-            foreach ($school_level->classe_types as $classe_type) {
-                foreach ($classe_type->classes as $classe) {
-                    $students = $students->merge($classe->students);
-                }
-            }
-        }
-
-        // foreach ($request->user('admin')->school_levels as $school_level) {
-        //     foreach ($school_level->classe_types as $classe_type) {
-        //         foreach ($classe_type->classes as $classe) {
-        //             $students = $students->merge($classe->students);
-        //         }
-        //     }
-        // }
+        // Eager load the necessary relationships and retrieve the latest students
+        $students = $request->user('admin')->school_levels()
+            ->wherePivot('types', 'like', '%educational%')
+            ->with('classe_types.classes.students')
+            ->get()
+            ->flatMap(function ($schoolLevel) {
+                return $schoolLevel->classe_types->flatMap(function ($classeType) {
+                    return $classeType->classes->flatMap(function ($classe) {
+                        return $classe->students;
+                    });
+                });
+            })
+            ->sortByDesc('created_at');
 
         $currentPage = Paginator::resolveCurrentPage('page');
         $perPage = 8;
+
+        // Paginate the collection
         $studentsPaginated = $students->forPage($currentPage, $perPage);
 
         return response()->json([
@@ -280,7 +280,7 @@ class StudentController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
-            'student_parent_id' => 'required|exists:parents,id',
+            'student_parent_id' => 'required|exists:student_parents,id',
             'classe_id' => 'required|exists:classes,id',
         ]);
 
@@ -305,8 +305,6 @@ class StudentController extends Controller
         $student->address = $request->address;
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $request->student_parent_id;
-
-
         $student->save();
 
         return response([
@@ -399,10 +397,108 @@ class StudentController extends Controller
         $student->blood_type = $request->blood_type;
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
+        $student->classe_id = $request->classe_id;
         $student->save();
 
         return response([
             'message' => "Étudiant et Parent mis à jour avec succès"
+        ], 200);
+    }
+
+    public function updateWithCreateParent(Request $request, $id)
+    {
+        $student = Student::find($id);
+
+        if (!$student) {
+            return response()->json([
+                'message' => 'Étudiant non trouvé'
+            ], 404);
+        }
+
+        // khas wa7d mn l2abna2 dyal parent ikon dimna hadok lli mklaf bihom dak ladmin lli bgha ydir l'action 3lih (ghadi nzidha fl policies dyal studentParent)
+        if (request()->user()->cannot('update', Student::find($id))) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas la permission de modifier ce Étudiant'
+            ], 401);
+        }
+
+        $request->validate([
+            // validate student data
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('students', 'email')->ignore($id)],
+            'cin' => ['nullable', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('students', 'cin')->ignore($id)],
+            'code_massar' => ['required', 'string', Rule::unique('students', 'code_massar')->ignore($id), 'regex:/^[A-Z]\d{9}$/'],
+            'health_status' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
+            'address' => 'nullable|string|max:255',
+            'classe_id' => 'required|exists:classes,id',
+
+            // validate parent data
+            'parent_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'parent_first_name' => 'required|string|max:255',
+            'parent_last_name' => 'required|string|max:255',
+            'parent_gender' => ['required', Rule::in(['male', 'female'])],
+            'parent_email' => 'required|email|unique:student_parents,email',
+            'parent_cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:student_parents,cin',
+            'parent_health_status' => 'nullable|string|max:255',
+            'parent_date_of_birth' => 'required|date',
+            'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'parent_phone_number' => 'required|unique:student_parents,phone_number',
+            'parent_address' => 'nullable|string|max:255',
+        ]);
+
+        $parent = new StudentParent();
+
+        if ($request->profile_picture) {
+            Storage::delete('public/' . $student->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $student->profile_picture = 'picture_profiles/student/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        if ($request->parent_profile_picture) {
+            Storage::disk('local')->put('public/picture_profiles/student_parents/' . $request->parent_cin . '_' . $request->parent_last_name . "-" . $request->parent_first_name . $request->parent_profile_picture->extension(), file_get_contents($request->parent_profile_picture));
+            $parent->parent_profile_picture = 'picture_profiles/student_parents/' . $request->parent_cin . '_' . $request->parent_last_name . "-" . $request->parent_first_name . $request->parent_profile_picture->extension();
+        }
+
+        $parent_password = Str::random(8);
+
+        $parent->first_name = $request->parent_first_name;
+        $parent->last_name = $request->parent_last_name;
+        $parent->gender = $request->parent_gender;
+        $parent->email = $request->parent_email;
+        $parent->cin = $request->parent_cin;
+        $parent->health_status = $request->parent_health_status;
+        $parent->date_of_birth = $request->parent_date_of_birth;
+        $parent->blood_type = $request->parent_blood_type;
+        $parent->phone_number = $request->parent_phone_number;
+        $parent->password = Hash::make($parent_password);
+        $parent->address = $request->parent_address;
+        $parent->save();
+
+        $student->first_name = $request->first_name;
+        $student->last_name = $request->last_name;
+        $student->gender = $request->gender;
+        $student->email = $request->email;
+        $student->cin = $request->cin;
+        $student->code_massar = $request->code_massar;
+        $student->health_status = $request->health_status;
+        $student->date_of_birth = $request->date_of_birth;
+        $student->blood_type = $request->blood_type;
+        $student->phone_number = $request->phone_number;
+        $student->address = $request->address;
+        $student->classe_id = $request->classe_id;
+        $student->student_parent_id = $parent->id;
+        $student->save();
+
+        return response([
+            'message' => "Étudiant mis à jour et parent enregistre avec succès",
+            'cin' => $request->parent_cin,
+            'password' => $parent_password
         ], 200);
     }
 
@@ -583,18 +679,23 @@ class StudentController extends Controller
 
     public function trash(Request $request)
     {
-        $students = collect([]);
-
-        foreach ($request->user('admin')->school_levels as $school_level) {
-            foreach ($school_level->classe_types as $classe_type) {
-                foreach ($classe_type->classes as $classe) {
-                    $students = $students->merge($classe->students()->onlyTrashed()->get());
-                }
-            }
-        }
+        // Eager load the necessary relationships and retrieve the latest trashed students
+        $students = $request->user('admin')->school_levels()
+            ->with('classe_types.classes.students')
+            ->get()
+            ->flatMap(function ($schoolLevel) {
+                return $schoolLevel->classe_types->flatMap(function ($classeType) {
+                    return $classeType->classes->flatMap(function ($classe) {
+                        return $classe->students()->onlyTrashed()->get();
+                    });
+                });
+            })
+            ->sortByDesc('deleted_at');
 
         $currentPage = Paginator::resolveCurrentPage('page');
         $perPage = 10;
+
+        // Paginate the collection
         $studentsPaginated = $students->forPage($currentPage, $perPage);
 
         return response()->json([
@@ -605,6 +706,7 @@ class StudentController extends Controller
             'last_page' => ceil($students->count() / $perPage)
         ]);
     }
+
 
 
 

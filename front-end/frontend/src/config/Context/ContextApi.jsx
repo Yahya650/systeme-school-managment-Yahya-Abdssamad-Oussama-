@@ -35,6 +35,10 @@ const Context = createContext({
   currentPage: null,
   total: null,
   loadingProfilePicture: null,
+  adminsTrash: null,
+  teachersTrash: null,
+  setAdminsTrash: () => {},
+  setTeachersTrash: () => {},
   navigateTo: () => {},
   setTotal: () => {},
   setTeacher: () => {},
@@ -55,8 +59,10 @@ export const ContextApi = ({ children }) => {
   const [studentsTrash, setStudentsTrash] = useState(null);
   const [student, setStudent] = useState(null);
   const [admins, setAdmins] = useState(null);
+  const [adminsTrash, setAdminsTrash] = useState(null);
   const [admin, setAdmin] = useState(null);
   const [teachers, setTeachers] = useState(null);
+  const [teachersTrash, setTeachersTrash] = useState(null);
   const [teacher, setTeacher] = useState(null);
   const [parents, setParnets] = useState(null);
   const [pageCount, setPageCount] = useState(0);
@@ -223,6 +229,10 @@ export const ContextApi = ({ children }) => {
         setStudentsTrash,
         setAdmin,
         setTeacher,
+        adminsTrash,
+        teachersTrash,
+        setAdminsTrash,
+        setTeachersTrash,
         students,
         studentsTrash,
         admin,

@@ -312,7 +312,7 @@ const ShowTeacher = () => {
                                   Financial to any school level
                                 </b>
                                 <br />
-                                You can start by adding a Responsible
+                                Vous pouvez commencer par ajouter un Responsible
                               </div>
                             </div>
                           )} */}
@@ -360,7 +360,7 @@ const ShowTeacher = () => {
                                   Educational to any school level
                                 </b>
                                 <br />
-                                You can start by adding a Responsible
+                                Vous pouvez commencer par ajouter un Responsible
                               </div>
                             </div>
                           )} */}

@@ -13,6 +13,10 @@ const ContextTeacher = createContext({
   removeTeacher: () => {},
   createTeacher: () => {},
   getTeacher: () => {},
+  getTeachersTrash: () => {},
+  restoreTeacherSelected: () => {},
+  deleteTeacherSelected: () => {},
+  restoreTeacher: () => {},
   updateProfilePicture: () => {},
   renewPassword: () => {},
 });
@@ -27,6 +31,11 @@ const TeacherContext = ({ children }) => {
     setTotal,
     setLoadingProfilePicture,
     currentPage,
+    setIds,
+    teachersTrash,
+    teachers,
+    setTeachersTrash,
+    ids,
   } = useContextApi();
 
   async function getTeachers(currentPage = 1) {
@@ -161,6 +170,87 @@ const TeacherContext = ({ children }) => {
       }
     }
   }
+
+  async function getTeachersTrash(currentPage = 1) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/professors/trash?page=" + currentPage
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      setTeachersTrash(data.data);
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
+
+  async function restoreTeacherSelected(ids) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/super-admin/professors/restore-select",
+        {
+          ids,
+        }
+      );
+      await getTeachersTrash(
+        currentPage !== 1 && teachersTrash.length === ids.length
+          ? currentPage - 1
+          : 1
+      );
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      console.log(error);
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function deleteTeacherSelected(ids) {
+    const toastId = toast.loading("Suppression en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/super-admin/professors/delete-select",
+        {
+          ids,
+        }
+      );
+      await getTeachers(
+        currentPage !== 1 && teachers.length === ids.length ? currentPage - 1 : 1
+      );
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      console.log(error);
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function restoreTeacher(id) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/professors/" + dcryptID(id) + "/restore"
+      );
+      await getTeachersTrash(currentPage);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
   return (
     <ContextTeacher.Provider
       value={{
@@ -170,6 +260,10 @@ const TeacherContext = ({ children }) => {
         createTeacher,
         updateProfilePicture,
         getTeacher,
+        getTeachersTrash,
+        restoreTeacherSelected,
+        deleteTeacherSelected,
+        restoreTeacher,
         renewPassword,
       }}
     >

@@ -33,6 +33,7 @@ const AllStudents = () => {
     setStudents,
     setIds,
     ids,
+    setCurrentPage,
   } = useContextApi();
   const {
     getStudents,
@@ -52,8 +53,8 @@ const AllStudents = () => {
   };
 
   const handleGetTrash = async (doLoading = true, val_currentPage) => {
-    setIds([]);
     doLoading && setLoading(true);
+    setIds([]);
     setStudents(null);
     await getStudentsTrash(val_currentPage);
     setLoading(false);
@@ -82,8 +83,13 @@ const AllStudents = () => {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log(studentsTrash);
+  }, [studentsTrash]);
 
   return (
     <div className="page-wrapper">
@@ -244,7 +250,7 @@ const AllStudents = () => {
                               <button
                                 type="button"
                                 disabled={
-                                  loading || loadingDelete || loadingRestore
+                                  loading || loadingDelete || loadingRestore || loadingDeleteSelected
                                 }
                                 onClick={() => {
                                   handleGetTrash();
@@ -281,7 +287,7 @@ const AllStudents = () => {
                       <div className="table-responsive">
                         {!loading ? (
                           students ? (
-                            students.length > 0 ? (
+                            students?.length > 0 ? (
                               <>
                                 <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
                                   <thead className="student-thread">
@@ -408,7 +414,7 @@ const AllStudents = () => {
                                               }
                                               disabled={loadingDelete}
                                               id={"delete_button" + student.id}
-                                              className="btn btn-sm rounded-pill ms-2 btn-danger"
+                                              className="btn btn-sm bg-danger-light ms-2"
                                             >
                                               <i className="feather-trash"></i>
                                             </button>
@@ -418,29 +424,6 @@ const AllStudents = () => {
                                     ))}
                                   </tbody>
                                 </table>
-                                {/* <ReactPaginate
-                                  previousLabel={"previous"}
-                                  nextLabel={"next"}
-                                  breakLabel={"..."}
-                                  pageCount={pageCount}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={(page) =>
-                                    handlePageClick(page, fetchData)
-                                  }
-                                  containerClassName={
-                                    "pagination justify-content-center mt-2"
-                                  }
-                                  pageClassName={"page-item"}
-                                  pageLinkClassName={"page-link"}
-                                  previousClassName={"page-item"}
-                                  previousLinkClassName={"page-link"}
-                                  nextClassName={"page-item"}
-                                  nextLinkClassName={"page-link"}
-                                  breakClassName={"page-item"}
-                                  breakLinkClassName={"page-link"}
-                                  activeClassName={"active"}
-                                /> */}
                               </>
                             ) : (
                               <div className="alert alert-danger" role="alert">
@@ -450,166 +433,160 @@ const AllStudents = () => {
                                     Aucun etudiant
                                   </b>
                                   <br />
-                                  You can start by adding a Student
+                                  Vous pouvez commencer par ajouter un Student
                                 </div>
                               </div>
                             )
-                          ) : (
-                            studentsTrash &&
-                            (studentsTrash?.length > 0 ? (
-                              <>
-                                <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                                  <thead className="student-thread">
-                                    <tr>
-                                      <th>
+                          ) : studentsTrash?.length > 0 ? (
+                            <>
+                              <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                                <thead className="student-thread">
+                                  <tr>
+                                    <th>
+                                      <div className="form-check check-tables">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          value="something"
+                                          checked={
+                                            ids.length === studentsTrash.length
+                                          }
+                                          onChange={(e) =>
+                                            e.target.checked
+                                              ? setIds(
+                                                  studentsTrash.map(
+                                                    (student) => student.id
+                                                  )
+                                                )
+                                              : setIds([])
+                                          }
+                                        />
+                                      </div>
+                                    </th>
+                                    <th>Code Massar</th>
+                                    <th>Profile</th>
+                                    <th>Nom et Prenom</th>
+                                    <th>Gender</th>
+                                    <th>Supprimé à</th>
+                                    <th>Classe</th>
+                                    <th>Le Nom de Parent</th>
+                                    <th className="text-center">Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {studentsTrash.map((student, i) => (
+                                    <tr key={i}>
+                                      <td>
                                         <div className="form-check check-tables">
                                           <input
                                             className="form-check-input"
                                             type="checkbox"
-                                            value="something"
-                                            checked={
-                                              ids.length ===
-                                              studentsTrash.length
-                                            }
+                                            checked={ids.includes(student.id)}
                                             onChange={(e) =>
                                               e.target.checked
-                                                ? setIds(
-                                                    studentsTrash.map(
-                                                      (student) => student.id
+                                                ? setIds([...ids, student.id])
+                                                : setIds(
+                                                    ids.filter(
+                                                      (id) => id !== student.id
                                                     )
                                                   )
-                                                : setIds([])
                                             }
                                           />
                                         </div>
-                                      </th>
-                                      <th>Code Massar</th>
-                                      <th>Profile</th>
-                                      <th>Nom et Prenom</th>
-                                      <th>Gender</th>
-                                      <th>Supprimé à</th>
-                                      <th>Classe</th>
-                                      <th>Le Nom de Parent</th>
-                                      <th className="text-center">Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {studentsTrash.map((student, i) => (
-                                      <tr key={i}>
-                                        <td>
-                                          <div className="form-check check-tables">
-                                            <input
-                                              className="form-check-input"
-                                              type="checkbox"
-                                              checked={ids.includes(student.id)}
-                                              onChange={(e) =>
-                                                e.target.checked
-                                                  ? setIds([...ids, student.id])
-                                                  : setIds(
-                                                      ids.filter(
-                                                        (id) =>
-                                                          id !== student.id
-                                                      )
-                                                    )
+                                      </td>
+                                      <td>{student.code_massar}</td>
+                                      <td>
+                                        <h2 className="table-avatar">
+                                          <Link
+                                            to=""
+                                            className="avatar avatar-sm me-2"
+                                          >
+                                            <img
+                                              className="avatar-img rounded-circle"
+                                              src={
+                                                student.profile_picture
+                                                  ? BACKEND_URL +
+                                                    "/storage/" +
+                                                    student.profile_picture
+                                                  : student.gender === "female"
+                                                  ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                                                  : "/assets/img/default-profile-picture-grey-male-icon.png"
                                               }
+                                              alt="Image de l'utilisateur"
                                             />
-                                          </div>
-                                        </td>
-                                        <td>{student.code_massar}</td>
-                                        <td>
-                                          <h2 className="table-avatar">
-                                            <Link
-                                              to=""
-                                              className="avatar avatar-sm me-2"
-                                            >
-                                              <img
-                                                className="avatar-img rounded-circle"
-                                                src={
-                                                  student.profile_picture
-                                                    ? BACKEND_URL +
-                                                      "/storage/" +
-                                                      student.profile_picture
-                                                    : student.gender ===
-                                                      "female"
-                                                    ? "/assets/img/default-profile-picture-grey-female-icon.png"
-                                                    : "/assets/img/default-profile-picture-grey-male-icon.png"
-                                                }
-                                                alt="Image de l'utilisateur"
-                                              />
-                                            </Link>
-                                          </h2>
-                                        </td>
-                                        <td>
-                                          {student.last_name +
-                                            " " +
-                                            student.first_name}
-                                        </td>
-                                        <td>{student.gender}</td>
-                                        <td>
-                                          {new Date(
-                                            student.deleted_at
-                                          ).toLocaleDateString()}
-                                        </td>
-                                        <td>{student.classe.code}</td>
-                                        <td>
-                                          {student.parent.last_name +
-                                            " " +
-                                            student.parent.first_name}
-                                        </td>
-                                        <td className="text-center">
-                                          <div className="">
-                                            <button
-                                              onClick={() =>
-                                                handleRestore(student.id)
-                                              }
-                                              disabled={loadingRestore}
-                                              className="btn btn-success"
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faTrashCanArrowUp}
-                                              />{" "}
-                                              Restore
-                                            </button>
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                                {/* <ReactPaginate
-                                  previousLabel={"previous"}
-                                  nextLabel={"next"}
-                                  breakLabel={"..."}
-                                  pageCount={pageCount}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={(page) =>
-                                    handlePageClick(page, handleGetTrash)
-                                  }
-                                  containerClassName={
-                                    "pagination justify-content-center mt-2"
-                                  }
-                                  pageClassName={"page-item"}
-                                  pageLinkClassName={"page-link"}
-                                  previousClassName={"page-item"}
-                                  previousLinkClassName={"page-link"}
-                                  nextClassName={"page-item"}
-                                  nextLinkClassName={"page-link"}
-                                  breakClassName={"page-item"}
-                                  breakLinkClassName={"page-link"}
-                                  activeClassName={"active"}
-                                /> */}
-                              </>
-                            ) : (
-                              <div className="alert alert-danger" role="alert">
-                                <div className="flex-grow-1 me-2">
-                                  <b>
-                                    <i className="mdi mdi-alert"></i> Aucun
-                                    etudiant dans la corbeille
-                                  </b>
-                                </div>
+                                          </Link>
+                                        </h2>
+                                      </td>
+                                      <td>
+                                        {student.last_name +
+                                          " " +
+                                          student.first_name}
+                                      </td>
+                                      <td>{student.gender}</td>
+                                      <td>
+                                        {new Date(
+                                          student.deleted_at
+                                        ).toLocaleDateString()}
+                                      </td>
+                                      <td>{student.classe.code}</td>
+                                      <td>
+                                        {student.parent.last_name +
+                                          " " +
+                                          student.parent.first_name}
+                                      </td>
+                                      <td className="text-center">
+                                        <div className="">
+                                          <button
+                                            onClick={() =>
+                                              handleRestore(student.id)
+                                            }
+                                            disabled={loadingRestore}
+                                            className="btn btn-success"
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faTrashCanArrowUp}
+                                            />{" "}
+                                            Restore
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                              <ReactPaginate
+                                previousLabel={"previous"}
+                                nextLabel={"next"}
+                                breakLabel={"..."}
+                                pageCount={pageCount}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={(page) =>
+                                  handlePageClick(page, handleGetTrash)
+                                }
+                                containerClassName={
+                                  "pagination justify-content-center mt-2"
+                                }
+                                pageClassName={"page-item"}
+                                pageLinkClassName={"page-link"}
+                                previousClassName={"page-item"}
+                                previousLinkClassName={"page-link"}
+                                nextClassName={"page-item"}
+                                nextLinkClassName={"page-link"}
+                                breakClassName={"page-item"}
+                                breakLinkClassName={"page-link"}
+                                activeClassName={"active"}
+                              />
+                            </>
+                          ) : (
+                            <div className="alert alert-danger" role="alert">
+                              <div className="flex-grow-1 me-2">
+                                <b>
+                                  <i className="mdi mdi-alert"></i> Aucun
+                                  etudiant dans la corbeille
+                                </b>
                               </div>
-                            ))
+                            </div>
                           )
                         ) : (
                           <div className="w-100 d-flex justify-content-center align-items-center my-5">
@@ -756,7 +733,7 @@ const AllStudents = () => {
                                 <i className="mdi mdi-alert"></i> Aucun etudiant
                               </b>
                               <br />
-                              You can start by adding a Student
+                              Vous pouvez commencer par ajouter un Student
                             </div>
                           </div>
                         )
@@ -768,7 +745,7 @@ const AllStudents = () => {
                     </div>
                   </div>
 
-                  {students?.length > 0 || studentsTrash?.length > 0 ? (
+                  {students?.length > 0 || !studentsTrash || loading ? (
                     <ReactPaginate
                       previousLabel={"previous"}
                       nextLabel={"next"}

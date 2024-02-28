@@ -15,6 +15,9 @@ const ContextAdmin = createContext({
   createAdmin: () => {},
   updateProfilePicture: () => {},
   renewPassword: () => {},
+  restoreAdminSelected: () => {},
+  deleteAdminSelected: () => {},
+  getAdminsTrash: () => {},
 });
 
 const AdminContext = ({ children }) => {
@@ -26,7 +29,10 @@ const AdminContext = ({ children }) => {
     setPageCount,
     setTotal,
     setLoadingProfilePicture,
+    adminsTrash,
     currentPage,
+    setAdminsTrash,
+    setIds
   } = useContextApi();
 
   async function getAdmins(currentPage = 1) {
@@ -159,10 +165,94 @@ const AdminContext = ({ children }) => {
     }
   }
 
+  async function getAdminsTrash(currentPage = 1) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/administrators/trash?page=" + currentPage
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      setAdminsTrash(data.data);
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
+
+  async function restoreAdminSelected(ids) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/super-admin/administrators/restore-select",
+        {
+          ids,
+        }
+      );
+      await getAdminsTrash(
+        currentPage !== 1 && adminsTrash.length === ids.length
+          ? currentPage - 1
+          : 1
+      );
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      console.log(error);
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function deleteAdminSelected(ids) {
+    const toastId = toast.loading("Suppression en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.post(
+        "/super-admin/administrators/delete-select",
+        {
+          ids,
+        }
+      );
+      await getAdmins(
+        currentPage !== 1 && admins.length === ids.length ? currentPage - 1 : 1
+      );
+      setIds([]);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      console.log(error);
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
+  async function restoreAdmin(id) {
+    const toastId = toast.loading("Restauration en cours...", {
+      style: { color: "white", background: "black" },
+    });
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/administrators/" + dcryptID(id) + "/restore"
+      );
+      await getAdminsTrash(currentPage);
+      successToast(data.message, 3000, "top-center");
+    } catch (error) {
+      errorToast(error.response.data.message, 6000, "top-center");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  }
+
   return (
     <ContextAdmin.Provider
       value={{
         getAdmins,
+        restoreAdmin,
+        getAdminsTrash,
+        restoreAdminSelected,
+        deleteAdminSelected,
         getAdmin,
         updateAdmin,
         removeAdmin,

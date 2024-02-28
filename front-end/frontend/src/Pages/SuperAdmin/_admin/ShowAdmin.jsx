@@ -326,11 +326,12 @@ const ShowAdmin = () => {
                             <div className="alert alert-danger" role="alert">
                               <div className="flex-grow-1 me-2">
                                 <b>
-                                  This membre de la direction is not Responsible
-                                  Educational to any school level
+                                  Ce membre de la direction n'est pas
+                                  responsable de l'éducation à tout niveau
+                                  scolaire
                                 </b>
                                 <br />
-                                You can start by adding a Responsible
+                                Vous pouvez commencer par ajouter un Responsible
                               </div>
                             </div>
                           )}

@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const _sidebar = () => {
   return (
-    <main className="sidebar" id="sidebar" style={{ zIndex: 999 }}>
+    <main className="sidebar" id="sidebar" style={{ zIndex: 9999 }}>
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>

@@ -113,9 +113,9 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return response()->json($request->user('super_admin')->admins()->with('school_levels')->latest()->paginate(5));
+        return response()->json(Admin::latest()->paginate(5));
     }
 
     /**
@@ -376,36 +376,58 @@ class AdminController extends Controller
 
     public function trash()
     {
-        return response()->json(request()->user()->admins()->onlyTrashed()->latest()->paginate(5));
+        return response()->json(Admin::onlyTrashed()->latest()->paginate(10));
     }
 
-    // public function forceDelete(Request $request, $id)
-    // {
+    public function restoreSelect(Request $request)
+    {
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun administrateur sélectionné'
+            ], 404);
+        }
 
-    //     $request->validate([
-    //         'admin_id' => 'required|exists:admins,id',
-    //     ]);
+        // Ensure all selected admins exist and are trashed
+        $admins = Admin::onlyTrashed()->whereIn('id', $request->ids)->get();
+        if ($admins->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains administrateurs sélectionnés n\'existent pas ou ne sont pas détruits'
+            ], 404);
+        }
 
-    //     if (!Admin::onlyTrashed()->find($id)) {
-    //         return response()->json([
-    //             'message' => 'Cet administrateur non détruit ou non trouvé'
-    //         ], 404);
-    //     }
+        // Restore selected admins
+        foreach ($admins as $admin) {
+            $admin->restore();
+        }
 
-    //     if (request()->user()->cannot('forceDelete', Admin::onlyTrashed()->find($id))) {
-    //         return response()->json([
-    //             'message' => 'Vous n\'avez pas la permission de détruire ce administrateur'
-    //         ], 401);
-    //     }
+        return response()->json([
+            'message' => 'Tous les administrateurs sélectionnés ont été restaurés avec succès'
+        ]);
+    }
 
-    //     StudentParent::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-    //     ExamRecord::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-    //     Student::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-    //     Report::where('admin_id', $id)->update(['admin_id' => $request->admin_id]);
-    //     Admin::onlyTrashed()->find($id)->forceDelete();
+    public function deleteSelect(Request $request)
+    {
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun administrateur sélectionné'
+            ], 404);
+        }
 
-    //     return response()->json([
-    //         'message' => 'Cet administrateur détruit avec succès'
-    //     ]);
-    // }
+        // Ensure all selected admins exist
+        $admins = Admin::whereIn('id', $request->ids)->get();
+        if ($admins->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains administrateurs sélectionnés n\'existent pas ou ne sont pas supprimés'
+            ], 404);
+        }
+
+        // delete selected admins
+        foreach ($admins as $admin) {
+            $admin->delete();
+        }
+
+        return response()->json([
+            'message' => 'Tous les administrateurs sélectionnés ont été supprimés avec succès'
+        ]);
+    }
 }

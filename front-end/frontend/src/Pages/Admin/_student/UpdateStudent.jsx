@@ -15,7 +15,12 @@ const UpdateStudent = () => {
   const [loading, setLoading] = useState(true);
   const [loadingForm, setLoadingForm] = useState(false);
   const [classeOptions, setClasseOptions] = useState([]);
-  const { getStudent, updateStudentWithParent } = useStudentContext();
+  const {
+    getStudent,
+    updateStudentWithParent,
+    updateStudent,
+    updateStudentWithCreateParent,
+  } = useStudentContext();
   const [parentOptions, setParentOptions] = useState([]);
   const [showFormParent, setShowFormParent] = useState(false);
   const { updateParent } = useParentContext();
@@ -40,17 +45,16 @@ const UpdateStudent = () => {
       }));
       setParentOptions(options1);
 
-      const { data } = await AxiosClient.get("/admin/classes");
-
-      const options = data.map((classe) => ({
+      const classes = await AxiosClient.get("/admin/classes");
+      const options = classes.data.map((classe) => ({
         value: cryptID(classe.id),
         label:
           classe.filiere_id !== null
             ? `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name} - (${classe.filiere.name})`
             : `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name}`,
       }));
-
       setClasseOptions(options);
+
       setLoading(false);
     };
     fetchData();
@@ -63,36 +67,96 @@ const UpdateStudent = () => {
     }
   }, [student]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoadingForm(true);
-    await updateStudentWithParent(student.id, {
-      // student data
-      cin: e.target.cin[0].value?.toUpperCase(),
-      code_massar: e.target.code_massar.value.toUpperCase(),
-      email: e.target.email[0].value,
-      first_name: e.target.first_name[0].value,
-      last_name: e.target.last_name[0].value,
-      phone_number: e.target.phone_number[0].value,
-      address: e.target.address[0].value,
-      gender: e.target.gender[0].value,
-      date_of_birth: e.target.date_of_birth[0].value,
-      blood_type: e.target.blood_type[0].value,
-      health_status: e.target.health_status[0].value,
-      classe_id: dcryptID(e.target.classe_id.value),
+  const hendleFormParent = (e) => {
+    if (e.value === "Create nouveau Parent") {
+      setLastNameStudentModifier(false);
+      setShowFormParent(true);
+    } else if (e.value === "Son Père") {
+      setShowFormParent(false);
+      setLastNameStudentModifier(true);
+    } else {
+      setShowFormParent(false);
+      setLastNameStudentModifier(false);
+    }
+  };
 
-      // parent data
-      parent_cin: e.target.cin[1].value?.toUpperCase(),
-      parent_email: e.target.email[1].value,
-      parent_first_name: e.target.first_name[1].value,
-      parent_last_name: e.target.last_name[1].value,
-      parent_phone_number: e.target.phone_number[1].value,
-      parent_address: e.target.address[1].value,
-      parent_gender: e.target.gender[1].value,
-      parent_date_of_birth: e.target.date_of_birth[1].value,
-      parent_blood_type: e.target.blood_type[1].value,
-      parent_health_status: e.target.health_status[1].value,
-    });
+  const handleSubmit = async (e) => {
+    setLoadingForm(true);
+    e.preventDefault();
+    if (showFormParentModifier) {
+      await updateStudentWithParent(student.id, {
+        // student data
+        cin: e.target.cin[0].value?.toUpperCase(),
+        code_massar: e.target.code_massar.value.toUpperCase(),
+        email: e.target.code_massar.value.toUpperCase() + '@taalim.ma',
+        first_name: e.target.first_name[0].value,
+        last_name: e.target.last_name[0].value,
+        phone_number: e.target.phone_number[0].value,
+        address: e.target.address[0].value,
+        gender: e.target.gender[0].value,
+        date_of_birth: e.target.date_of_birth[0].value,
+        blood_type: e.target.blood_type[0].value,
+        health_status: e.target.health_status[0].value,
+        classe_id: dcryptID(e.target.classe_id.value),
+
+        // parent data
+        parent_cin: e.target.cin[1].value?.toUpperCase(),
+        parent_email: e.target.email[1].value,
+        parent_first_name: e.target.first_name[1].value,
+        parent_last_name: e.target.last_name[1].value,
+        parent_phone_number: e.target.phone_number[1].value,
+        parent_address: e.target.address[1].value,
+        parent_gender: e.target.gender[1].value,
+        parent_date_of_birth: e.target.date_of_birth[1].value,
+        parent_blood_type: e.target.blood_type[1].value,
+        parent_health_status: e.target.health_status[1].value,
+      });
+    } else if (showFormParent) {
+      await updateStudentWithCreateParent(student.id, {
+        // student data
+        cin: e.target.cin[0].value?.toUpperCase(),
+        code_massar: e.target.code_massar.value.toUpperCase(),
+        email: e.target.email[0].value,
+        first_name: e.target.first_name[0].value,
+        last_name: e.target.last_name[0].value,
+        phone_number: e.target.phone_number[0].value,
+        address: e.target.address[0].value,
+        gender: e.target.gender[0].value,
+        date_of_birth: e.target.date_of_birth[0].value,
+        blood_type: e.target.blood_type[0].value,
+        health_status: e.target.health_status[0].value,
+        classe_id: dcryptID(e.target.classe_id.value),
+
+        // parent data
+        parent_cin: e.target.cin[1].value?.toUpperCase(),
+        parent_email: e.target.email[1].value,
+        parent_first_name: e.target.first_name[1].value,
+        parent_last_name: e.target.last_name[1].value,
+        parent_phone_number: e.target.phone_number[1].value,
+        parent_address: e.target.address[1].value,
+        parent_gender: e.target.gender[1].value,
+        parent_date_of_birth: e.target.date_of_birth[1].value,
+        parent_blood_type: e.target.blood_type[1].value,
+        parent_health_status: e.target.health_status[1].value,
+      });
+    } else {
+      updateStudent(student.id, {
+        // student data
+        cin: e.target.cin.value?.toUpperCase(),
+        code_massar: e.target.code_massar.value.toUpperCase(),
+        email: e.target.email.value,
+        first_name: e.target.first_name.value,
+        last_name: e.target.last_name.value,
+        phone_number: e.target.phone_number.value,
+        address: e.target.address.value,
+        gender: e.target.gender.value,
+        date_of_birth: e.target.date_of_birth.value,
+        blood_type: e.target.blood_type.value,
+        health_status: e.target.health_status.value,
+        classe_id: dcryptID(e.target.classe_id.value),
+        student_parent_id: dcryptID(e.target.student_parent_id.value),
+      });
+    }
     setLoadingForm(false);
   };
 
@@ -180,6 +244,7 @@ const UpdateStudent = () => {
                           <input
                             name="email"
                             className="form-control"
+                            disabled
                             type="text"
                             value={
                               userNameStudent && userNameStudent + "@taalim.ma"
@@ -308,18 +373,7 @@ const UpdateStudent = () => {
                             Parents <span className="login-danger">*</span>
                           </label>
                           <Select
-                            onChange={(e) => {
-                              if (e.value === "Create nouveau Parent") {
-                                setShowFormParent(true);
-                                setLastNameStudentModifier(false);
-                              } else if (e.value === "Son Père") {
-                                setShowFormParent(false);
-                                setLastNameStudentModifier(true);
-                              } else {
-                                setShowFormParent(false);
-                                setLastNameStudentModifier(false);
-                              }
-                            }}
+                            onChange={hendleFormParent}
                             name="student_parent_id"
                             isLoading={loading}
                             options={[
@@ -685,9 +739,7 @@ const UpdateStudent = () => {
                                           className="form-control"
                                           type="text"
                                           defaultValue={
-                                            lastNameStudent
-                                              ? lastNameStudent
-                                              : null
+                                            student?.parent.last_name
                                           }
                                           placeholder="Saisissez le nom de famille"
                                         />
@@ -875,6 +927,7 @@ const UpdateStudent = () => {
                         >
                           {loadingForm ? <LoadingCircle /> : "Modifier"}
                         </button>
+
                         <button
                           type="button"
                           onClick={() => navigateTo(-1)}

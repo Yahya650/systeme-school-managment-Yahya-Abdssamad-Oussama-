@@ -15,12 +15,13 @@ const ContextStudent = createContext({
   updateStudent: () => {},
   removeStudent: () => {},
   getStudentsTrash: () => {},
-  // createStudent: () => {},
+  createStudent: () => {},
   updateStudentWithParent: () => {},
   restoreStudent: () => {},
   createStudentWithParent: () => {},
   restoreStudentSelected: () => {},
   deleteStudentSelected: () => {},
+  updateStudentWithCreateParent: () => {},
 });
 
 const StudentContext = ({ children }) => {
@@ -35,6 +36,8 @@ const StudentContext = ({ children }) => {
     setStudent,
     currentPage,
     setIds,
+    studentsTrash,
+    students,
   } = useContextApi();
 
   async function getStudents(currentPage = 1) {
@@ -49,6 +52,22 @@ const StudentContext = ({ children }) => {
       errorToast(error.response.data.message);
     }
   }
+
+  async function updateStudent(id, dataForm) {
+    try {
+      const { data } = await AxiosClient.put("/admin/students/" + id, dataForm);
+      successToast(data.message);
+      setErrors(null);
+      navigateTo(-1);
+    } catch (error) {
+      console.log(error);
+      errorToast(error.response.data.message);
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
+    }
+  }
+
   async function getStudentsTrash(currentPage = 1) {
     try {
       const { data } = await AxiosClient.get(
@@ -136,6 +155,32 @@ const StudentContext = ({ children }) => {
       }
     }
   }
+  async function updateStudentWithCreateParent(id, dataForm) {
+    try {
+      const { data } = await AxiosClient.put(
+        "/admin/students/" + id + "/upadte-with-create-parent",
+        dataForm
+      );
+      successToast(data.message);
+      withReactContent(Swal).fire({
+        title: data.message,
+        html: (
+          <div>
+            <b>CIN de Parent : </b> {data.cin} <br />
+            <b>mot de passe de Parent: </b> {data.password} <br />
+          </div>
+        ),
+        icon: "success",
+      });
+      setErrors(null);
+      navigateTo(-1);
+    } catch (error) {
+      errorToast(error.response.data.message);
+      if (error.response.status === 422) {
+        setErrors(error.response.data.errors);
+      }
+    }
+  }
 
   async function removeStudent(id) {
     const toastId = toast.loading("Suppression en cours...", {
@@ -179,7 +224,11 @@ const StudentContext = ({ children }) => {
           ids,
         }
       );
-      await getStudentsTrash(currentPage);
+      await getStudentsTrash(
+        currentPage !== 1 && studentsTrash.length === ids.length
+          ? currentPage - 1
+          : 1
+      );
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
@@ -200,10 +249,15 @@ const StudentContext = ({ children }) => {
           ids,
         }
       );
-      await getStudents(currentPage);
+      await getStudents(
+        currentPage !== 1 && students.length === ids.length
+          ? currentPage - 1
+          : 1
+      );
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
+      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -242,18 +296,19 @@ const StudentContext = ({ children }) => {
         "/admin/etudiants/create-with-parent",
         dataForm
       );
+      successToast(data.message);
       withReactContent(Swal).fire({
         title: data.message,
         html: (
           <div className="d-flex gap-2">
             <div>
-              <h1>Etudiant Information</h1>
+              <h6>Etudiant Information</h6>
               <b>Code Massar : </b> {data.code_massar} <br />
               <b>UserName : </b> {data.email} <br />
               <b>Password : </b> {data.password} <br />
             </div>
             <div>
-              <h1>Parent Information</h1>
+              <h6>Parent Information</h6>
               <b>CIN : </b> {data.cin} <br />
               <b>Password : </b> {data.parent_password} <br />
             </div>
@@ -261,7 +316,6 @@ const StudentContext = ({ children }) => {
         ),
         icon: "success",
       });
-      successToast(data.message);
       setErrors(null);
       navigateTo(-1);
     } catch (error) {
@@ -278,7 +332,7 @@ const StudentContext = ({ children }) => {
         renewPassword,
         updateProfilePicture,
         getStudent,
-        // updateStudent,
+        updateStudent,
         removeStudent,
         restoreStudent,
         getStudentsTrash,
@@ -286,6 +340,7 @@ const StudentContext = ({ children }) => {
         deleteStudentSelected,
         updateStudentWithParent,
         createStudentWithParent,
+        updateStudentWithCreateParent,
         restoreStudentSelected,
       }}
     >

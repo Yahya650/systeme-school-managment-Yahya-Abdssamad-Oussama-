@@ -98,9 +98,9 @@ class TeacherController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function index()
     {
-        return response()->json($request->user('super_admin')->teachers()->latest()->paginate(5));
+        return response()->json(Teacher::latest()->paginate(5));
     }
 
     public function updatePictureProfile(Request $request, $id)
@@ -341,7 +341,60 @@ class TeacherController extends Controller
 
     public function trash()
     {
-        return response()->json(request()->user()->teachers()->onlyTrashed()->latest()->get());
+        return response()->json(Teacher::onlyTrashed()->latest()->paginate(10));
+    }
+
+
+    public function restoreSelect(Request $request)
+    {
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun enseignant sélectionné'
+            ], 404);
+        }
+
+        // Ensure all selected teachers exist and are trashed
+        $teachers = Teacher::onlyTrashed()->whereIn('id', $request->ids)->get();
+        if ($teachers->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains enseignants sélectionnés n\'existent pas ou ne sont pas détruits'
+            ], 404);
+        }
+
+        // Restore selected teachers
+        foreach ($teachers as $teacher) {
+            $teacher->restore();
+        }
+
+        return response()->json([
+            'message' => 'Tous les enseignants sélectionnés ont été restaurés avec succès'
+        ]);
+    }
+
+    public function deleteSelect(Request $request)
+    {
+        if (count($request->ids) === 0) {
+            return response()->json([
+                'message' => 'Aucun enseignant sélectionné'
+            ], 404);
+        }
+
+        // Ensure all selected teachers exist
+        $teachers = Teacher::whereIn('id', $request->ids)->get();
+        if ($teachers->count() !== count($request->ids)) {
+            return response()->json([
+                'message' => 'Certains enseignants sélectionnés n\'existent pas ou ne sont pas supprimés'
+            ], 404);
+        }
+
+        // delete selected teachers
+        foreach ($teachers as $teacher) {
+            $teacher->delete();
+        }
+
+        return response()->json([
+            'message' => 'Tous les enseignants sélectionnés ont été supprimés avec succès'
+        ]);
     }
 
     public function attachTeacherToClasse(Request $request, $idclasse)
