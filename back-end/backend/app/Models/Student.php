@@ -22,7 +22,7 @@ class Student extends Authenticatable
 
     protected $appends = ['role'];
 
-    protected $with = ['classe', 'parent'];
+    // protected $with = ['classe', 'parent.payments', 'examRecords.admin', 'reports.admin', 'absences.teacher'];
 
     public function getRoleAttribute()
     {

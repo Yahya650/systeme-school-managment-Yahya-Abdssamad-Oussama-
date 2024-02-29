@@ -15,8 +15,6 @@ class Report extends Model
     protected $fillable = [
         'title',
         'content',
-        'admin_id',
-        'student_id',
     ];
 
     public function admin()
@@ -28,6 +26,4 @@ class Report extends Model
     {
         return $this->belongsTo(Student::class);
     }
-
-
 }

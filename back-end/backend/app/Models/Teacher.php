@@ -23,6 +23,8 @@ class Teacher extends Authenticatable
 
 
     protected $appends = ['role'];
+    protected $with = ['classes', 'courses'];
+
 
     public function getRoleAttribute()
     {
@@ -56,8 +58,10 @@ class Teacher extends Authenticatable
 
     public function classes()
     {
+        // TeacherClasseCourse::where('teacher_id', $this->id);
         return $this->belongsToMany(Classe::class, 'teachers_classes_courses')
             ->using(TeacherClasseCourse::class)
+            ->with('courses')
             ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }

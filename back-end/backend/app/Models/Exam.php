@@ -18,9 +18,10 @@ class Exam extends Model
     protected $fillable = [
         'name',
         'type',
-        'course_id',
-        'teacher_id',
     ];
+
+    protected $with = ['course', 'teacher', 'classes'];
+
 
     public function course()
     {
@@ -44,5 +45,4 @@ class Exam extends Model
             ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
-
 }

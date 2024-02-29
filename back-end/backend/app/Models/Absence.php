@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Absence extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $with = ['course'];
     
 
     public function course()

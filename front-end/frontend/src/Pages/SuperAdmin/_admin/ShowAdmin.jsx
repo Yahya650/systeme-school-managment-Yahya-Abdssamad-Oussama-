@@ -298,28 +298,59 @@ const ShowAdmin = () => {
                                           </span>
                                         ))}
                                       </td>
-                                      {/* <td>
-                                        <div className="text text-center">
-                                          <Link
-                                            to={"#"}
-                                            className="btn btn-sm bg-success-light me-2 "
-                                          >
-                                            <i className="feather-eye"></i>
-                                          </Link>
-                                          <Link
-                                            to={"#"}
-                                            className="btn btn-sm bg-danger-light"
-                                          >
-                                            <i className="feather-edit"></i>
-                                          </Link>
-                                          <button className="btn btn-sm bg-danger-light ms-2">
-                                            <i className="feather-trash"></i>
-                                          </button>
-                                        </div>
-                                      </td> */}
                                     </tr>
                                   )
                                 )}
+                              </tbody>
+                            </table>
+                          ) : (
+                            <div className="alert alert-danger" role="alert">
+                              <div className="flex-grow-1 me-2">
+                                <b>
+                                  Ce membre de la direction n'est pas
+                                  responsable de l'éducation à tout niveau
+                                  scolaire
+                                </b>
+                                <br />
+                                Vous pouvez commencer par ajouter un Responsible
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-8">
+                  <div className="student-personals-grp">
+                    <div className="card mb-0">
+                      <div className="card-body">
+                        <div className="heading-detail">
+                          <h4>Responsibles :</h4>
+                        </div>
+                        <div className="table-responsive">
+                          {admin.school_levels.length > 0 ? (
+                            <table className="datatable table table-stripped table-responsive">
+                              <thead>
+                                <tr>
+                                  <th>Type</th>
+                                  <th className="text text-center">Name</th>
+                                  {/* <th className="text text-center">Actions</th> */}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {admin.reports.map((report, index) => (
+                                  <tr key={index}>
+                                    <td>{report.title}</td>
+                                    <td className="text text-center">
+                                      {report.content}
+                                    </td>
+                                    <td className="text text-center">
+                                      {report.student.first_name}
+                                    </td>
+                                  </tr>
+                                ))}
                               </tbody>
                             </table>
                           ) : (

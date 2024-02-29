@@ -87,10 +87,6 @@ const AllStudents = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(studentsTrash);
-  }, [studentsTrash]);
-
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">
@@ -250,7 +246,10 @@ const AllStudents = () => {
                               <button
                                 type="button"
                                 disabled={
-                                  loading || loadingDelete || loadingRestore || loadingDeleteSelected
+                                  loading ||
+                                  loadingDelete ||
+                                  loadingRestore ||
+                                  loadingDeleteSelected
                                 }
                                 onClick={() => {
                                   handleGetTrash();

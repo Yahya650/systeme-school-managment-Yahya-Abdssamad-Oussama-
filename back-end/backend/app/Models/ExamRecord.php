@@ -17,10 +17,9 @@ class ExamRecord extends Model
     protected $fillable = [
         'note',
         'comment',
-        'student_id',
-        'exam_id',
-        'teacher_id',
     ];
+
+    protected $with = ['exam'];
 
     public function student()
     {
@@ -32,14 +31,9 @@ class ExamRecord extends Model
         return $this->belongsTo(Exam::class);
     }
 
-    public function teacher()
+    public function admin()
     {
-        return $this->belongsTo(Teacher::class);
-    }
-
-    public function semester()
-    {
-        return $this->belongsTo(Semester::class);
+        return $this->belongsTo(Admin::class);
     }
 
 }

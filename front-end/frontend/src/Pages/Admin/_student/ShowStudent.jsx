@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import _footer from "../../../Layouts/_footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useContextApi } from "../../../config/Context/ContextApi";
+import dcryptID from "../../../config/security/dcryptID";
+import { useStudentContext } from "../../../Functions/StudentContext";
 
 const ShowStudent = () => {
+  const { student, navigateTo, calculateAge, loadingProfilePicture } =
+    useContextApi();
+  const [loading, setLoading] = useState(true);
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const { getStudent, updateProfilePicture, renewPassword } =
+    useStudentContext();
+  const { id } = useParams();
+
+  const fetchData = async () => {
+    if (dcryptID(id) === null) {
+      navigateTo("/error/404");
+    }
+    await getStudent(dcryptID(id));
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">

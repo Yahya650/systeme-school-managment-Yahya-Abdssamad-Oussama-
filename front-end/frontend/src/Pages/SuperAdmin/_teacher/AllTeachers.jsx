@@ -82,9 +82,6 @@ const AllTeachers = () => {
     setCurrentPage(1);
     fetchData();
   }, []);
-  useEffect(() => {
-    console.log(teachersTrash);
-  }, [teachersTrash]);
 
   return (
     <div className="page-wrapper">
@@ -227,7 +224,10 @@ const AllTeachers = () => {
                               <button
                                 type="button"
                                 disabled={
-                                  loading || loadingDelete || loadingRestore || loadingDeleteSelected
+                                  loading ||
+                                  loadingDelete ||
+                                  loadingRestore ||
+                                  loadingDeleteSelected
                                 }
                                 onClick={() => {
                                   handleGetTrash();

@@ -25,8 +25,6 @@ class Admin extends Authenticatable
         return 'admin';
     }
 
-    // protected $with = ['school_levels'];
-
     protected $fillable = [
         'profile_picture',
         'first_name',
@@ -52,7 +50,7 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $with = ['school_levels'];
+    protected $with = ['school_levels', 'reports.student', 'examRecords.student'];
 
     public function school_levels()
     {
