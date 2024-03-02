@@ -18,7 +18,7 @@ class Payment extends Model
         'method',
         'payment_date',
         'description',
-        'receipt',
+        'receipt', 
     ];
 
     public function parent()
@@ -30,5 +30,4 @@ class Payment extends Model
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
-
 }

@@ -12,20 +12,6 @@ use App\Http\Requests\ExamRecordRequest;
 
 class ExamRecordController extends Controller
 {
-
-    private function getCurrentSchoolYear($between)
-    {
-        $currentYear = now()->year;
-        $startMonth = 9;
-
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
-
-        return $currentYear . $between . ($currentYear + 1);
-    }
-
-
     /**
      * Display a listing of the resource.
      */
@@ -56,7 +42,7 @@ class ExamRecordController extends Controller
             if ($request->image) {
                 $schoolLevel = $cours->classeType->school_level;
                 $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/Marks' . '/' .
-                    $student->code_massar . '-' .  $student->first_name . "_" . $student->last_name  . '-' . $cours->name . "-" . $exam->type . "-" . $this->getCurrentSchoolYear('_') . '-' . now()->timestamp . '.' . $request->image->extension();
+                    $student->code_massar . '-' .  $student->first_name . "_" . $student->last_name  . '-' . $cours->name . "-" . $exam->type . "-" . getCurrentSchoolYear('_') . '-' . now()->timestamp . '.' . $request->image->extension();
 
                 Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->image));
                 $record->image = $directoryPath;
@@ -114,7 +100,7 @@ class ExamRecordController extends Controller
             if ($request->image) {
                 $schoolLevel = $cours->classeType->school_level;
                 $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : 'high_school')) . '/Marks' . '/' .
-                    $student->code_massar . '-' .  $student->first_name . "_" . $student->last_name  . '-' . $cours->name . "-" . $exam->type . "-" . $this->getCurrentSchoolYear('_') . '-' . now()->timestamp . '.' . $request->image->extension();
+                    $student->code_massar . '-' .  $student->first_name . "_" . $student->last_name  . '-' . $cours->name . "-" . $exam->type . "-" . getCurrentSchoolYear('_') . '-' . now()->timestamp . '.' . $request->image->extension();
 
                 Storage::delete("public/" . $record->image);
                 Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->image));

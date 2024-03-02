@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../config/Context/ContextApi";
+import { AxiosClient } from "../../config/Api/AxiosClient";
 
 const _header = () => {
   const { user, setLoadingContaxt, logout } = useContextApi();
+  const [currentSchoolYear, setCurrentSchoolYear] = useState(null);
+  const [currentSchoolYearLoading, setCurrentSchoolYearLoading] =
+    useState(true);
+  useEffect(() => {
+    const getCurrentSchoolYear = async () => {
+      const { data } = await AxiosClient.get("/current-school-year");
+      setCurrentSchoolYear(data);
+      setCurrentSchoolYearLoading(false);
+    };
+    getCurrentSchoolYear();
+  }, []);
 
   return (
     <header className="header">
@@ -35,19 +47,23 @@ const _header = () => {
         <form>
           <input
             type="text"
-            className="form-control"
-            placeholder="Search here"
+            className="form-control text-center"
+            value={
+              !currentSchoolYearLoading ? currentSchoolYear.year : "loading..."
+            }
+            disabled
           />
-          <button className="btn" type="submit">
-            <i className="fas fa-search"></i>
-          </button>
         </form>
       </div>
+
       <Link to="#" className="mobile_btn" id="mobile_btn">
         <i className="fas fa-bars"></i>
       </Link>
 
       <ul className="nav user-menu">
+        <li>
+          <div className="top-nav-search text-center mt-3"></div>
+        </li>
         <li className="nav-item dropdown noti-dropdown me-2">
           <Link
             to="#"
@@ -184,13 +200,19 @@ const _header = () => {
             <span className="user-img">
               <img
                 className="rounded-circle"
-                src="/assets/img/profiles/avatar-01.jpg"
+                src={
+                  user?.profile
+                    ? BACKEND_URL + "/storage/" + user?.profile
+                    : user?.gender === "female"
+                    ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                    : "/assets/img/default-profile-picture-grey-male-icon.png"
+                }
                 width="31"
                 alt="Soeng Souy"
               />
               <div className="user-text">
                 <h6>{user?.last_name + " " + user?.first_name}</h6>
-                <p className="text-muted mb-0">Direteur</p>
+                <p className="text-muted mb-0">Etudiant</p>
               </div>
             </span>
           </Link>
@@ -198,14 +220,20 @@ const _header = () => {
             <div className="user-header">
               <div className="avatar avatar-sm">
                 <img
-                  src="/assets/img/profiles/avatar-01.jpg"
+                  src={
+                    user?.profile
+                      ? BACKEND_URL + "/storage/" + user?.profile
+                      : user?.gender === "female"
+                      ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                      : "/assets/img/default-profile-picture-grey-male-icon.png"
+                  }
                   alt="User Image"
                   className="avatar-img rounded-circle"
                 />
               </div>
               <div className="user-text">
                 <h6>{user?.last_name + " " + user?.first_name}</h6>
-                <p className="text-muted mb-0">Direteur</p>
+                <p className="text-muted mb-0">Etudiant</p>
               </div>
             </div>
             <Link className="dropdown-item" to="#">

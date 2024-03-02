@@ -19,6 +19,8 @@ class Exercise extends Model
         'file',
     ];
 
+    // protected $with = ['course', 'classes'];
+
     public function course()
     {
         return $this->belongsTo(Course::class);
@@ -35,6 +37,4 @@ class Exercise extends Model
             ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
-
-
 }

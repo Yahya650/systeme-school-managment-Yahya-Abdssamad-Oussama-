@@ -15,6 +15,12 @@ class SchoolYearController extends Controller
         //
     }
 
+
+    public function getCurrent()
+    {
+        return response()->json(SchoolYear::latest()->first());
+    }
+
     /**
      * Store a newly created resource in storage.
      */

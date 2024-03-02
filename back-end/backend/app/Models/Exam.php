@@ -20,7 +20,7 @@ class Exam extends Model
         'type',
     ];
 
-    protected $with = ['course', 'teacher', 'classes'];
+    protected $with = ['course', 'classes'];
 
 
     public function course()

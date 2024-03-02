@@ -23,7 +23,7 @@ class Teacher extends Authenticatable
 
 
     protected $appends = ['role'];
-    protected $with = ['classes', 'courses'];
+    // protected $with = ['classes', 'courses'];
 
 
     public function getRoleAttribute()

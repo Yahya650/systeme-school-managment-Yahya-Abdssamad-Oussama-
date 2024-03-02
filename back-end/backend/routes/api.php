@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SchoolYearController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +39,5 @@ Route::group(['prefix' => 'student'], function () {
 Route::group(['prefix' => 'student-parent'], function () {
     require __DIR__ . '/student_parent.php';
 });
+
+Route::get('/current-school-year', [SchoolYearController::class, 'getCurrent']);

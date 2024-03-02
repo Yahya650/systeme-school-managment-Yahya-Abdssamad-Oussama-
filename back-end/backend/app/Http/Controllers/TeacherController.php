@@ -156,7 +156,7 @@ class TeacherController extends Controller
             ], 401);
         }
 
-        return response()->json(Teacher::find($id));
+        return response()->json(Teacher::with(['classes', 'courses', 'exercises.course', 'exercises.classes', 'exams.course', 'exams.classes'])->find($id));
     }
 
 

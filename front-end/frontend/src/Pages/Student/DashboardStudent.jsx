@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import _footer from "../../Layouts/_footer";
 import { useContextApi } from "../../config/Context/ContextApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 
 const DashboardStudent = () => {
-  const { user } = useContextApi();
+  const { user, calculateAge } = useContextApi();
   return (
     <div className="page-wrapper">
       <div className="content container-fluid">
@@ -22,7 +24,7 @@ const DashboardStudent = () => {
                   <li className="breadcrumb-item">
                     <Link to="#">Accueil</Link>
                   </li>
-                  <li className="breadcrumb-item active">Etudiant</li>
+                  <li className="breadcrumb-item active">Dashboard</li>
                 </ul>
               </div>
             </div>
@@ -33,10 +35,13 @@ const DashboardStudent = () => {
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card bg-comman w-100">
               <div className="card-body">
-                <div className="db-widgets d-flex justify-content-between align-items-center">
+                <div
+                  className="db-widgets d-flex justify-content-between align-items-center"
+                  style={{ height: "100%" }}
+                >
                   <div className="db-info">
-                    <h6>Étudiants</h6>
-                    <h3>50055</h3>
+                    <h6>Classe</h6>
+                    <h3>{user?.classe.code}</h3>
                   </div>
                   <div className="db-icon">
                     <img
@@ -48,17 +53,22 @@ const DashboardStudent = () => {
               </div>
             </div>
           </div>
+
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card bg-comman w-100">
               <div className="card-body">
-                <div className="db-widgets d-flex justify-content-between align-items-center">
+                <div
+                  className="db-widgets d-flex justify-content-between align-items-center"
+                  style={{ height: "100%" }}
+                >
                   <div className="db-info">
-                    <h6>Récompenses</h6>
-                    <h3>50+</h3>
+                    <h6>Code Massar</h6>
+                    <h3>{user?.code_massar}</h3>
                   </div>
                   <div className="db-icon">
                     <img
-                      src="/assets/img/icons/dash-icon-02.svg"
+                      width={58}
+                      src="/assets/img/icons/lock-dynamic-premium.png"
                       alt="Icône du tableau de bord"
                     />
                   </div>
@@ -66,13 +76,17 @@ const DashboardStudent = () => {
               </div>
             </div>
           </div>
+
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card bg-comman w-100">
               <div className="card-body">
-                <div className="db-widgets d-flex justify-content-between align-items-center">
+                <div
+                  className="db-widgets d-flex justify-content-between align-items-center"
+                  style={{ height: "100%" }}
+                >
                   <div className="db-info">
-                    <h6>Département</h6>
-                    <h3>30+</h3>
+                    <h6>Filiere</h6>
+                    <h3>{user?.classe.filiere.name}</h3>
                   </div>
                   <div className="db-icon">
                     <img
@@ -84,13 +98,17 @@ const DashboardStudent = () => {
               </div>
             </div>
           </div>
+
           <div className="col-xl-3 col-sm-6 col-12 d-flex">
             <div className="card bg-comman w-100">
               <div className="card-body">
-                <div className="db-widgets d-flex justify-content-between align-items-center">
+                <div
+                  className="db-widgets d-flex justify-content-between align-items-center"
+                  style={{ height: "100%" }}
+                >
                   <div className="db-info">
-                    <h6>Revenu</h6>
-                    <h3>505$</h3>
+                    <h6>Nombre des Absences</h6>
+                    <h3>{user?.absences.length} Absence</h3>
                   </div>
                   <div className="db-icon">
                     <img
@@ -107,134 +125,62 @@ const DashboardStudent = () => {
         <div className="row">
           <div className="col-xl-6 d-flex">
             <div className="card flex-fill student-space comman-shadow">
-              <div className="card-header d-flex align-items-center">
-                <h5 className="card-title">Étudiants Stars</h5>
-                <ul className="chart-list-out student-ellips">
-                  <li className="star-menus">
-                    <Link to="#">
-                      <i className="fas fa-ellipsis-v"></i>
-                    </Link>
-                  </li>
-                </ul>
+              <div className="card-header px-4 pt-4 d-flex justify-content-between align-items-center">
+                <h5 className="card-title">Dernières notes</h5>
+                <div className="">
+                  <button className="btn btn-primary btn-sm py-0">
+                    <FontAwesomeIcon icon={faEye} /> Voir Tous les Notes
+                  </button>
+                </div>
               </div>
               <div className="card-body">
                 <div className="table-responsive">
                   <table className="table star-student table-hover table-center table-borderless table-striped">
                     <thead className="thead-light">
                       <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th className="text-center">Notes</th>
-                        <th className="text-center">Pourcentage</th>
-                        <th className="text-end">Année</th>
+                        <th className="text-start">Enseignant</th>
+                        <th>Matières</th>
+                        <th>Notes</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td className="text-nowrap">
-                          <div>PRE2209</div>
-                        </td>
-                        <td className="text-nowrap">
-                          <Link to="#">
+                      {user?.exam_records.slice(0, 6).map((record, index) => (
+                        <tr key={index}>
+                          <td className="text-nowrap text-start">
                             <img
                               className="rounded-circle"
-                              src="/assets/img/profiles/avatar-02.jpg"
+                              src={
+                                record.exam.teacher.profile_picture
+                                  ? BACKEND_URL +
+                                    "/storage/" +
+                                    record.exam.teacher.profile_picture
+                                  : record.exam.teacher.gender === "female"
+                                  ? "/assets/img/default-profile-picture-grey-female-icon.png"
+                                  : "/assets/img/default-profile-picture-grey-male-icon.png"
+                              }
                               width="25"
                               alt="Star Students"
                             />
-                            John Smith
-                          </Link>
-                        </td>
-                        <td className="text-center">1185</td>
-                        <td className="text-center">98%</td>
-                        <td className="text-end">
-                          <div>2019</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-nowrap">
-                          <div>PRE1245</div>
-                        </td>
-                        <td className="text-nowrap">
-                          <Link to="#">
-                            <img
-                              className="rounded-circle"
-                              src="/assets/img/profiles/avatar-01.jpg"
-                              width="25"
-                              alt="Star Students"
-                            />
-                            Jolie Hoskins
-                          </Link>
-                        </td>
-                        <td className="text-center">1195</td>
-                        <td className="text-center">99.5%</td>
-                        <td className="text-end">
-                          <div>2018</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-nowrap">
-                          <div>PRE1625</div>
-                        </td>
-                        <td className="text-nowrap">
-                          <Link to="#">
-                            <img
-                              className="rounded-circle"
-                              src="/assets/img/profiles/avatar-03.jpg"
-                              width="25"
-                              alt="Star Students"
-                            />
-                            Pennington Joy
-                          </Link>
-                        </td>
-                        <td className="text-center">1196</td>
-                        <td className="text-center">99.6%</td>
-                        <td className="text-end">
-                          <div>2017</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-nowrap">
-                          <div>PRE2516</div>
-                        </td>
-                        <td className="text-nowrap">
-                          <Link to="#">
-                            <img
-                              className="rounded-circle"
-                              src="/assets/img/profiles/avatar-04.jpg"
-                              width="25"
-                              alt="Star Students"
-                            />
-                            Millie Marsden
-                          </Link>
-                        </td>
-                        <td className="text-center">1187</td>
-                        <td className="text-center">98.2%</td>
-                        <td className="text-end">
-                          <div>2016</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-nowrap">
-                          <div>PRE2209</div>
-                        </td>
-                        <td className="text-nowrap">
-                          <Link to="#">
-                            <img
-                              className="rounded-circle"
-                              src="/assets/img/profiles/avatar-05.jpg"
-                              width="25"
-                              alt="Star Students"
-                            />
-                            John Smith
-                          </Link>
-                        </td>
-                        <td className="text-center">1185</td>
-                        <td className="text-center">98%</td>
-                        <td className="text-end">
-                          <div>2015</div>
-                        </td>
-                      </tr>
+                            {record.exam.teacher.last_name +
+                              " " +
+                              record.exam.teacher.first_name}
+                          </td>
+                          <td className="text-nowrap">
+                            <div>{record.exam.course.name}</div>
+                          </td>
+                          <td>
+                            {record.note > record.exam.passing_marks ? (
+                              <span className="badge bg-success">
+                                {record.note}
+                              </span>
+                            ) : (
+                              <span className="badge bg-danger">
+                                {record.note}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -244,7 +190,7 @@ const DashboardStudent = () => {
           <div className="col-xl-6 d-flex">
             <div className="card flex-fill comman-shadow">
               <div className="card-header d-flex align-items-center">
-                <h5 className="card-title">Activité des Étudiants</h5>
+                <h5 className="card-title">Votre Père</h5>
                 <ul className="chart-list-out student-ellips">
                   <li className="star-menus">
                     <Link to="#">
@@ -254,68 +200,208 @@ const DashboardStudent = () => {
                 </ul>
               </div>
               <div className="card-body">
-                <div className="activity-groups">
-                  <div className="activity-awards">
-                    <div className="award-boxs">
-                      <img
-                        src="/assets/img/icons/award-icon-01.svg"
-                        alt="Award"
-                      />
+                <div className="row">
+                  <div className="col-md-12">
+                    <div
+                      className="profile-header m-0 py-2"
+                      style={{ backgroundColor: "white" }}
+                    >
+                      <div className="row d-flex flex-column text text-center">
+                        <div className="col-auto profile-image">
+                          <img
+                            className="rounded-circle"
+                            alt="User Image"
+                            width={"20px"}
+                            src={
+                              user?.parent.profile_picture
+                                ? BACKEND_URL +
+                                  "/storage/" +
+                                  user?.parent.profile_picture
+                                : user?.parent.gender == "male"
+                                ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                                : "/assets/img/default-profile-picture-grey-female-icon.png"
+                            }
+                          />
+                        </div>
+                        <div className="col ms-md-n2 profile-user-info mt-2">
+                          <h4 className="user-name mb-0">
+                            {user?.parent.last_name +
+                              " " +
+                              user?.parent.first_name}
+                          </h4>
+                          <div className="user-Location">
+                            {user?.parent.address && (
+                              <>
+                                <i className="fas fa-map-marker-alt me-2" />
+                                {user?.parent.address}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="award-list-outs">
-                      <h4>1st place in "Chess”</h4>
-                      <h5>John Doe won 1st place in "Chess"</h5>
-                    </div>
-                    <div className="award-time-list">
-                      <span>1 Day ago</span>
-                    </div>
-                  </div>
-                  <div className="activity-awards">
-                    <div className="award-boxs">
-                      <img
-                        src="/assets/img/icons/award-icon-02.svg"
-                        alt="Award"
-                      />
-                    </div>
-                    <div className="award-list-outs">
-                      <h4>Participated in "Carrom"</h4>
-                      <h5>Justin Lee participated in "Carrom"</h5>
-                    </div>
-                    <div className="award-time-list">
-                      <span>2 hours ago</span>
-                    </div>
-                  </div>
-                  <div className="activity-awards">
-                    <div className="award-boxs">
-                      <img
-                        src="/assets/img/icons/award-icon-03.svg"
-                        alt="Award"
-                      />
-                    </div>
-                    <div className="award-list-outs">
-                      <h4>Internation conference in "St.John School"</h4>
-                      <h5>
-                        Justin Leeattended internation conference in "St.John
-                        School"
-                      </h5>
-                    </div>
-                    <div className="award-time-list">
-                      <span>2 Week ago</span>
-                    </div>
-                  </div>
-                  <div className="activity-awards mb-0">
-                    <div className="award-boxs">
-                      <img
-                        src="/assets/img/icons/award-icon-04.svg"
-                        alt="Award"
-                      />
-                    </div>
-                    <div className="award-list-outs">
-                      <h4>Won 1st place in "Chess"</h4>
-                      <h5>John Doe won 1st place in "Chess"</h5>
-                    </div>
-                    <div className="award-time-list">
-                      <span>3 Day ago</span>
+                    <div className="tab-content profile-tab-cont">
+                      <div
+                        className="tab-pane fade show active"
+                        id="per_details_tab"
+                      >
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="card">
+                              <div
+                                className="card-body rounded"
+                                style={{
+                                  boxShadow:
+                                    "0 0 31px 3px rgb(200 200 200 / 23%)",
+                                }}
+                              >
+                                <h5 className="card-title d-flex justify-content-between mb-4">
+                                  <span>Personal Details :</span>
+                                </h5>
+                                <table className="w-100">
+                                  <tbody>
+                                    <tr>
+                                      <td className={""}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            CIN :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.cin}
+                                          </p>
+                                        </div>
+                                      </td>
+                                      <td className={"ps-4"}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            Name :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.last_name +
+                                              " " +
+                                              user?.parent.first_name}
+                                          </p>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className={""}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            Mobile :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.phone_number}
+                                          </p>
+                                        </div>
+                                      </td>
+                                      <td className={"ps-4"}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            Address :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.address
+                                              ? user?.parent.address
+                                              : "null"}
+                                          </p>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className={""}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            gender :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.gender}
+                                          </p>
+                                        </div>
+                                      </td>
+                                      <td className={"ps-4"}>
+                                        <div className="d-flex justify-content-between">
+                                          <p className="text-muted mb-0">
+                                            Date of Birth :
+                                          </p>
+                                          <p className="mb-0">
+                                            {user?.parent.date_of_birth} (
+                                            {calculateAge(
+                                              user?.parent.date_of_birth
+                                            ) + " ans"}
+                                            )
+                                          </p>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                {/* <h5 className="card-title d-flex justify-content-between">
+                                  <span>Personal Details</span>
+                                </h5>
+                                <div className="d-flex gap-3">
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
+                                      CIN :
+                                    </p>
+                                    <p className="">{user?.parent.cin}</p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
+                                      Name
+                                    </p>
+                                    <p className="">
+                                      {user?.parent.last_name +
+                                        " " +
+                                        user?.parent.first_name}
+                                    </p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
+                                      Date of Birth
+                                    </p>
+                                    <p className="">
+                                      {user?.parent.date_of_birth} (
+                                      {calculateAge(
+                                        user?.parent.date_of_birth
+                                      ) + " ans"}
+                                      )
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="d-flex gap-3">
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
+                                      Mobile
+                                    </p>
+                                    <p className="">
+                                      {user?.parent.phone_number}
+                                    </p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0">
+                                      Address
+                                    </p>
+                                    <p className=" mb-0">
+                                      {user?.parent.address
+                                        ? user?.parent.address
+                                        : "null"}
+                                    </p>
+                                  </div>
+                                  <div className="d-flex">
+                                    <p className="text-muted text-sm-end mb-0">
+                                      gender
+                                    </p>
+                                    <p className=" mb-0">
+                                      {user?.parent.gender}
+                                    </p>
+                                  </div>
+                                </div> */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -323,126 +409,6 @@ const DashboardStudent = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className="row">
-          <div className="col-md-12 col-lg-6">
-            <div className="card card-chart">
-              <div className="card-header">
-                <div className="row align-items-center">
-                  <div className="col-6">
-                    <h5 className="card-title">Overview</h5>
-                  </div>
-                  <div className="col-6">
-                    <ul className="chart-list-out">
-                      <li>
-                        <span className="circle-blue"></span>Teacher
-                      </li>
-                      <li>
-                        <span className="circle-green"></span>Student
-                      </li>
-                      <li className="star-menus">
-                        <Link to="#">
-                          <i className="fas fa-ellipsis-v"></i>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <div id="apexcharts-area"></div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12 col-lg-6">
-            <div className="card card-chart">
-              <div className="card-header">
-                <div className="row align-items-center">
-                  <div className="col-6">
-                    <h5 className="card-title">Number of Students</h5>
-                  </div>
-                  <div className="col-6">
-                    <ul className="chart-list-out">
-                      <li>
-                        <span className="circle-blue"></span>Girls
-                      </li>
-                      <li>
-                        <span className="circle-green"></span>Boys
-                      </li>
-                      <li className="star-menus">
-                        <Link to="#">
-                          <i className="fas fa-ellipsis-v"></i>
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <div id="bar"></div>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div className="row">
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card flex-fill fb sm-box">
-              <div className="social-likes">
-                <p>Like us on facebook</p>
-                <h6>50,095</h6>
-              </div>
-              <div className="social-boxs">
-                <img
-                  src="/assets/img/icons/social-icon-01.svg"
-                  alt="Social Icon"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card flex-fill twitter sm-box">
-              <div className="social-likes">
-                <p>Follow us on twitter</p>
-                <h6>48,596</h6>
-              </div>
-              <div className="social-boxs">
-                <img
-                  src="/assets/img/icons/social-icon-02.svg"
-                  alt="Social Icon"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card flex-fill insta sm-box">
-              <div className="social-likes">
-                <p>Follow us on instagram</p>
-                <h6>52,085</h6>
-              </div>
-              <div className="social-boxs">
-                <img
-                  src="/assets/img/icons/social-icon-03.svg"
-                  alt="Social Icon"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-xl-3 col-sm-6 col-12">
-            <div className="card flex-fill linkedin sm-box">
-              <div className="social-likes">
-                <p>Follow us on linkedin</p>
-                <h6>69,050</h6>
-              </div>
-              <div className="social-boxs">
-                <img
-                  src="/assets/img/icons/social-icon-04.svg"
-                  alt="Social Icon"
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
       <_footer />
     </div>

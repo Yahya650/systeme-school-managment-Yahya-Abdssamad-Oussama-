@@ -12,18 +12,6 @@ use Illuminate\Validation\Rule;
 class ExamController extends Controller
 {
 
-    private function getCurrentSchoolYear($between)
-    {
-        $currentYear = now()->year;
-        $startMonth = 9;
-
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
-
-        return $currentYear . $between . ($currentYear + 1);
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -51,7 +39,7 @@ class ExamController extends Controller
 
         $teacher = $request->user('teacher');
 
-        if (Exam::where('type', $request->type)->where('course_id', $request->course_id)->where('teacher_id', $teacher->id)->where('school_year', $this->getCurrentSchoolYear('/'))->exists()) {
+        if (Exam::where('type', $request->type)->where('course_id', $request->course_id)->where('teacher_id', $teacher->id)->where('school_year', getCurrentSchoolYear('/'))->exists()) {
             return response()->json([
                 'message' => 'Cet examen existe déja',
             ], 409);
@@ -62,7 +50,7 @@ class ExamController extends Controller
             if ($request->image) {
                 $schoolLevel = $teacher->classes()->first()->classeType->school_level;
                 $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
-                    $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
+                    $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
 
                 Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->image));
                 $exam->image = $directoryPath;
@@ -70,7 +58,7 @@ class ExamController extends Controller
             $exam->name = $request->name;
             $exam->type = $request->type;
             $exam->duration = $request->duration;
-            $exam->school_year = $this->getCurrentSchoolYear("/");
+            $exam->school_year = getCurrentSchoolYear("/");
             $exam->semester_id = $request->semester_id;
             $exam->passing_marks = $request->passing_marks;
             $exam->course_id = $request->course_id;
@@ -129,7 +117,7 @@ class ExamController extends Controller
                 if ($request->image) {
                     $schoolLevel = $teacher->classes()->first()->classeType->school_level;
                     $directoryPath = 'exams/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
-                        $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
+                        $teacher->first_name . "_" . $teacher->last_name  . '-' . $request->type . '-' .  $teacher->courses()->find($request->course_id)->name . "-" . getCurrentSchoolYear("_") . '-' . now()->timestamp . '.' . $request->image->extension();
 
                     Storage::delete("public/" . $exam->image);
                     Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->image));

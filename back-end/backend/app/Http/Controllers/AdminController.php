@@ -123,6 +123,7 @@ class AdminController extends Controller
      */
     public function show($id)
     {
+
         if (!Admin::find($id)) {
             return response()->json([
                 'message' => 'Administrateur non trouvé'
@@ -135,7 +136,7 @@ class AdminController extends Controller
             ], 401);
         }
 
-        return response()->json(Admin::find($id));
+        return response()->json(Admin::with(['school_levels', 'reports.student', 'examRecords.student'])->find($id));
     }
 
     public function updatePictureProfile(Request $request, $id)

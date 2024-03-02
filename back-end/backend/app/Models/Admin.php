@@ -50,7 +50,7 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $with = ['school_levels', 'reports.student', 'examRecords.student'];
+    // protected $with = ['reports.student', 'examRecords.student'];
 
     public function school_levels()
     {

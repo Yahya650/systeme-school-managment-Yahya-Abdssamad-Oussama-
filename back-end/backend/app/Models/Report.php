@@ -17,6 +17,8 @@ class Report extends Model
         'content',
     ];
 
+    // protected $with = ['admin', 'student'];
+
     public function admin()
     {
         return $this->belongsTo(Admin::class);

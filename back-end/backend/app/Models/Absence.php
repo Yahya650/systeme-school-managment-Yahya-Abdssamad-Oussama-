@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Absence extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $with = ['course'];
+    // protected $with = ['course'];
     
 
     public function course()
@@ -20,13 +20,11 @@ class Absence extends Model
         return $this->belongsTo(Course::class);
     }
 
-    // Define the relationship with the Student model
     public function student()
     {
         return $this->belongsTo(Student::class);
     }
 
-    // Define the relationship with the Teacher model
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);

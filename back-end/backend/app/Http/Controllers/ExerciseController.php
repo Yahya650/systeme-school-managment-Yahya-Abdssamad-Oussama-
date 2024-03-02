@@ -67,7 +67,7 @@ class ExerciseController extends Controller
 
         if ($request->file) {
             $directoryPath = 'exercises/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'College' ? "college" : ($schoolLevel->name === 'Préscolaire' ? "préscolaire" : 'high_school'))) . '/' .
-                $classe->classeType()->first()->code . $classe->filiere()->first()->code . '-' . $classe->courses()->find($request->course_id)->name . "-" . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
+                $classe->classeType()->first()->code . $classe->filiere()->first()->code . '-' . $classe->courses()->find($request->course_id)->name . "-" . getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
 
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
             $newExercise->file = $directoryPath;
@@ -133,7 +133,7 @@ class ExerciseController extends Controller
             $classe_type = $course->classeType()->first();
 
             $directoryPath = 'exercises/' . ($school_level->name === 'Primaire' ? 'primary' : ($school_level->name === 'College' ? "college" : ($school_level->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
-                $classe_type->code . $filiere->code . '-' . $course->name . "-" . $this->getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
+                $classe_type->code . $filiere->code . '-' . $course->name . "-" . getCurrentSchoolYear() . '-' . now()->timestamp . '.' . $request->file->extension();
 
             Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
             $exercise->file = $directoryPath;
