@@ -9,7 +9,6 @@ use App\Models\Teacher;
 use App\Models\Exercise;
 use App\Models\TimeTable;
 use App\Models\ClasseType;
-use App\Models\ExamClasse;
 use App\Models\ExerciseClasse;
 use App\Models\TeacherClasseCourse;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +25,7 @@ class Classe extends Model
         'number_etud_max',
     ];
 
-    protected $with = ['classeType', 'filiere'];
+    protected $with = ['classeType', 'filiere', 'courses', 'exams'];
 
     public function classeType()
     {
@@ -58,10 +57,7 @@ class Classe extends Model
 
     public function exams()
     {
-        return $this->belongsToMany(Exam::class, 'exam_classes')
-            ->using(ExamClasse::class)
-            ->wherePivot('deleted_at', null)
-            ->withTimestamps();
+        return $this->hasMany(Exam::class);
     }
 
     public function courses()

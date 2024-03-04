@@ -17,7 +17,7 @@ Route::middleware(['auth:student'])->group(function () {
     Route::put('/change-password', [StudentController::class, 'changePassword']);
     Route::get('/timetable', [TimeTableController::class, 'timetableForStudent']);
     Route::get('/exercises', [ExerciseController::class, 'exersicesForStudent']);
-    // Route::put('/reset-password', [StudentController::class, 'resetPassword']);
+    Route::post('/marks', [StudentController::class, 'getMarks']);
 });
 
 Route::middleware(['guest:student,admin,super_admin,teacher,student_parent'])->group(function () {

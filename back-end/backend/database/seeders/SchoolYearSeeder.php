@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\SchoolYear;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class SchoolYearSeeder extends Seeder
 {
@@ -12,10 +11,10 @@ class SchoolYearSeeder extends Seeder
      * Run the database seeds.
      */
 
-    function getCurrentSchoolYear($between)
+    private function getCurrentSchoolYear($between, $sMonth = 9)
     {
         $currentYear = now()->year;
-        $startMonth = 9;
+        $startMonth = $sMonth;
 
         if (now()->month < $startMonth) {
             $currentYear--;

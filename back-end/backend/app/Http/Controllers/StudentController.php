@@ -759,4 +759,25 @@ class StudentController extends Controller
             'message' => "Photo de profile mise à jour avec succès"
         ], 200);
     }
+
+
+    public function getMarks(Request $request)
+    {
+        $request->validate([
+            "semester_id" => ['required', 'exists:semesters,id'],
+            "school_year_id" => ['required', 'exists:school_years,id'],
+        ]);
+
+        $student = $request->user('student');
+        $result = [];
+
+        $student->examRecords()->each(function ($exam_record) use ($request, &$result) {
+            $exam = $exam_record->exam()->where('school_year_id', $request->school_year_id)->where('semester_id', $request->semester_id)->first();
+            if ($exam) {
+                $result[] = $exam_record; // Include entire exam record
+            }
+        });
+
+        return response()->json($result);
+    }
 }

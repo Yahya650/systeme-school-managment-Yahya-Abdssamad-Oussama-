@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import _header from "./_header";
 import { Outlet, useNavigate } from "react-router-dom";
 import _sidebar from "./_sidebar";
+import _footer from './../_footer';
 
 const TeacherLayout = () => {
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ const TeacherLayout = () => {
     <>
       <_header />
       <_sidebar />
-      <Outlet />
+      <div className="page-wrapper" style={{ minHeight: "394px" }}>
+        <Outlet />
+        <_footer />
+      </div>
     </>
   );
 };

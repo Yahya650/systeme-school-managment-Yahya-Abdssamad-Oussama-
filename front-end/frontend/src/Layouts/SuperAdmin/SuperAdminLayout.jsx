@@ -4,6 +4,7 @@ import _header from "./_header";
 import _sidebar from "./_sidebar";
 import AdminContext from "../../Functions/AdminContext";
 import TeacherContext from "../../Functions/TeacherContext";
+import _footer from './../_footer';
 
 const SuperAdminLayout = () => {
   const navigate = useNavigate();
@@ -27,7 +28,10 @@ const SuperAdminLayout = () => {
       {/* context for crud functions */}
       <AdminContext>
         <TeacherContext>
-          <Outlet />
+          <div className="page-wrapper" style={{ minHeight: "394px" }}>
+            <Outlet />
+            <_footer />
+          </div>
         </TeacherContext>
       </AdminContext>
     </>

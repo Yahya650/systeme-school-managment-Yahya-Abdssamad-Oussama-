@@ -26,7 +26,10 @@ function AdminLayout() {
       <_sidebar />
       <StudentContext>
         <ParentContext>
-          <Outlet />
+          <div className="page-wrapper" style={{ minHeight: "394px" }}>
+            <Outlet />
+            <_footer />
+          </div>
         </ParentContext>
       </StudentContext>
     </>

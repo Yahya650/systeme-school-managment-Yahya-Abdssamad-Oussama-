@@ -11,8 +11,8 @@ class SchoolYear extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function semesters()
+    public function exams()
     {
-        return $this->hasMany(Semester::class);
+        return $this->hasMany(Exam::class);
     }
 }

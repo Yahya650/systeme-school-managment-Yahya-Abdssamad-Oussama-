@@ -12,7 +12,7 @@ class SchoolYearController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(SchoolYear::all());
     }
 
 

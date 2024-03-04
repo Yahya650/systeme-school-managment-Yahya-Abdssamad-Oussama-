@@ -88,7 +88,7 @@ const UpdateStudent = () => {
         // student data
         cin: e.target.cin[0].value?.toUpperCase(),
         code_massar: e.target.code_massar.value.toUpperCase(),
-        email: e.target.code_massar.value.toUpperCase() + '@taalim.ma',
+        email: e.target.code_massar.value.toUpperCase() + "@taalim.ma",
         first_name: e.target.first_name[0].value,
         last_name: e.target.last_name[0].value,
         phone_number: e.target.phone_number[0].value,
@@ -161,300 +161,506 @@ const UpdateStudent = () => {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="content container-fluid">
-        <div className="page-header">
-          <div className="row align-items-center">
-            <div className="col-sm-12">
-              <div className="page-sub-header">
-                <h3 className="page-title">Modifier des étudiants</h3>
-                <ul className="breadcrumb">
-                  <li className="breadcrumb-item">
-                    <Link to="/admin/students">Étudiant</Link>
-                  </li>
-                  <li className="breadcrumb-item active">
-                    Modifier des étudiants
-                  </li>
-                </ul>
-              </div>
+    <div className="content container-fluid">
+      <div className="page-header">
+        <div className="row align-items-center">
+          <div className="col-sm-12">
+            <div className="page-sub-header">
+              <h3 className="page-title">Modifier des étudiants</h3>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <Link to="/admin/students">Étudiant</Link>
+                </li>
+                <li className="breadcrumb-item active">
+                  Modifier des étudiants
+                </li>
+              </ul>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="card comman-shadow">
-              <div className="card-body">
-                {!loading ? (
-                  <form onSubmit={(e) => handleSubmit(e)}>
-                    <div className="row">
-                      <div className="col-12">
-                        <h5 className="form-title student-info">
-                          Informations sur l'étudiant
-                          <span>
-                            <Link to="#">
-                              <i className="feather-more-vertical"></i>
-                            </Link>
-                          </span>
-                        </h5>
+      <div className="row">
+        <div className="col-sm-12">
+          <div className="card comman-shadow">
+            <div className="card-body">
+              {!loading ? (
+                <form onSubmit={(e) => handleSubmit(e)}>
+                  <div className="row">
+                    <div className="col-12">
+                      <h5 className="form-title student-info">
+                        Informations sur l'étudiant
+                        <span>
+                          <Link to="#">
+                            <i className="feather-more-vertical"></i>
+                          </Link>
+                        </span>
+                      </h5>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Code Massar <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="code_massar"
+                          className="form-control"
+                          type="text"
+                          onChange={(e) => setUserNameStudent(e.target.value)}
+                          placeholder="Saisissez le code massar"
+                          defaultValue={student?.code_massar}
+                        />
+                        <span className="text-danger">
+                          {errors?.code_massar}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            Code Massar <span className="login-danger">*</span>
-                          </label>
-                          <input
-                            name="code_massar"
-                            className="form-control"
-                            type="text"
-                            onChange={(e) => setUserNameStudent(e.target.value)}
-                            placeholder="Saisissez le code massar"
-                            defaultValue={student?.code_massar}
-                          />
-                          <span className="text-danger">
-                            {errors?.code_massar}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-8" style={{ zIndex: 999 }}>
+                      <div className="form-group local-forms">
+                        <label>
+                          Classe <span className="login-danger">*</span>
+                        </label>
+                        <Select
+                          name="classe_id"
+                          isLoading={loading}
+                          options={classeOptions}
+                          placeholder="Rechercher la classe..."
+                          defaultValue={classeOptions.find(
+                            (option) =>
+                              dcryptID(option.value) == student.classe.id
+                          )}
+                        />
+                        <span className="text text-danger">
+                          {errors?.classe_id}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-8" style={{ zIndex: 999 }}>
-                        <div className="form-group local-forms">
-                          <label>
-                            Classe <span className="login-danger">*</span>
-                          </label>
-                          <Select
-                            name="classe_id"
-                            isLoading={loading}
-                            options={classeOptions}
-                            placeholder="Rechercher la classe..."
-                            defaultValue={classeOptions.find(
-                              (option) =>
-                                dcryptID(option.value) == student.classe.id
-                            )}
-                          />
-                          <span className="text text-danger">
-                            {errors?.classe_id}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          UserName<span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="email"
+                          className="form-control"
+                          disabled
+                          type="text"
+                          value={
+                            userNameStudent && userNameStudent + "@taalim.ma"
+                          }
+                          placeholder="ex: R000000000@taalim.ma"
+                        />
+                        <span className="text-danger">{errors?.email}</span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            UserName<span className="login-danger">*</span>
-                          </label>
-                          <input
-                            name="email"
-                            className="form-control"
-                            disabled
-                            type="text"
-                            value={
-                              userNameStudent && userNameStudent + "@taalim.ma"
-                            }
-                            placeholder="ex: R000000000@taalim.ma"
-                          />
-                          <span className="text-danger">{errors?.email}</span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Prénom<span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="first_name"
+                          className="form-control"
+                          type="text"
+                          placeholder="Saisissez le prénom"
+                          defaultValue={student?.first_name}
+                        />
+                        <span className="text-danger">
+                          {errors?.first_name}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            Prénom<span className="login-danger">*</span>
-                          </label>
-                          <input
-                            name="first_name"
-                            className="form-control"
-                            type="text"
-                            placeholder="Saisissez le prénom"
-                            defaultValue={student?.first_name}
-                          />
-                          <span className="text-danger">
-                            {errors?.first_name}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Nom de famille
+                          <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="last_name"
+                          className="form-control"
+                          type="text"
+                          onChange={(e) => setLastNameStudent(e.target.value)}
+                          placeholder="Saisissez le nom de famille"
+                          defaultValue={student?.last_name}
+                        />
+                        <span className="text-danger">{errors?.last_name}</span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            Nom de famille
-                            <span className="login-danger">*</span>
-                          </label>
-                          <input
-                            name="last_name"
-                            className="form-control"
-                            type="text"
-                            onChange={(e) => setLastNameStudent(e.target.value)}
-                            placeholder="Saisissez le nom de famille"
-                            defaultValue={student?.last_name}
-                          />
-                          <span className="text-danger">
-                            {errors?.last_name}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Gender <span className="login-danger">*</span>
+                        </label>
+                        <select
+                          className="form-control select"
+                          defaultValue={student?.gender}
+                          name="gender"
+                        >
+                          <option value={""}>Sélectionnez le genre</option>
+                          <option value={"male"}>Masculin</option>
+                          <option value={"female"}>Féminin</option>
+                        </select>
+                        <span className="text-danger">{errors?.gender}</span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            Gender <span className="login-danger">*</span>
-                          </label>
-                          <select
-                            className="form-control select"
-                            defaultValue={student?.gender}
-                            name="gender"
-                          >
-                            <option value={""}>Sélectionnez le genre</option>
-                            <option value={"male"}>Masculin</option>
-                            <option value={"female"}>Féminin</option>
-                          </select>
-                          <span className="text-danger">{errors?.gender}</span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Date de naissance
+                          <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="date_of_birth"
+                          className="form-control datetimepicker"
+                          type="date"
+                          placeholder="Saisissez la date de naissance"
+                          defaultValue={student?.date_of_birth}
+                        />
+                        <span className="text-danger">
+                          {errors?.date_of_birth}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>
-                            Date de naissance
-                            <span className="login-danger">*</span>
-                          </label>
-                          <input
-                            name="date_of_birth"
-                            className="form-control datetimepicker"
-                            type="date"
-                            placeholder="Saisissez la date de naissance"
-                            defaultValue={student?.date_of_birth}
-                          />
-                          <span className="text-danger">
-                            {errors?.date_of_birth}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>Téléphone</label>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>Téléphone</label>
 
-                          <input
-                            name="phone_number"
-                            className="form-control"
-                            type="text"
-                            placeholder="Saisissez le numéro de téléphone (optionnel)"
-                            defaultValue={student?.phone_number}
-                          />
-                          <span className="text-danger">
-                            {errors?.phone_number}
-                          </span>
-                        </div>
+                        <input
+                          name="phone_number"
+                          className="form-control"
+                          type="text"
+                          placeholder="Saisissez le numéro de téléphone (optionnel)"
+                          defaultValue={student?.phone_number}
+                        />
+                        <span className="text-danger">
+                          {errors?.phone_number}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>CIN</label>
-                          <input
-                            name="cin"
-                            className="form-control"
-                            type="text"
-                            placeholder="Saisissez le CIN (optionnel)"
-                            defaultValue={student?.cin}
-                          />
-                          <span className="text-danger">{errors?.cin}</span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>CIN</label>
+                        <input
+                          name="cin"
+                          className="form-control"
+                          type="text"
+                          placeholder="Saisissez le CIN (optionnel)"
+                          defaultValue={student?.cin}
+                        />
+                        <span className="text-danger">{errors?.cin}</span>
                       </div>
-                      <div className="col-12 col-sm-8">
-                        <div className="form-group local-forms">
-                          <label>Address</label>
-                          <input
-                            name="address"
-                            className="form-control"
-                            placeholder="Veuillez entrer votre adresse (optionnel)"
-                            type="text"
-                            defaultValue={student?.address}
-                          />
-                          <span className="text-danger">{errors?.address}</span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-8">
+                      <div className="form-group local-forms">
+                        <label>Address</label>
+                        <input
+                          name="address"
+                          className="form-control"
+                          placeholder="Veuillez entrer votre adresse (optionnel)"
+                          type="text"
+                          defaultValue={student?.address}
+                        />
+                        <span className="text-danger">{errors?.address}</span>
                       </div>
-                      <div className="col-4 col-sm-4" style={{ zIndex: 999 }}>
-                        <div className="form-group local-forms">
-                          <label>
-                            Parents <span className="login-danger">*</span>
-                          </label>
-                          <Select
-                            onChange={hendleFormParent}
-                            name="student_parent_id"
-                            isLoading={loading}
-                            options={[
-                              {
-                                value: "Create nouveau Parent",
-                                label: "Create nouveau Parent",
-                              },
-                              {
-                                value: "Son Père",
-                                label: "Son Père",
-                              },
-                              ...parentOptions.filter(
-                                (option) =>
-                                  dcryptID(option.value) !==
-                                  student?.student_parent_id
-                              ),
-                            ]}
-                            defaultValue={{
+                    </div>
+                    <div className="col-4 col-sm-4" style={{ zIndex: 999 }}>
+                      <div className="form-group local-forms">
+                        <label>
+                          Parents <span className="login-danger">*</span>
+                        </label>
+                        <Select
+                          onChange={hendleFormParent}
+                          name="student_parent_id"
+                          isLoading={loading}
+                          options={[
+                            {
+                              value: "Create nouveau Parent",
+                              label: "Create nouveau Parent",
+                            },
+                            {
                               value: "Son Père",
                               label: "Son Père",
-                            }}
-                            placeholder="Veuillez sélectionner une Parent"
-                            isSearchable={true}
-                          />
-                          <span className="text text-danger">
-                            {errors &&
-                              !showFormParent &&
-                              errors?.student_parent_id}
-                          </span>
-                        </div>
+                            },
+                            ...parentOptions.filter(
+                              (option) =>
+                                dcryptID(option.value) !==
+                                student?.student_parent_id
+                            ),
+                          ]}
+                          defaultValue={{
+                            value: "Son Père",
+                            label: "Son Père",
+                          }}
+                          placeholder="Veuillez sélectionner une Parent"
+                          isSearchable={true}
+                        />
+                        <span className="text text-danger">
+                          {errors &&
+                            !showFormParent &&
+                            errors?.student_parent_id}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>Blood Type</label>
-                          <select
-                            placeholder=""
-                            className="form-control select"
-                            name="blood_type"
-                            defaultValue={student?.blood_type}
-                          >
-                            <option value="">
-                              Selezionnez le blood type (optionnel)
-                            </option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                          </select>
-                          <span className="text-danger">
-                            {errors?.blood_type}
-                          </span>
-                        </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>Blood Type</label>
+                        <select
+                          placeholder=""
+                          className="form-control select"
+                          name="blood_type"
+                          defaultValue={student?.blood_type}
+                        >
+                          <option value="">
+                            Selezionnez le blood type (optionnel)
+                          </option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                        </select>
+                        <span className="text-danger">
+                          {errors?.blood_type}
+                        </span>
                       </div>
-                      <div className="col-12 col-sm-4">
-                        <div className="form-group local-forms">
-                          <label>health status</label>
-                          <select
-                            placeholder=""
-                            name="health_status"
-                            className="form-control select"
-                            defaultValue={student?.health_status}
-                          >
-                            <option value="">
-                              Selezionnez le health status (optionnel)
-                            </option>
-                            <option value={"good"}>good</option>
-                            <option value={"middle"}>middle</option>
-                            <option value={"bad"}>bad</option>
-                          </select>
-                          <span className="text-danger">
-                            {errors?.health_status}
-                          </span>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>health status</label>
+                        <select
+                          placeholder=""
+                          name="health_status"
+                          className="form-control select"
+                          defaultValue={student?.health_status}
+                        >
+                          <option value="">
+                            Selezionnez le health status (optionnel)
+                          </option>
+                          <option value={"good"}>good</option>
+                          <option value={"middle"}>middle</option>
+                          <option value={"bad"}>bad</option>
+                        </select>
+                        <span className="text-danger">
+                          {errors?.health_status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {showFormParent ? (
+                    <div className="content container-fluid">
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <div className="card comman-shadow border bordered-2">
+                            <div className="card-body">
+                              <div className="row">
+                                <div className="col-12">
+                                  <h5 className="form-title student-info">
+                                    Create nouveau Parent
+                                    <span>
+                                      <Link to="#">
+                                        <i className="feather-more-vertical"></i>
+                                      </Link>
+                                    </span>
+                                  </h5>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      CIN{" "}
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <input
+                                      name="cin"
+                                      className="form-control"
+                                      type="text"
+                                      placeholder="Saisissez le CIN"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_cin}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      Prénom
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <input
+                                      name="first_name"
+                                      className="form-control"
+                                      type="text"
+                                      placeholder="Saisissez le prénom"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_first_name}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      Nom de famille
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <input
+                                      name="last_name"
+                                      className="form-control"
+                                      type="text"
+                                      defaultValue={
+                                        lastNameStudent ? lastNameStudent : null
+                                      }
+                                      placeholder="Saisissez le nom de famille"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_last_name}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      E-mail{" "}
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <input
+                                      name="email"
+                                      className="form-control"
+                                      type="text"
+                                      placeholder="Saisissez l'email"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_email}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      Gender{" "}
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <select
+                                      className="form-control select"
+                                      name="gender"
+                                    >
+                                      <option value={""}>
+                                        Sélectionnez le Gender
+                                      </option>
+                                      <option value={"male"}>Masculin</option>
+                                      <option value={"female"}>Féminin</option>
+                                    </select>
+                                    <span className="text-danger">
+                                      {errors?.parent_gender}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      Date de naissance
+                                      <span className="login-danger">*</span>
+                                    </label>
+                                    <input
+                                      name="date_of_birth"
+                                      className="form-control datetimepicker"
+                                      type="date"
+                                      placeholder="Saisissez la date de naissance"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_date_of_birth}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>
+                                      Téléphone{" "}
+                                      <span className="login-danger">*</span>
+                                    </label>
+
+                                    <input
+                                      name="phone_number"
+                                      className="form-control"
+                                      type="text"
+                                      placeholder="Saisissez le numéro de telephone"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_phone_number}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>Blood Type</label>
+                                    <select
+                                      className="form-control select"
+                                      name="blood_type"
+                                    >
+                                      <option value={""}>
+                                        Sélectionner un blood type (optionnel)
+                                      </option>
+                                      <option value="A+">A+</option>
+                                      <option value="A-">A-</option>
+                                      <option value="B+">B+</option>
+                                      <option value="B-">B-</option>
+                                      <option value="AB+">AB+</option>
+                                      <option value="AB-">AB-</option>
+                                      <option value="O+">O+</option>
+                                      <option value="O-">O-</option>
+                                    </select>
+                                    <span className="text-danger">
+                                      {errors?.parent_blood_type}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                  <div className="form-group local-forms">
+                                    <label>health status</label>
+                                    <select
+                                      name="health_status"
+                                      className="form-control select"
+                                    >
+                                      <option value={""}>
+                                        Sélectionner une health status
+                                        (optionnel)
+                                      </option>
+                                      <option value={"good"}>good</option>
+                                      <option value={"middle"}>middle</option>
+                                      <option value={"bad"}>bad</option>
+                                    </select>
+                                    <span className="text-danger">
+                                      {errors?.parent_health_status}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="col-12 col-sm-12">
+                                  <div className="form-group local-forms">
+                                    <label>Address</label>
+                                    <input
+                                      name="address"
+                                      className="form-control"
+                                      placeholder="Veuillez entrer votre adresse (optionnel)"
+                                      type="text"
+                                    />
+                                    <span className="text-danger">
+                                      {errors?.parent_address}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-
-                    {showFormParent ? (
+                  ) : (
+                    showFormParentModifier && (
                       <div className="content container-fluid">
                         <div className="row">
                           <div className="col-sm-12">
@@ -463,7 +669,7 @@ const UpdateStudent = () => {
                                 <div className="row">
                                   <div className="col-12">
                                     <h5 className="form-title student-info">
-                                      Create nouveau Parent
+                                      Modifier Parent
                                       <span>
                                         <Link to="#">
                                           <i className="feather-more-vertical"></i>
@@ -482,6 +688,7 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         type="text"
                                         placeholder="Saisissez le CIN"
+                                        defaultValue={student?.parent.cin}
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_cin}
@@ -499,6 +706,9 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         type="text"
                                         placeholder="Saisissez le prénom"
+                                        defaultValue={
+                                          student?.parent.first_name
+                                        }
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_first_name}
@@ -515,11 +725,7 @@ const UpdateStudent = () => {
                                         name="last_name"
                                         className="form-control"
                                         type="text"
-                                        defaultValue={
-                                          lastNameStudent
-                                            ? lastNameStudent
-                                            : null
-                                        }
+                                        defaultValue={student?.parent.last_name}
                                         placeholder="Saisissez le nom de famille"
                                       />
                                       <span className="text-danger">
@@ -538,6 +744,7 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         type="text"
                                         placeholder="Saisissez l'email"
+                                        defaultValue={student?.parent.email}
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_email}
@@ -553,6 +760,7 @@ const UpdateStudent = () => {
                                       <select
                                         className="form-control select"
                                         name="gender"
+                                        defaultValue={student?.parent.gender}
                                       >
                                         <option value={""}>
                                           Sélectionnez le Gender
@@ -578,6 +786,9 @@ const UpdateStudent = () => {
                                         className="form-control datetimepicker"
                                         type="date"
                                         placeholder="Saisissez la date de naissance"
+                                        defaultValue={
+                                          student?.parent.date_of_birth
+                                        }
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_date_of_birth}
@@ -596,6 +807,9 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         type="text"
                                         placeholder="Saisissez le numéro de telephone"
+                                        defaultValue={
+                                          student?.parent.phone_number
+                                        }
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_phone_number}
@@ -608,6 +822,9 @@ const UpdateStudent = () => {
                                       <select
                                         className="form-control select"
                                         name="blood_type"
+                                        defaultValue={
+                                          student?.parent.blood_type
+                                        }
                                       >
                                         <option value={""}>
                                           Sélectionner un blood type (optionnel)
@@ -632,6 +849,9 @@ const UpdateStudent = () => {
                                       <select
                                         name="health_status"
                                         className="form-control select"
+                                        defaultValue={
+                                          student?.parent.health_status
+                                        }
                                       >
                                         <option value={""}>
                                           Sélectionner une health status
@@ -654,6 +874,7 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         placeholder="Veuillez entrer votre adresse (optionnel)"
                                         type="text"
+                                        defaultValue={student?.parent.address}
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_address}
@@ -666,288 +887,38 @@ const UpdateStudent = () => {
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      showFormParentModifier && (
-                        <div className="content container-fluid">
-                          <div className="row">
-                            <div className="col-sm-12">
-                              <div className="card comman-shadow border bordered-2">
-                                <div className="card-body">
-                                  <div className="row">
-                                    <div className="col-12">
-                                      <h5 className="form-title student-info">
-                                        Modifier Parent
-                                        <span>
-                                          <Link to="#">
-                                            <i className="feather-more-vertical"></i>
-                                          </Link>
-                                        </span>
-                                      </h5>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          CIN{" "}
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <input
-                                          name="cin"
-                                          className="form-control"
-                                          type="text"
-                                          placeholder="Saisissez le CIN"
-                                          defaultValue={student?.parent.cin}
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_cin}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          Prénom
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <input
-                                          name="first_name"
-                                          className="form-control"
-                                          type="text"
-                                          placeholder="Saisissez le prénom"
-                                          defaultValue={
-                                            student?.parent.first_name
-                                          }
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_first_name}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          Nom de famille
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <input
-                                          name="last_name"
-                                          className="form-control"
-                                          type="text"
-                                          defaultValue={
-                                            student?.parent.last_name
-                                          }
-                                          placeholder="Saisissez le nom de famille"
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_last_name}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          E-mail{" "}
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <input
-                                          name="email"
-                                          className="form-control"
-                                          type="text"
-                                          placeholder="Saisissez l'email"
-                                          defaultValue={student?.parent.email}
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_email}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          Gender{" "}
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <select
-                                          className="form-control select"
-                                          name="gender"
-                                          defaultValue={student?.parent.gender}
-                                        >
-                                          <option value={""}>
-                                            Sélectionnez le Gender
-                                          </option>
-                                          <option value={"male"}>
-                                            Masculin
-                                          </option>
-                                          <option value={"female"}>
-                                            Féminin
-                                          </option>
-                                        </select>
-                                        <span className="text-danger">
-                                          {errors?.parent_gender}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          Date de naissance
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
-                                        <input
-                                          name="date_of_birth"
-                                          className="form-control datetimepicker"
-                                          type="date"
-                                          placeholder="Saisissez la date de naissance"
-                                          defaultValue={
-                                            student?.parent.date_of_birth
-                                          }
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_date_of_birth}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>
-                                          Téléphone{" "}
-                                          <span className="login-danger">
-                                            *
-                                          </span>
-                                        </label>
+                    )
+                  )}
 
-                                        <input
-                                          name="phone_number"
-                                          className="form-control"
-                                          type="text"
-                                          placeholder="Saisissez le numéro de telephone"
-                                          defaultValue={
-                                            student?.parent.phone_number
-                                          }
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_phone_number}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>Blood Type</label>
-                                        <select
-                                          className="form-control select"
-                                          name="blood_type"
-                                          defaultValue={
-                                            student?.parent.blood_type
-                                          }
-                                        >
-                                          <option value={""}>
-                                            Sélectionner un blood type
-                                            (optionnel)
-                                          </option>
-                                          <option value="A+">A+</option>
-                                          <option value="A-">A-</option>
-                                          <option value="B+">B+</option>
-                                          <option value="B-">B-</option>
-                                          <option value="AB+">AB+</option>
-                                          <option value="AB-">AB-</option>
-                                          <option value="O+">O+</option>
-                                          <option value="O-">O-</option>
-                                        </select>
-                                        <span className="text-danger">
-                                          {errors?.parent_blood_type}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-4">
-                                      <div className="form-group local-forms">
-                                        <label>health status</label>
-                                        <select
-                                          name="health_status"
-                                          className="form-control select"
-                                          defaultValue={
-                                            student?.parent.health_status
-                                          }
-                                        >
-                                          <option value={""}>
-                                            Sélectionner une health status
-                                            (optionnel)
-                                          </option>
-                                          <option value={"good"}>good</option>
-                                          <option value={"middle"}>
-                                            middle
-                                          </option>
-                                          <option value={"bad"}>bad</option>
-                                        </select>
-                                        <span className="text-danger">
-                                          {errors?.parent_health_status}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="col-12 col-sm-12">
-                                      <div className="form-group local-forms">
-                                        <label>Address</label>
-                                        <input
-                                          name="address"
-                                          className="form-control"
-                                          placeholder="Veuillez entrer votre adresse (optionnel)"
-                                          type="text"
-                                          defaultValue={student?.parent.address}
-                                        />
-                                        <span className="text-danger">
-                                          {errors?.parent_address}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    )}
+                  <div className="col-12">
+                    <div className="student-submit d-flex justify-content-center gap-2">
+                      <button
+                        type="submit"
+                        disabled={loadingForm}
+                        className="btn btn-primary"
+                      >
+                        {loadingForm ? <LoadingCircle /> : "Modifier"}
+                      </button>
 
-                    <div className="col-12">
-                      <div className="student-submit d-flex justify-content-center gap-2">
-                        <button
-                          type="submit"
-                          disabled={loadingForm}
-                          className="btn btn-primary"
-                        >
-                          {loadingForm ? <LoadingCircle /> : "Modifier"}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => navigateTo(-1)}
-                          className="border border-2 btn bg-danger-light"
-                          style={{
-                            minWidth: "160px",
-                            borderRadius: "10px",
-                          }}
-                        >
-                          Annuler
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigateTo(-1)}
+                        className="border border-2 btn bg-danger-light"
+                        style={{
+                          minWidth: "160px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        Annuler
+                      </button>
                     </div>
-                  </form>
-                ) : (
-                  <div className="w-100 d-flex justify-content-center align-items-center my-5 py-5">
-                    <LoadingCircleContext />
                   </div>
-                )}
-              </div>
+                </form>
+              ) : (
+                <div className="w-100 d-flex justify-content-center align-items-center my-5 py-5">
+                  <LoadingCircleContext />
+                </div>
+              )}
             </div>
           </div>
         </div>

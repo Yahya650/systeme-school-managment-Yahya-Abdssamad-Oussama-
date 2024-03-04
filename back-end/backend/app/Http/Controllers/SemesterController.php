@@ -12,7 +12,7 @@ class SemesterController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Semester::all());
     }
 
     /**

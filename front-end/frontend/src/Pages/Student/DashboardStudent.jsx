@@ -4,137 +4,219 @@ import _footer from "../../Layouts/_footer";
 import { useContextApi } from "../../config/Context/ContextApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { BACKEND_URL } from "../../config/Api/AxiosClient";
+import { format } from "date-fns";
 
 const DashboardStudent = () => {
   const { user, calculateAge } = useContextApi();
   return (
-    <div className="page-wrapper">
-      <div className="content container-fluid">
-        <div className="page-header">
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="page-sub-header">
-                <h3 className="page-title">
-                  {new Date().getHours() >= 5 && new Date().getHours() < 18
-                    ? "Bonjour "
-                    : "Bonsoir "}
-                  {user?.last_name + " " + user?.first_name}!
-                </h3>
-                <ul className="breadcrumb">
-                  <li className="breadcrumb-item">
-                    <Link to="#">Accueil</Link>
-                  </li>
-                  <li className="breadcrumb-item active">Dashboard</li>
-                </ul>
-              </div>
+    <div className="content container-fluid">
+      <div className="page-header">
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="page-sub-header">
+              <h3 className="page-title">
+                {new Date().getHours() >= 5 && new Date().getHours() < 18
+                  ? "Bonjour "
+                  : "Bonsoir "}
+                {user?.last_name + " " + user?.first_name}!
+              </h3>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <Link to="#">Accueil</Link>
+                </li>
+                <li className="breadcrumb-item active">Dashboard</li>
+              </ul>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="row">
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card bg-comman w-100">
-              <div className="card-body">
-                <div
-                  className="db-widgets d-flex justify-content-between align-items-center"
-                  style={{ height: "100%" }}
-                >
-                  <div className="db-info">
-                    <h6>Classe</h6>
-                    <h3>{user?.classe.code}</h3>
-                  </div>
-                  <div className="db-icon">
-                    <img
-                      src="/assets/img/icons/dash-icon-01.svg"
-                      alt="Icône du tableau de bord"
-                    />
-                  </div>
+      <div className="row">
+        <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          <div className="card bg-comman w-100">
+            <div className="card-body">
+              <div
+                className="db-widgets d-flex justify-content-between align-items-center"
+                style={{ height: "100%" }}
+              >
+                <div className="db-info">
+                  <h6>Classe</h6>
+                  <h3>{user?.classe.code}</h3>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card bg-comman w-100">
-              <div className="card-body">
-                <div
-                  className="db-widgets d-flex justify-content-between align-items-center"
-                  style={{ height: "100%" }}
-                >
-                  <div className="db-info">
-                    <h6>Code Massar</h6>
-                    <h3>{user?.code_massar}</h3>
-                  </div>
-                  <div className="db-icon">
-                    <img
-                      width={58}
-                      src="/assets/img/icons/lock-dynamic-premium.png"
-                      alt="Icône du tableau de bord"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card bg-comman w-100">
-              <div className="card-body">
-                <div
-                  className="db-widgets d-flex justify-content-between align-items-center"
-                  style={{ height: "100%" }}
-                >
-                  <div className="db-info">
-                    <h6>Filiere</h6>
-                    <h3>{user?.classe.filiere.name}</h3>
-                  </div>
-                  <div className="db-icon">
-                    <img
-                      src="/assets/img/icons/dash-icon-03.svg"
-                      alt="Icône du tableau de bord"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-sm-6 col-12 d-flex">
-            <div className="card bg-comman w-100">
-              <div className="card-body">
-                <div
-                  className="db-widgets d-flex justify-content-between align-items-center"
-                  style={{ height: "100%" }}
-                >
-                  <div className="db-info">
-                    <h6>Nombre des Absences</h6>
-                    <h3>{user?.absences.length} Absence</h3>
-                  </div>
-                  <div className="db-icon">
-                    <img
-                      src="/assets/img/icons/dash-icon-04.svg"
-                      alt="Icône du tableau de bord"
-                    />
-                  </div>
+                <div className="db-icon">
+                  <img
+                    src="/assets/img/icons/dash-icon-01.svg"
+                    alt="Icône du tableau de bord"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-xl-6 d-flex">
-            <div className="card flex-fill student-space comman-shadow">
-              <div className="card-header px-4 pt-4 d-flex justify-content-between align-items-center">
-                <h5 className="card-title">Dernières notes</h5>
-                <div className="">
-                  <button className="btn btn-primary btn-sm py-0">
-                    <FontAwesomeIcon icon={faEye} /> Voir Tous les Notes
-                  </button>
+        <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          <div className="card bg-comman w-100">
+            <div className="card-body">
+              <div
+                className="db-widgets d-flex justify-content-between align-items-center"
+                style={{ height: "100%" }}
+              >
+                <div className="db-info">
+                  <h6>Code Massar</h6>
+                  <h3>{user?.code_massar}</h3>
+                </div>
+                <div className="db-icon">
+                  <img
+                    width={58}
+                    src="/assets/img/icons/lock-dynamic-premium.png"
+                    alt="Icône du tableau de bord"
+                  />
                 </div>
               </div>
-              <div className="card-body">
-                <div className="table-responsive">
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          <div className="card bg-comman w-100">
+            <div className="card-body">
+              <div
+                className="db-widgets d-flex justify-content-between align-items-center"
+                style={{ height: "100%" }}
+              >
+                <div className="db-info">
+                  <h6>Filiere</h6>
+                  <h3>{user?.classe.filiere.name}</h3>
+                </div>
+                <div className="db-icon">
+                  <img
+                    src="/assets/img/icons/dash-icon-03.svg"
+                    alt="Icône du tableau de bord"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-sm-6 col-12 d-flex">
+          <div className="card bg-comman w-100">
+            <div className="card-body">
+              <div
+                className="db-widgets d-flex justify-content-between align-items-center"
+                style={{ height: "100%" }}
+              >
+                <div className="db-info">
+                  <h6>Nombre des Absences</h6>
+                  <h3>{user?.absences.length} Absence</h3>
+                </div>
+                <div className="db-icon">
+                  <img
+                    src="/assets/img/icons/dash-icon-04.svg"
+                    alt="Icône du tableau de bord"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-xl-6 d-flex">
+          <div className="card flex-fill student-space comman-shadow">
+            <div className="card-header px-4 pt-4 d-flex justify-content-between align-items-center">
+              <h5 className="card-title">Dernières notes</h5>
+              <div className="">
+                <Link
+                  to="/student/marks"
+                  className="btn btn-primary btn-sm py-0"
+                >
+                  <FontAwesomeIcon icon={faEye} /> Voir Tous les Notes
+                </Link>
+              </div>
+            </div>
+            <div className="card-body pt-3">
+              <ul className="nav nav-tabs nav-bordered nav-justified">
+                <li className="nav-item">
+                  <a
+                    href="#divs"
+                    data-bs-toggle="tab"
+                    aria-expanded="false"
+                    className="nav-link active"
+                  >
+                    Voir avec Div
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href="#table"
+                    data-bs-toggle="tab"
+                    aria-expanded="true"
+                    className="nav-link"
+                  >
+                    Voir avec Tableau
+                  </a>
+                </li>
+              </ul>
+              <div className="tab-content">
+                <div className="tab-pane active" id="divs">
+                  {user?.exam_records
+                    .slice(0, 5)
+                    .filter((record) => record.exam.type !== "cff")
+                    .map((record, index) => (
+                      <div
+                        key={index}
+                        className="d-flex justify-content-between border-bottom py-2 mb-0"
+                      >
+                        <div className="d-flex flex-column">
+                          <figure className="pb-0 mb-0">
+                            <blockquote class="blockquote ">
+                              <p className="pb-0 mb-0 text-secondary-emphasis">
+                                {record.exam.course.name}
+                              </p>
+                            </blockquote>
+                            <figcaption
+                              class="blockquote-footer pb-0 mb-0"
+                              style={{ color: "#abb5ce" }}
+                            >
+                              {record.exam.type === "cc1"
+                                ? "Premier contrôle"
+                                : record.exam.type === "cc2"
+                                ? "Deuxième contrôle"
+                                : record.exam.type === "cc3"
+                                ? "Troisième contrôle"
+                                : record.exam.type === "cc4"
+                                ? "Quatrieme contrôle"
+                                : record.exam.type === "AI" &&
+                                  "Activités intégrées"}
+                            </figcaption>
+                          </figure>
+                        </div>
+                        <div className="d-flex flex-column text-end">
+                          {record.note > record.exam.passing_marks ? (
+                            <span className=" text-end text-success">
+                              <b>{record.note}</b>
+                            </span>
+                          ) : record.note < record.exam.passing_marks ? (
+                            <span className="text-end text-danger">
+                              <b>{record.note}</b>
+                            </span>
+                          ) : (
+                            <span className="text-end text-warning ">
+                              <b>{record.note}</b>
+                            </span>
+                          )}
+                          <span style={{ color: "#abb5ce" }}>
+                            {format(new Date(record.created_at), "dd/MM")}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                <div className="tab-pane table-responsive" id="table">
                   <table className="table star-student table-hover table-center table-borderless table-striped">
                     <thead className="thead-light">
                       <tr>
@@ -144,7 +226,7 @@ const DashboardStudent = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {user?.exam_records.slice(0, 6).map((record, index) => (
+                      {user?.exam_records.slice(0, 5).map((record, index) => (
                         <tr key={index}>
                           <td className="text-nowrap text-start">
                             <img
@@ -173,8 +255,12 @@ const DashboardStudent = () => {
                               <span className="badge bg-success">
                                 {record.note}
                               </span>
-                            ) : (
+                            ) : record.note < record.exam.passing_marks ? (
                               <span className="badge bg-danger">
+                                {record.note}
+                              </span>
+                            ) : (
+                              <span className="badge bg-warning">
                                 {record.note}
                               </span>
                             )}
@@ -187,156 +273,155 @@ const DashboardStudent = () => {
               </div>
             </div>
           </div>
-          <div className="col-xl-6 d-flex">
-            <div className="card flex-fill comman-shadow">
-              <div className="card-header d-flex align-items-center">
-                <h5 className="card-title">Votre Père</h5>
-                <ul className="chart-list-out student-ellips">
-                  <li className="star-menus">
-                    <Link to="#">
-                      <i className="fas fa-ellipsis-v"></i>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-md-12">
-                    <div
-                      className="profile-header m-0 py-2"
-                      style={{ backgroundColor: "white" }}
-                    >
-                      <div className="row d-flex flex-column text text-center">
-                        <div className="col-auto profile-image">
-                          <img
-                            className="rounded-circle"
-                            alt="User Image"
-                            width={"20px"}
-                            src={
-                              user?.parent.profile_picture
-                                ? BACKEND_URL +
-                                  "/storage/" +
-                                  user?.parent.profile_picture
-                                : user?.parent.gender == "male"
-                                ? "/assets/img/default-profile-picture-grey-male-icon.png"
-                                : "/assets/img/default-profile-picture-grey-female-icon.png"
-                            }
-                          />
-                        </div>
-                        <div className="col ms-md-n2 profile-user-info mt-2">
-                          <h4 className="user-name mb-0">
-                            {user?.parent.last_name +
-                              " " +
-                              user?.parent.first_name}
-                          </h4>
-                          <div className="user-Location">
-                            {user?.parent.address && (
-                              <>
-                                <i className="fas fa-map-marker-alt me-2" />
-                                {user?.parent.address}
-                              </>
-                            )}
-                          </div>
+        </div>
+        <div className="col-xl-6 d-flex">
+          <div className="card flex-fill comman-shadow">
+            <div className="card-header d-flex align-items-center">
+              <h5 className="card-title">Votre Père</h5>
+              <ul className="chart-list-out student-ellips">
+                <li className="star-menus">
+                  <Link to="#">
+                    <i className="fas fa-ellipsis-v"></i>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12">
+                  <div
+                    className="profile-header m-0 py-2"
+                    style={{ backgroundColor: "white" }}
+                  >
+                    <div className="row d-flex flex-column text text-center">
+                      <div className="col-auto profile-image">
+                        <img
+                          className="rounded-circle"
+                          alt="User Image"
+                          width={"20px"}
+                          src={
+                            user?.parent.profile_picture
+                              ? BACKEND_URL +
+                                "/storage/" +
+                                user?.parent.profile_picture
+                              : user?.parent.gender == "male"
+                              ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                              : "/assets/img/default-profile-picture-grey-female-icon.png"
+                          }
+                        />
+                      </div>
+                      <div className="col ms-md-n2 profile-user-info mt-2">
+                        <h4 className="user-name mb-0">
+                          {user?.parent.last_name +
+                            " " +
+                            user?.parent.first_name}
+                        </h4>
+                        <div className="user-Location">
+                          {user?.parent.address && (
+                            <>
+                              <i className="fas fa-map-marker-alt me-2" />
+                              {user?.parent.address}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="tab-content profile-tab-cont">
-                      <div
-                        className="tab-pane fade show active"
-                        id="per_details_tab"
-                      >
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="card">
-                              <div
-                                className="card-body rounded"
-                                style={{
-                                  boxShadow:
-                                    "0 0 31px 3px rgb(200 200 200 / 23%)",
-                                }}
-                              >
-                                <h5 className="card-title d-flex justify-content-between mb-4">
-                                  <span>Personal Details :</span>
-                                </h5>
-                                <table className="w-100">
-                                  <tbody>
-                                    <tr>
-                                      <td className={""}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            CIN :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.cin}
-                                          </p>
-                                        </div>
-                                      </td>
-                                      <td className={"ps-4"}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            Name :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.last_name +
-                                              " " +
-                                              user?.parent.first_name}
-                                          </p>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td className={""}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            Mobile :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.phone_number}
-                                          </p>
-                                        </div>
-                                      </td>
-                                      <td className={"ps-4"}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            Address :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.address
-                                              ? user?.parent.address
-                                              : "null"}
-                                          </p>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td className={""}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            gender :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.gender}
-                                          </p>
-                                        </div>
-                                      </td>
-                                      <td className={"ps-4"}>
-                                        <div className="d-flex justify-content-between">
-                                          <p className="text-muted mb-0">
-                                            Date of Birth :
-                                          </p>
-                                          <p className="mb-0">
-                                            {user?.parent.date_of_birth} (
-                                            {calculateAge(
-                                              user?.parent.date_of_birth
-                                            ) + " ans"}
-                                            )
-                                          </p>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                {/* <h5 className="card-title d-flex justify-content-between">
+                  </div>
+                  <div className="tab-content profile-tab-cont">
+                    <div
+                      className="tab-pane fade show active"
+                      id="per_details_tab"
+                    >
+                      <div className="row">
+                        <div className="col-12">
+                          <div className="card">
+                            <div
+                              className="card-body rounded"
+                              style={{
+                                boxShadow:
+                                  "0 0 31px 3px rgb(200 200 200 / 23%)",
+                              }}
+                            >
+                              <h5 className="card-title d-flex justify-content-between mb-4">
+                                <span>Personal Details :</span>
+                              </h5>
+                              <table className="w-100">
+                                <tbody>
+                                  <tr>
+                                    <td className={""}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">CIN :</p>
+                                        <p className="mb-0">
+                                          {user?.parent.cin}
+                                        </p>
+                                      </div>
+                                    </td>
+                                    <td className={"ps-4"}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">
+                                          Name :
+                                        </p>
+                                        <p className="mb-0">
+                                          {user?.parent.last_name +
+                                            " " +
+                                            user?.parent.first_name}
+                                        </p>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className={""}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">
+                                          Mobile :
+                                        </p>
+                                        <p className="mb-0">
+                                          {user?.parent.phone_number}
+                                        </p>
+                                      </div>
+                                    </td>
+                                    <td className={"ps-4"}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">
+                                          Address :
+                                        </p>
+                                        <p className="mb-0">
+                                          {user?.parent.address
+                                            ? user?.parent.address
+                                            : "null"}
+                                        </p>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className={""}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">
+                                          gender :
+                                        </p>
+                                        <p className="mb-0">
+                                          {user?.parent.gender}
+                                        </p>
+                                      </div>
+                                    </td>
+                                    <td className={"ps-4"}>
+                                      <div className="d-flex justify-content-between">
+                                        <p className="text-muted mb-0">
+                                          Date of Birth :
+                                        </p>
+                                        <p className="mb-0">
+                                          {user?.parent.date_of_birth} (
+                                          {calculateAge(
+                                            user?.parent.date_of_birth
+                                          ) + " ans"}
+                                          )
+                                        </p>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              {/* <h5 className="card-title d-flex justify-content-between">
                                   <span>Personal Details</span>
                                 </h5>
                                 <div className="d-flex gap-3">
@@ -397,7 +482,6 @@ const DashboardStudent = () => {
                                     </p>
                                   </div>
                                 </div> */}
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -410,7 +494,6 @@ const DashboardStudent = () => {
           </div>
         </div>
       </div>
-      <_footer />
     </div>
   );
 };

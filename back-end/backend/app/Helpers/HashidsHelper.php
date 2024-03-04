@@ -2,7 +2,7 @@
 
 use Vinkla\Hashids\Facades\Hashids;
 
-function dcryptID($encrypted_id, $connection = 'main')
+function dcryptID($encrypted_id, $connection = 'master')
 {
     try {
         $text = Hashids::connection($connection)->decode($encrypted_id);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('school_years', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('year'); // 2022-2023
+            $table->string('year')->unique(); // 2022-2023
             $table->date('start_date')->nullable(); // Start date of the school year
             $table->date('end_date')->nullable(); // End date of the school year
             // $table->boolean('is_current')->default(false); // Indicates if it's the current school year

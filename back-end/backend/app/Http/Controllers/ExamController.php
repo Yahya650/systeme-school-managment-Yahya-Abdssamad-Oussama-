@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Exam;
-use App\Models\ExamClasse;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -67,12 +66,12 @@ class ExamController extends Controller
 
             $classes = $teacher->classes;
             foreach ($classes as $classe) {
-                if ($classe->courses()->wherePivot('course_id', $request->course_id)->exists()) {
-                    $examClasse = new ExamClasse();
-                    $examClasse->exam_id = $exam->id;
-                    $examClasse->classe_id = $classe->id;
-                    $examClasse->save();
-                }
+                // if ($classe->courses()->wherePivot('course_id', $request->course_id)->exists()) {
+                //     $examClasse = new ExamClasse();
+                //     $examClasse->exam_id = $exam->id;
+                //     $examClasse->classe_id = $classe->id;
+                //     $examClasse->save();
+                // }
             }
             return response()->json(['message' => 'Exam créé avec succès'], 201);
         }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const _sidebar = () => {
   return (
-    <main className="sidebar" id="sidebar">
+    <aside className="sidebar" id="sidebar">
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
@@ -542,7 +542,7 @@ const _sidebar = () => {
           </ul>
         </div>
       </div>
-    </main>
+    </aside>
   );
 };
 

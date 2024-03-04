@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('image')->after('id')->nullable();
             $table->float('maximum_marks')->nullable()->after('type');
             $table->enum('passing_marks', [5, 10])->default(10)->after('type');
-            $table->string('school_year')->after('duration');
             $table->unsignedBigInteger('semester_id')->after('teacher_id')->nullable();
             $table->foreign('semester_id')->references('id')->on('semesters')->nullOnDelete();
         });

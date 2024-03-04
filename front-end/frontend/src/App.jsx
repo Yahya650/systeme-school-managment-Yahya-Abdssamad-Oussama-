@@ -95,13 +95,14 @@ const AllTeachers = React.lazy(() =>
   import("./Pages/SuperAdmin/_teacher/AllTeachers")
 );
 const IndexGuest = React.lazy(() => import("./Pages/Guest/IndexGuest"));
+const ShowMarks = React.lazy(() => import("./Pages/Student/ShowMarks"));
 
 const LezyLoadingSuspense = ({ component }) => (
   <Suspense
     fallback={
       <div
-        className="d-flex justify-content-center align-items-center w-100"
-        style={{ height: "100vh" }}
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "calc(100vh - 60px)" }}
       >
         <LoadingCircleContext />
       </div>
@@ -275,6 +276,10 @@ function App() {
         <Route
           path="dashboard"
           element={<LezyLoadingSuspense component={<DashboardStudent />} />}
+        />
+        <Route
+          path="marks"
+          element={<LezyLoadingSuspense component={<ShowMarks />} />}
         />
       </Route>
     </Routes>

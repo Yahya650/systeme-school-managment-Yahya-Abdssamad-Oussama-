@@ -30,7 +30,7 @@ const ShowAdmin = () => {
   }, []);
 
   return (
-    <div className="page-wrapper">
+    <>
       {!loading ? (
         <div className="content container-fluid">
           <div className="page-header">
@@ -380,8 +380,7 @@ const ShowAdmin = () => {
           <LoadingCircleContext />
         </div>
       )}
-      <_footer />
-    </div>
+    </>
   );
 };
 

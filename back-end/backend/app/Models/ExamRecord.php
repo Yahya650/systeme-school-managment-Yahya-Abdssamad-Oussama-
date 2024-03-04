@@ -35,5 +35,4 @@ class ExamRecord extends Model
     {
         return $this->belongsTo(Admin::class);
     }
-
 }

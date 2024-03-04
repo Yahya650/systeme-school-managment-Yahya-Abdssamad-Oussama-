@@ -179,7 +179,7 @@ export const ContextApi = ({ children }) => {
       }
     } catch (error) {
       errorToast(error.response.data.message);
-      
+
       if (error.response.status === 422) {
         if (guard != "student" && guard != "student-parent") {
           setErrors({

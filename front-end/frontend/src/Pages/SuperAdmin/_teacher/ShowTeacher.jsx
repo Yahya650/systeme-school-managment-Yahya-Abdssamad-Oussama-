@@ -31,7 +31,7 @@ const ShowTeacher = () => {
   }, []);
 
   return (
-    <div className="page-wrapper">
+    <>
       {!loading ? (
         <div className="content container-fluid">
           <div className="page-header">
@@ -379,7 +379,7 @@ const ShowTeacher = () => {
         </div>
       )}
       <_footer />
-    </div>
+    </>
   );
 };
 
