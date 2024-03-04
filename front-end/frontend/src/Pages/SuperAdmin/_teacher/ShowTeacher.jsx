@@ -378,7 +378,6 @@ const ShowTeacher = () => {
           <LoadingCircleContext />
         </div>
       )}
-      <_footer />
     </>
   );
 };
