@@ -11,21 +11,21 @@ class SchoolYearSeeder extends Seeder
      * Run the database seeds.
      */
 
-    private function getCurrentSchoolYear($between, $sMonth = 9)
-    {
-        $currentYear = now()->year;
-        $startMonth = $sMonth;
+    // private function getCurrentSchoolYear($between, $sMonth = 9)
+    // {
+    //     $currentYear = now()->year;
+    //     $startMonth = $sMonth;
 
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
+    //     if (now()->month < $startMonth) {
+    //         $currentYear--;
+    //     }
 
-        return $currentYear . $between . ($currentYear + 1);
-    }
+    //     return $currentYear . $between . ($currentYear + 1);
+    // }
 
 
     public function run(): void
     {
-        SchoolYear::create(['year' => $this->getCurrentSchoolYear('/')]);
+        SchoolYear::create(['year' => getCurrentSchoolYear('/')]);
     }
 }

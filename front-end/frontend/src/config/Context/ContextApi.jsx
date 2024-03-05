@@ -35,6 +35,10 @@ const Context = createContext({
   currentPage: null,
   total: null,
   loadingProfilePicture: null,
+  currentSchoolYear: null,
+  setCurrentSchoolYear: () => {},
+  currentSchoolYearLoading: null,
+  setCurrentSchoolYearLoading: () => {},
   adminsTrash: null,
   teachersTrash: null,
   setAdminsTrash: () => {},
@@ -42,6 +46,7 @@ const Context = createContext({
   navigateTo: () => {},
   setTotal: () => {},
   setTeacher: () => {},
+  getCurrentSchoolYear: () => {},
   setPageCount: () => {},
   setCurrentPage: () => {},
   handlePageClick: () => {},
@@ -69,9 +74,18 @@ export const ContextApi = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
   const [ids, setIds] = useState([]);
+  const [currentSchoolYear, setCurrentSchoolYear] = useState(null);
+  const [currentSchoolYearLoading, setCurrentSchoolYearLoading] =
+    useState(true);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
 
   const navigate = useNavigate();
+
+  const getCurrentSchoolYear = async () => {
+    const { data } = await AxiosClient.get("/current-school-year");
+    setCurrentSchoolYear(data);
+    setCurrentSchoolYearLoading(false);
+  };
 
   const getUserProfile = async () => {
     setLoadingContaxt(true);
@@ -240,6 +254,10 @@ export const ContextApi = ({ children }) => {
         teachers,
         teacher,
         parents,
+        currentSchoolYear,
+        setCurrentSchoolYear,
+        currentSchoolYearLoading,
+        setCurrentSchoolYearLoading,
         pageCount,
         currentPage,
         total,
@@ -254,6 +272,7 @@ export const ContextApi = ({ children }) => {
         handlePageClick,
         changePassword,
         setStudent,
+        getCurrentSchoolYear,
         student,
         navigateTo: navigate,
       }}

@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../config/Context/ContextApi";
-import LoadingCircle from "../../Components/LoadingCircle";
 
 const _header = () => {
-  const { logout, setLoadingContaxt, user } = useContextApi();
-  // const [loading, setLoading] = useState(false);
+  const {
+    user,
+    setLoadingContaxt,
+    logout,
+    currentSchoolYear,
+    currentSchoolYearLoading,
+    getCurrentSchoolYear,
+  } = useContextApi();
+
+  useEffect(() => {
+    getCurrentSchoolYear();
+  }, []);
 
   return (
     <header className="header" style={{ zIndex: 9999 }}>
@@ -37,14 +46,15 @@ const _header = () => {
         <form>
           <input
             type="text"
-            className="form-control"
-            placeholder="Search here"
+            className="form-control text-center"
+            value={
+              !currentSchoolYearLoading ? currentSchoolYear.year : "loading..."
+            }
+            disabled
           />
-          <button className="btn" type="submit">
-            <i className="fas fa-search"></i>
-          </button>
         </form>
       </div>
+
       <Link to="#" className="mobile_btn" id="mobile_btn">
         <i className="fas fa-bars"></i>
       </Link>

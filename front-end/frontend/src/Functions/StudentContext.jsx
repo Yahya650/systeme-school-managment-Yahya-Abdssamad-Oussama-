@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { useContextApi } from "../config/Context/ContextApi";
 import withReactContent from "sweetalert2-react-content";
@@ -16,12 +16,14 @@ const ContextStudent = createContext({
   removeStudent: () => {},
   getStudentsTrash: () => {},
   createStudent: () => {},
+  getLatestMarks: () => {},
   updateStudentWithParent: () => {},
   restoreStudent: () => {},
   createStudentWithParent: () => {},
   restoreStudentSelected: () => {},
   deleteStudentSelected: () => {},
   updateStudentWithCreateParent: () => {},
+  latestMarks: null,
 });
 
 const StudentContext = ({ children }) => {
@@ -39,6 +41,7 @@ const StudentContext = ({ children }) => {
     studentsTrash,
     students,
   } = useContextApi();
+  const [latestMarks, setLatestMarks] = useState(null);
 
   async function getStudents(currentPage = 1) {
     try {
@@ -325,10 +328,22 @@ const StudentContext = ({ children }) => {
       }
     }
   }
+
+  async function getLatestMarks() {
+    console.log("aaa");
+    try {
+      const { data } = await AxiosClient.get("/student/get-latest-marks");
+      setLatestMarks(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <ContextStudent.Provider
       value={{
         getStudents,
+        getLatestMarks,
         renewPassword,
         updateProfilePicture,
         getStudent,
@@ -336,6 +351,7 @@ const StudentContext = ({ children }) => {
         removeStudent,
         restoreStudent,
         getStudentsTrash,
+        latestMarks,
         createStudent,
         deleteStudentSelected,
         updateStudentWithParent,

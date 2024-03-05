@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Classe;
 use App\Models\Student;
 use Nette\Utils\Random;
 use Illuminate\Support\Str;
@@ -65,6 +66,10 @@ class StudentController extends Controller
             'parent_phone_number' => 'required|unique:student_parents,phone_number',
             'parent_address' => 'nullable|string|max:255',
         ]);
+
+        if ((int) Classe::find($request->classe_id)->number_etud_max < (int) Classe::find($request->classe_id)->number_etud + 1) {
+            return response()->json(['message' => 'Le nombre maximum d\'Étudiants dans cette classe est déjà atteint'], 409);
+        }
 
         $password = Random::generate(8);
 
@@ -146,6 +151,10 @@ class StudentController extends Controller
             'classe_id' => 'required|exists:classes,id',
         ]);
 
+        if ((int) Classe::find($request->classe_id)->number_etud_max < (int) Classe::find($request->classe_id)->number_etud + 1) {
+            return response()->json(['message' => 'Le nombre maximum d\'Étudiants dans cette classe est déjà atteint'], 409);
+        }
+
         $password = Random::generate(8);
 
         $newStudent = new Student();
@@ -171,6 +180,7 @@ class StudentController extends Controller
         $newStudent->student_parent_id = $request->student_parent_id;
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
+        Classe::find($request->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
 
         return response([
             'code_massar' => $request->code_massar,
@@ -303,6 +313,11 @@ class StudentController extends Controller
         $student->blood_type = $request->blood_type;
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
+        if ($student->classe_id !== $request->classe_id) {
+            $classe = Classe::find($request->classe_id);
+            $classe->number_etud = $classe->number_etud + 1;
+            $classe->save();
+        }
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $request->student_parent_id;
         $student->save();
@@ -314,17 +329,18 @@ class StudentController extends Controller
 
     public function updateWithParent(Request $request, $id)
     {
-        $student = Student::find($id);
-        $parent = Student::find($student->parent->id);
 
-        if (!$student || !StudentParent::find($student->parent->id)) {
+        $student = Student::find($id);
+        $parent = StudentParent::find($student->parent->id);
+
+        if (!$student || !$parent) {
             return response()->json([
                 'message' => 'Étudiant ou Parent non trouvé'
             ], 404);
         }
 
         // khas wa7d mn l2abna2 dyal parent ikon dimna hadok lli mklaf bihom dak ladmin lli bgha ydir l'action 3lih (ghadi nzidha fl policies dyal studentParent)
-        if (request()->user()->cannot('update', Student::find($id)) || request()->user()->cannot('update', StudentParent::find($parent->id))) {
+        if (request()->user()->cannot('update', $student) || request()->user()->cannot('update', StudentParent::find($parent->id))) {
             return response()->json([
                 'message' => 'Vous n\'avez pas la permission de modifier ce Étudiant ou ce Parent'
             ], 401);
@@ -397,6 +413,11 @@ class StudentController extends Controller
         $student->blood_type = $request->blood_type;
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
+        if ($student->classe_id !== $request->classe_id) {
+            $classe = Classe::find($request->classe_id);
+            $classe->number_etud += 1;
+            $classe->save();
+        }
         $student->classe_id = $request->classe_id;
         $student->save();
 
@@ -491,6 +512,11 @@ class StudentController extends Controller
         $student->blood_type = $request->blood_type;
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
+        if ($student->classe_id !== $request->classe_id) {
+            $classe = Classe::find($request->classe_id);
+            $classe->number_etud = $classe->number_etud + 1;
+            $classe->save();
+        }
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $parent->id;
         $student->save();
@@ -758,26 +784,5 @@ class StudentController extends Controller
         return response()->json([
             'message' => "Photo de profile mise à jour avec succès"
         ], 200);
-    }
-
-
-    public function getMarks(Request $request)
-    {
-        $request->validate([
-            "semester_id" => ['required', 'exists:semesters,id'],
-            "school_year_id" => ['required', 'exists:school_years,id'],
-        ]);
-
-        $student = $request->user('student');
-        $result = [];
-
-        $student->examRecords()->each(function ($exam_record) use ($request, &$result) {
-            $exam = $exam_record->exam()->where('school_year_id', $request->school_year_id)->where('semester_id', $request->semester_id)->first();
-            if ($exam) {
-                $result[] = $exam_record; // Include entire exam record
-            }
-        });
-
-        return response()->json($result);
     }
 }

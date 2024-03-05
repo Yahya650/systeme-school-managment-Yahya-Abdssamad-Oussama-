@@ -16,8 +16,8 @@ class SemesterSeeder extends Seeder
 
         $semestersData = [
             // Semestres
-            ['name' => 'Premiere Semestres', 'semester' => 1],
-            ['name' => 'Deuxième Semestres', 'semester' => 2],
+            ['name' => 'Premiere Semestre', 'semester' => 1],
+            ['name' => 'Deuxièmes Semestre', 'semester' => 2],
         ];
 
         foreach ($semestersData as $semesterData) {

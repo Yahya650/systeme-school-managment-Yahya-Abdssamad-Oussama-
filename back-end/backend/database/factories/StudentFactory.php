@@ -24,12 +24,12 @@ class StudentFactory extends Factory
             'email' => fake()->unique()->safeEmail,
             'code_massar' => fake()->unique()->numerify('##########'), // Assuming a 10-digit code
             'cin' => fake()->unique()->numerify('##########'), // Assuming a 10-digit CIN
-            'password' => Hash::make('password'), // You may use a more secure way to generate passwords
+            'password' => Hash::make('12345678'), // You may use a more secure way to generate passwords
             'date_of_birth' => fake()->date(),
             'blood_type' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
             'phone_number' => fake()->unique()->phoneNumber,
             'address' => fake()->address,
-            'classe_id' => 1,
+            'classe_id' => 18,
             'student_parent_id' => 1
         ];
     }

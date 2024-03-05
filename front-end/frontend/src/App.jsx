@@ -1,6 +1,7 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import $ from "jquery";
 
 // Import layout components
 import AdminLayout from "./Layouts/Admin/AdminLayout";
@@ -96,6 +97,12 @@ const AllTeachers = React.lazy(() =>
 );
 const IndexGuest = React.lazy(() => import("./Pages/Guest/IndexGuest"));
 const ShowMarks = React.lazy(() => import("./Pages/Student/ShowMarks"));
+const SaveMarksManual = React.lazy(() =>
+  import("./Pages/Admin/_student/SaveMarksManual")
+);
+const SaveMarksExcel = React.lazy(() =>
+  import("./Pages/Admin/_student/SaveMarksExcel")
+);
 
 const LezyLoadingSuspense = ({ component }) => (
   <Suspense
@@ -113,6 +120,35 @@ const LezyLoadingSuspense = ({ component }) => (
 );
 
 function App() {
+  var Sidemenu = function () {
+    this.$menuItem = $("#sidebar-menu a");
+  };
+  function init() {
+    var $this = Sidemenu;
+    $("#sidebar-menu a").on("click", function (e) {
+      if ($(this).parent().hasClass("submenu")) {
+        e.preventDefault();
+      }
+      if (!$(this).hasClass("subdrop")) {
+        $("ul", $(this).parents("ul:first")).slideUp(350);
+        $("a", $(this).parents("ul:first")).removeClass("subdrop");
+        $(this).next("ul").slideDown(350);
+        $(this).addClass("subdrop");
+      } else if ($(this).hasClass("subdrop")) {
+        $(this).removeClass("subdrop");
+        $(this).next("ul").slideUp(350);
+      }
+    });
+    $("#sidebar-menu ul li.submenu a.active")
+      .parents("li:last")
+      .children("a:first")
+      .addClass("active")
+      .trigger("click");
+  }
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
     <Routes>
       <Route path="*" element={<Page404 />} />
@@ -246,6 +282,14 @@ function App() {
         <Route
           path="all-students"
           element={<LezyLoadingSuspense component={<AllStudents />} />}
+        />
+        <Route
+          path="saisir-marks-manual"
+          element={<LezyLoadingSuspense component={<SaveMarksManual />} />}
+        />
+        <Route
+          path="saisir-marks-excel"
+          element={<LezyLoadingSuspense component={<SaveMarksExcel />} />}
         />
       </Route>
 

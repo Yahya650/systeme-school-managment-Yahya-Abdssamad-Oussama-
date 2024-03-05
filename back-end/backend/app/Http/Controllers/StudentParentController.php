@@ -91,6 +91,10 @@ class StudentParentController extends Controller
         }
     }
 
+    public function getParentByStudent()
+    {
+        return response()->json(request()->user('student')->parent);
+    }
 
     public function index(Request $request)
     {

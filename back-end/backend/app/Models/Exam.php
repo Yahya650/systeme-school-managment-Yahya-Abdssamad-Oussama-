@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Classe;
 use App\Models\Course;
 use App\Models\Teacher;
+use App\Models\TypeExam;
 use App\Models\ExamRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +20,7 @@ class Exam extends Model
         'type',
     ];
 
-    protected $with = ['course'];
+    protected $with = ['course', 'type'];
 
 
     public function course()
@@ -38,6 +39,10 @@ class Exam extends Model
     public function semester()
     {
         return $this->belongsTo(Semester::class);
+    }
+    public function type()
+    {
+        return $this->belongsTo(TypeExam::class, 'type_exam_id', 'id');
     }
 
     public function examRecords()

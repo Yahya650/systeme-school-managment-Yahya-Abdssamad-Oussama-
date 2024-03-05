@@ -4,16 +4,16 @@ import { useContextApi } from "../../config/Context/ContextApi";
 import { AxiosClient } from "../../config/Api/AxiosClient";
 
 const _header = () => {
-  const { user, setLoadingContaxt, logout } = useContextApi();
-  const [currentSchoolYear, setCurrentSchoolYear] = useState(null);
-  const [currentSchoolYearLoading, setCurrentSchoolYearLoading] =
-    useState(true);
+  const {
+    user,
+    setLoadingContaxt,
+    logout,
+    currentSchoolYear,
+    currentSchoolYearLoading,
+    getCurrentSchoolYear,
+  } = useContextApi();
+  
   useEffect(() => {
-    const getCurrentSchoolYear = async () => {
-      const { data } = await AxiosClient.get("/current-school-year");
-      setCurrentSchoolYear(data);
-      setCurrentSchoolYearLoading(false);
-    };
     getCurrentSchoolYear();
   }, []);
 

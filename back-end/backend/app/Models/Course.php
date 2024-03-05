@@ -22,9 +22,15 @@ class Course extends Model
         'ceof',
     ];
 
+    protected $with = ['modules'];
+
     public function exercises()
     {
         return $this->hasMany(Exercise::class);
+    }
+    public function modules()
+    {
+        return $this->hasMany(Module::class);
     }
 
     public function classeType()
@@ -53,5 +59,4 @@ class Course extends Model
             ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
-
 }

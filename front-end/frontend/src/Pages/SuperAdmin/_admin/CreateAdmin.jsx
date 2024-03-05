@@ -289,7 +289,7 @@ const CreateAdmin = () => {
                   </div>
 
                   <div className="col-12 col-sm-12">
-                    <table className="table mb-5 table-bordered">
+                    <table className="table table-bordered">
                       <thead>
                         <tr>
                           <th>Level Schools</th>
@@ -366,8 +366,11 @@ const CreateAdmin = () => {
                         ))}
                       </tbody>
                     </table>
+                    <span className="text-danger">
+                      {errors?.responsibility}
+                    </span>
                   </div>
-                  <div className="col-12">
+                  <div className="col-12 mt-3">
                     <div className="student-submit">
                       <button
                         type="submit"

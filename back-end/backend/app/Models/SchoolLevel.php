@@ -14,6 +14,7 @@ class SchoolLevel extends Model
 
     public $fallable = [
         'name',
+        'passing_mark',
     ];
 
     public function classe_types()

@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('exams', function (Blueprint $table) {
-            $table->enum('variant', ['v1', 'v2', 'v3', 'v4', 'v5'])->nullable()->after('duration');
+        Schema::create('type_exams', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->enum('type', ['cc1', 'cc2', 'cc3', 'cc4', 'AI' /*Activités-intergées*/, 'cff']);
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('exams', function (Blueprint $table) {
-            $table->dropColumn('variant');
-        });
+        Schema::dropIfExists('type_exams');
     }
 };

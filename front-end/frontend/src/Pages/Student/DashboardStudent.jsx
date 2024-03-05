@@ -1,14 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import _footer from "../../Layouts/_footer";
 import { useContextApi } from "../../config/Context/ContextApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { BACKEND_URL } from "../../config/Api/AxiosClient";
+import { AxiosClient, BACKEND_URL } from "../../config/Api/AxiosClient";
 import { format } from "date-fns";
+import LoadingCircleContext from "../../Components/LoadingCircleContext";
 
 const DashboardStudent = () => {
   const { user, calculateAge } = useContextApi();
+  const [latestMarksLoading, setLatestMarksLoading] = useState(true);
+  const [latestMarks, setLatestMarks] = useState(null);
+  const [ParentLoading, setParentLoading] = useState(true);
+  const [parent, setParent] = useState(null);
+
+  useEffect(() => {
+    const fetching = async () => {
+      try {
+        const { data } = await AxiosClient.get("/student/get-latest-marks");
+        setLatestMarks(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLatestMarksLoading(false);
+      }
+    };
+    fetching();
+    const fetching2 = async () => {
+      try {
+        const { data } = await AxiosClient.get("/student/get-parent");
+        setParent(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setParentLoading(false);
+      }
+    };
+    fetching2();
+  }, []);
+
   return (
     <div className="content container-fluid">
       <div className="page-header">
@@ -89,9 +120,9 @@ const DashboardStudent = () => {
                   <h6>Filiere</h6>
                   <h3>{user?.classe.filiere.name}</h3>
                 </div>
-                <div className="db-icon">
+                <div className="db-icon p-2">
                   <img
-                    src="/assets/img/icons/dash-icon-03.svg"
+                    src="/assets/img/icons/teacher-icon-02.svg"
                     alt="Icône du tableau de bord"
                   />
                 </div>
@@ -138,139 +169,57 @@ const DashboardStudent = () => {
               </div>
             </div>
             <div className="card-body pt-3">
-              <ul className="nav nav-tabs nav-bordered nav-justified">
-                <li className="nav-item">
-                  <a
-                    href="#divs"
-                    data-bs-toggle="tab"
-                    aria-expanded="false"
-                    className="nav-link active"
+              {!latestMarksLoading ? (
+                latestMarks?.slice(0, 5).map((record, index) => (
+                  <div
+                    key={index}
+                    className="d-flex justify-content-between border-bottom py-2 mb-0"
                   >
-                    Voir avec Div
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    href="#table"
-                    data-bs-toggle="tab"
-                    aria-expanded="true"
-                    className="nav-link"
-                  >
-                    Voir avec Tableau
-                  </a>
-                </li>
-              </ul>
-              <div className="tab-content">
-                <div className="tab-pane active" id="divs">
-                  {user?.exam_records
-                    .slice(0, 5)
-                    .filter((record) => record.exam.type !== "cff")
-                    .map((record, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between border-bottom py-2 mb-0"
-                      >
-                        <div className="d-flex flex-column">
-                          <figure className="pb-0 mb-0">
-                            <blockquote class="blockquote ">
-                              <p className="pb-0 mb-0 text-secondary-emphasis">
-                                {record.exam.course.name}
-                              </p>
-                            </blockquote>
-                            <figcaption
-                              class="blockquote-footer pb-0 mb-0"
-                              style={{ color: "#abb5ce" }}
-                            >
-                              {record.exam.type === "cc1"
-                                ? "Premier contrôle"
-                                : record.exam.type === "cc2"
-                                ? "Deuxième contrôle"
-                                : record.exam.type === "cc3"
-                                ? "Troisième contrôle"
-                                : record.exam.type === "cc4"
-                                ? "Quatrieme contrôle"
-                                : record.exam.type === "AI" &&
-                                  "Activités intégrées"}
-                            </figcaption>
-                          </figure>
-                        </div>
-                        <div className="d-flex flex-column text-end">
-                          {record.note > record.exam.passing_marks ? (
-                            <span className=" text-end text-success">
-                              <b>{record.note}</b>
-                            </span>
-                          ) : record.note < record.exam.passing_marks ? (
-                            <span className="text-end text-danger">
-                              <b>{record.note}</b>
-                            </span>
-                          ) : (
-                            <span className="text-end text-warning ">
-                              <b>{record.note}</b>
-                            </span>
-                          )}
-                          <span style={{ color: "#abb5ce" }}>
-                            {format(new Date(record.created_at), "dd/MM")}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                    <div className="d-flex flex-column">
+                      <figure className="pb-0 mb-0">
+                        <blockquote className="">
+                          <p className="pb-0 mb-0 text-secondary-emphasis">
+                            {record.exam.course.name}
+                          </p>
+                        </blockquote>
+                        <figcaption
+                          className="blockquote-footer pb-0 mb-0"
+                          style={{ color: "#abb5ce" }}
+                        >
+                          {record.exam.type.name}
+                        </figcaption>
+                      </figure>
+                    </div>
+                    <div className="d-flex flex-column text-end">
+                      {record.note >
+                      user?.classe.classe_type.school_level.passing_mark ? (
+                        <span className=" text-end text-success">
+                          <b>{record.note}</b>
+                        </span>
+                      ) : record.note <
+                        user?.classe.classe_type.school_level.passing_mark ? (
+                        <span className="text-end text-danger">
+                          <b>{record.note}</b>
+                        </span>
+                      ) : (
+                        <span className="text-end text-warning ">
+                          <b>{record.note}</b>
+                        </span>
+                      )}
+                      <span style={{ color: "#abb5ce" }}>
+                        {format(new Date(record.created_at), "dd/MM")}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ height: "200px" }}
+                >
+                  <LoadingCircleContext />
                 </div>
-
-                <div className="tab-pane table-responsive" id="table">
-                  <table className="table star-student table-hover table-center table-borderless table-striped">
-                    <thead className="thead-light">
-                      <tr>
-                        <th className="text-start">Enseignant</th>
-                        <th>Matières</th>
-                        <th>Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {user?.exam_records.slice(0, 5).map((record, index) => (
-                        <tr key={index}>
-                          <td className="text-nowrap text-start">
-                            <img
-                              className="rounded-circle"
-                              src={
-                                record.exam.teacher.profile_picture
-                                  ? BACKEND_URL +
-                                    "/storage/" +
-                                    record.exam.teacher.profile_picture
-                                  : record.exam.teacher.gender === "female"
-                                  ? "/assets/img/default-profile-picture-grey-female-icon.png"
-                                  : "/assets/img/default-profile-picture-grey-male-icon.png"
-                              }
-                              width="25"
-                              alt="Star Students"
-                            />
-                            {record.exam.teacher.last_name +
-                              " " +
-                              record.exam.teacher.first_name}
-                          </td>
-                          <td className="text-nowrap">
-                            <div>{record.exam.course.name}</div>
-                          </td>
-                          <td>
-                            {record.note > record.exam.passing_marks ? (
-                              <span className="badge bg-success">
-                                {record.note}
-                              </span>
-                            ) : record.note < record.exam.passing_marks ? (
-                              <span className="badge bg-danger">
-                                {record.note}
-                              </span>
-                            ) : (
-                              <span className="badge bg-warning">
-                                {record.note}
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -286,202 +235,145 @@ const DashboardStudent = () => {
                 </li>
               </ul>
             </div>
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-12">
-                  <div
-                    className="profile-header m-0 py-2"
-                    style={{ backgroundColor: "white" }}
-                  >
-                    <div className="row d-flex flex-column text text-center">
-                      <div className="col-auto profile-image">
-                        <img
-                          className="rounded-circle"
-                          alt="User Image"
-                          width={"20px"}
-                          src={
-                            user?.parent.profile_picture
-                              ? BACKEND_URL +
-                                "/storage/" +
-                                user?.parent.profile_picture
-                              : user?.parent.gender == "male"
-                              ? "/assets/img/default-profile-picture-grey-male-icon.png"
-                              : "/assets/img/default-profile-picture-grey-female-icon.png"
-                          }
-                        />
-                      </div>
-                      <div className="col ms-md-n2 profile-user-info mt-2">
-                        <h4 className="user-name mb-0">
-                          {user?.parent.last_name +
-                            " " +
-                            user?.parent.first_name}
-                        </h4>
-                        <div className="user-Location">
-                          {user?.parent.address && (
-                            <>
-                              <i className="fas fa-map-marker-alt me-2" />
-                              {user?.parent.address}
-                            </>
-                          )}
+            {!ParentLoading ? (
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-12">
+                    <div
+                      className="profile-header m-0 py-2"
+                      style={{ backgroundColor: "white" }}
+                    >
+                      <div className="row d-flex flex-column text text-center">
+                        <div className="col-auto profile-image">
+                          <img
+                            className="rounded-circle"
+                            alt="User Image"
+                            width={"20px"}
+                            src={
+                              parent?.profile_picture
+                                ? BACKEND_URL +
+                                  "/storage/" +
+                                  parent?.profile_picture
+                                : parent?.gender == "male"
+                                ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                                : "/assets/img/default-profile-picture-grey-female-icon.png"
+                            }
+                          />
+                        </div>
+                        <div className="col ms-md-n2 profile-user-info mt-2">
+                          <h4 className="user-name mb-0">
+                            {parent?.last_name + " " + parent?.first_name}
+                          </h4>
+                          <div className="user-Location">
+                            {parent?.address && (
+                              <>
+                                <i className="fas fa-map-marker-alt me-2" />
+                                {parent?.address}
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="tab-content profile-tab-cont">
-                    <div
-                      className="tab-pane fade show active"
-                      id="per_details_tab"
-                    >
-                      <div className="row">
-                        <div className="col-12">
-                          <div className="card">
-                            <div
-                              className="card-body rounded"
-                              style={{
-                                boxShadow:
-                                  "0 0 31px 3px rgb(200 200 200 / 23%)",
-                              }}
-                            >
-                              <h5 className="card-title d-flex justify-content-between mb-4">
-                                <span>Personal Details :</span>
-                              </h5>
-                              <table className="w-100">
-                                <tbody>
-                                  <tr>
-                                    <td className={""}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">CIN :</p>
-                                        <p className="mb-0">
-                                          {user?.parent.cin}
-                                        </p>
-                                      </div>
-                                    </td>
-                                    <td className={"ps-4"}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">
-                                          Name :
-                                        </p>
-                                        <p className="mb-0">
-                                          {user?.parent.last_name +
-                                            " " +
-                                            user?.parent.first_name}
-                                        </p>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td className={""}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">
-                                          Mobile :
-                                        </p>
-                                        <p className="mb-0">
-                                          {user?.parent.phone_number}
-                                        </p>
-                                      </div>
-                                    </td>
-                                    <td className={"ps-4"}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">
-                                          Address :
-                                        </p>
-                                        <p className="mb-0">
-                                          {user?.parent.address
-                                            ? user?.parent.address
-                                            : "null"}
-                                        </p>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td className={""}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">
-                                          gender :
-                                        </p>
-                                        <p className="mb-0">
-                                          {user?.parent.gender}
-                                        </p>
-                                      </div>
-                                    </td>
-                                    <td className={"ps-4"}>
-                                      <div className="d-flex justify-content-between">
-                                        <p className="text-muted mb-0">
-                                          Date of Birth :
-                                        </p>
-                                        <p className="mb-0">
-                                          {user?.parent.date_of_birth} (
-                                          {calculateAge(
-                                            user?.parent.date_of_birth
-                                          ) + " ans"}
-                                          )
-                                        </p>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              {/* <h5 className="card-title d-flex justify-content-between">
-                                  <span>Personal Details</span>
+                    <div className="tab-content profile-tab-cont">
+                      <div
+                        className="tab-pane fade show active"
+                        id="per_details_tab"
+                      >
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="card">
+                              <div
+                                className="card-body rounded"
+                                style={{
+                                  boxShadow:
+                                    "0 0 31px 3px rgb(200 200 200 / 23%)",
+                                }}
+                              >
+                                <h5 className="card-title d-flex justify-content-between mb-4">
+                                  <span>Personal Details :</span>
                                 </h5>
-                                <div className="d-flex gap-3">
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
-                                      CIN :
-                                    </p>
-                                    <p className="">{user?.parent.cin}</p>
-                                  </div>
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
-                                      Name
-                                    </p>
-                                    <p className="">
-                                      {user?.parent.last_name +
-                                        " " +
-                                        user?.parent.first_name}
-                                    </p>
-                                  </div>
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
-                                      Date of Birth
-                                    </p>
-                                    <p className="">
-                                      {user?.parent.date_of_birth} (
-                                      {calculateAge(
-                                        user?.parent.date_of_birth
-                                      ) + " ans"}
-                                      )
-                                    </p>
-                                  </div>
+                                <div className="table-responsive">
+                                  <table className="w-100">
+                                    <tbody>
+                                      <tr>
+                                        <td className={""}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              CIN :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.cin}
+                                            </p>
+                                          </div>
+                                        </td>
+                                        <td className={"ps-4"}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              Name :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.last_name +
+                                                " " +
+                                                parent?.first_name}
+                                            </p>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td className={""}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              Mobile :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.phone_number}
+                                            </p>
+                                          </div>
+                                        </td>
+                                        <td className={"ps-4"}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              Address :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.address
+                                                ? parent?.address
+                                                : "null"}
+                                            </p>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td className={""}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              gender :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.gender}
+                                            </p>
+                                          </div>
+                                        </td>
+                                        <td className={"ps-4"}>
+                                          <div className="d-flex justify-content-between">
+                                            <p className="text-muted mb-0">
+                                              Date of Birth :
+                                            </p>
+                                            <p className="mb-0">
+                                              {parent?.date_of_birth} (
+                                              {calculateAge(
+                                                parent?.date_of_birth
+                                              ) + " ans"}
+                                              )
+                                            </p>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
                                 </div>
-                                <div className="d-flex gap-3">
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0 mb-sm-3">
-                                      Mobile
-                                    </p>
-                                    <p className="">
-                                      {user?.parent.phone_number}
-                                    </p>
-                                  </div>
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0">
-                                      Address
-                                    </p>
-                                    <p className=" mb-0">
-                                      {user?.parent.address
-                                        ? user?.parent.address
-                                        : "null"}
-                                    </p>
-                                  </div>
-                                  <div className="d-flex">
-                                    <p className="text-muted text-sm-end mb-0">
-                                      gender
-                                    </p>
-                                    <p className=" mb-0">
-                                      {user?.parent.gender}
-                                    </p>
-                                  </div>
-                                </div> */}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -490,7 +382,14 @@ const DashboardStudent = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "200px" }}
+              >
+                <LoadingCircleContext />
+              </div>
+            )}
           </div>
         </div>
       </div>

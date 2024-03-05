@@ -14,17 +14,3 @@ export function errorToast(message = null, duration = 6000, position = "top-righ
         duration, position
     });
 }
-
-export function infoToast(message = null, duration = 6000, position = "top-right") {
-    new Audio("/assets/sounds/success.mp3").play();
-    toast.info(message, {
-        duration, position
-    });
-}
-
-export function warningToast(message = null, duration = 6000, position = "top-right") {
-    new Audio("/assets/sounds/error.mp3").play();
-    toast.warning(message, {
-        duration, position
-    });
-}
