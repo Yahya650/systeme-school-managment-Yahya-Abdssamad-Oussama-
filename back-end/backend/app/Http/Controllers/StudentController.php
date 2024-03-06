@@ -47,7 +47,7 @@ class StudentController extends Controller
             'cin' => 'nullable|string|regex:/^[A-Z]{1,2}\d+$/|unique:students,cin',
             'code_massar' => 'required|string|unique:students,code_massar|regex:/^[A-Z]\d{9}$/',
             'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
@@ -61,7 +61,7 @@ class StudentController extends Controller
             'parent_email' => 'required|email|unique:student_parents,email',
             'parent_cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:student_parents,cin',
             'parent_health_status' => 'nullable|string|max:255',
-            'parent_date_of_birth' => 'required|date',
+            'parent_date_of_birth' => 'required|date|before:today',
             'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'parent_phone_number' => 'required|unique:student_parents,phone_number',
             'parent_address' => 'nullable|string|max:255',
@@ -120,6 +120,8 @@ class StudentController extends Controller
         $newStudent->student_parent_id = $newStudentParent->id;
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
+        Classe::find($request->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
+
 
         return response([
             'code_massar' => $request->code_massar,
@@ -143,7 +145,7 @@ class StudentController extends Controller
             'cin' => 'nullable|string|regex:/^[A-Z]{1,2}\d+$/|unique:students,cin',
             'code_massar' => 'required|string|unique:students,code_massar|regex:/^[A-Z]\d{9}$/',
             'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
@@ -286,7 +288,7 @@ class StudentController extends Controller
             'cin' => ['nullable', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('students', 'cin')->ignore($id)],
             'code_massar' => ['required', 'string', Rule::unique('students', 'code_massar')->ignore($id), 'regex:/^[A-Z]\d{9}$/'],
             'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
@@ -356,7 +358,7 @@ class StudentController extends Controller
             'cin' => ['nullable', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('students', 'cin')->ignore($id)],
             'code_massar' => ['required', 'string', Rule::unique('students', 'code_massar')->ignore($id), 'regex:/^[A-Z]\d{9}$/'],
             'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
@@ -453,7 +455,7 @@ class StudentController extends Controller
             'cin' => ['nullable', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('students', 'cin')->ignore($id)],
             'code_massar' => ['required', 'string', Rule::unique('students', 'code_massar')->ignore($id), 'regex:/^[A-Z]\d{9}$/'],
             'health_status' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
@@ -467,7 +469,7 @@ class StudentController extends Controller
             'parent_email' => 'required|email|unique:student_parents,email',
             'parent_cin' => 'required|regex:/^[A-Z]{1,2}\d+$/|unique:student_parents,cin',
             'parent_health_status' => 'nullable|string|max:255',
-            'parent_date_of_birth' => 'required|date',
+            'parent_date_of_birth' => 'required|date|before:today',
             'parent_blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'parent_phone_number' => 'required|unique:student_parents,phone_number',
             'parent_address' => 'nullable|string|max:255',
@@ -533,6 +535,7 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
+        $student = Student::find($id);
 
         if (!Student::find($id)) {
             return response()->json([
@@ -545,6 +548,8 @@ class StudentController extends Controller
                 'message' => 'Vous n\'avez pas la permission de supprimer ce Étudiant'
             ], 401);
         }
+
+        Classe::find($student->classe_id)->update(['number_etud' => Classe::find($student->classe_id)->number_etud - 1]);
 
         if (!Student::find($id)->delete()) {
             return response()->json([
@@ -611,7 +616,6 @@ class StudentController extends Controller
 
     public function restore($id)
     {
-
         if (!Student::onlyTrashed()->find($id)) {
             return response()->json([
                 'message' => 'Cet etudiant non trouvé'
@@ -624,6 +628,7 @@ class StudentController extends Controller
             ], 401);
         }
 
+        Classe::find(Student::onlyTrashed()->find($id)->classe_id)->update(['number_etud' => Classe::find(Student::onlyTrashed()->find($id)->classe_id)->number_etud + 1]);
 
         if (!Student::onlyTrashed()->find($id)->restore()) {
             return response()->json([
@@ -637,18 +642,18 @@ class StudentController extends Controller
     }
 
 
-    public function restoreAll()
-    {
-        if (!Student::onlyTrashed()->where('admin_id', request()->user()->id)->restore()) {
-            return response()->json([
-                'message' => 'Aucun etudiant non détruit'
-            ], 404);
-        }
+    // public function restoreAll()
+    // {
+    //     if (!Student::onlyTrashed()->where('admin_id', request()->user()->id)->restore()) {
+    //         return response()->json([
+    //             'message' => 'Aucun etudiant non détruit'
+    //         ], 404);
+    //     }
 
-        return response()->json([
-            'message' => 'Tous les etudiants restaure avec succès'
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Tous les etudiants restaure avec succès'
+    //     ]);
+    // }
 
     public function restoreSelect(Request $request)
     {
@@ -660,6 +665,9 @@ class StudentController extends Controller
 
         // Ensure all selected students exist and are trashed
         $students = Student::onlyTrashed()->whereIn('id', $request->ids)->get();
+        foreach ($students as $student) {
+            Classe::find($student->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
+        }
         if ($students->count() !== count($request->ids)) {
             return response()->json([
                 'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas détruits'
@@ -686,6 +694,9 @@ class StudentController extends Controller
 
         // Ensure all selected students exist
         $students = Student::whereIn('id', $request->ids)->get();
+        foreach ($students as $student) {
+            Classe::find($student->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud - 1]);
+        }
         if ($students->count() !== count($request->ids)) {
             return response()->json([
                 'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas supprimés'

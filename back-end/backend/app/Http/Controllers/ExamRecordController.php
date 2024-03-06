@@ -193,7 +193,7 @@ class ExamRecordController extends Controller
         $course = Course::find($request->course_id);
         if (!$course) return response()->json(['message' => 'Matiére non trouve'], 404);
         if ($course->modules()->exists() && !$request->module_id) {
-            return response()->json(['message' => 'sil vous plait selectionner une wa7da'], 409);
+            return response()->json(['message' => 'sil vous plait selectionner une sous unité'], 409);
         }
 
         $semester = Semester::find($request->semester_id);
@@ -205,7 +205,7 @@ class ExamRecordController extends Controller
 
         if ($request->module_id) {
             $module = Module::find($request->module_id);
-            if (!$module) return response()->json(['message' => 'lwa7da non trouve'], 404);
+            if (!$module) return response()->json(['message' => 'lsous unité non trouve'], 404);
 
             if ($exam = Exam::where('classe_id', $request->classe_id)->where('type_exam_id', $request->type_exam_id)->where('school_year_id', getCurrentSchoolYearFromDataBase()->id)->where('course_id', $request->course_id)->where('module_id', $request->module_id)->where('semester_id', $request->semester_id)->first()) {
                 foreach ($request->marks as $mark) {

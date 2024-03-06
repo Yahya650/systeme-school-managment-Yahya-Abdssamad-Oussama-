@@ -56,7 +56,6 @@ const SaveMarksManual = () => {
     e.preventDefault();
     let marks = [];
     let isValid = true;
-    console.log(passingMark);
     for (let i = 0; i < students.length; i++) {
       const student = students[i];
       if (passingMark == 5) {
@@ -173,7 +172,7 @@ const SaveMarksManual = () => {
   const onChangeCourses = async (e) => {
     module_id.current?.setValue({
       value: null,
-      label: "Selectionner lwa7da",
+      label: "Selectionner sous unité",
     });
     setStudents(null);
     setModules([]);
@@ -367,7 +366,7 @@ const SaveMarksManual = () => {
                       {modulesOptions?.length > 0 && (
                         <div className="form-group local-forms">
                           <label>
-                            lwa7da : <span className="login-danger">*</span>
+                            sous unité : <span className="login-danger">*</span>
                           </label>
                           <Select
                             styles={{
@@ -376,7 +375,7 @@ const SaveMarksManual = () => {
                             name="module_id"
                             ref={module_id}
                             options={modulesOptions}
-                            placeholder="Selectionner lwa7da"
+                            placeholder="Selectionner sous unité"
                             onChange={() => setStudents(null)}
                           />
                           <span className="text-danger">
@@ -408,7 +407,7 @@ const SaveMarksManual = () => {
                     <div className="card">
                       <div className="card-body">
                         <div className="table-responsive">
-                          <table className="w-100 ">
+                          <table className="w-100">
                             <tbody>
                               <tr>
                                 <td className={""}>
@@ -607,7 +606,9 @@ const SaveMarksManual = () => {
                                                   dcryptID(courseId) &&
                                                 exam_record.exam.class_id ==
                                                   dcryptID(classe?.id) &&
-                                                exam_record.exam.type.id ===
+                                                exam_record.exam.module_id ==
+                                                  dcryptID(modulId) &&
+                                                exam_record.exam.type.id ==
                                                   dcryptID(typeExamId) &&
                                                 exam_record.student_id ==
                                                   student.id &&
