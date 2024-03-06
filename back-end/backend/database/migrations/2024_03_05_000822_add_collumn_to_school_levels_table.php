@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('exams', function (Blueprint $table) {
-            $table->unsignedBigInteger('school_year_id')->after('semester_id');
-            $table->foreign('school_year_id')->references('id')->on('school_years')->onDelete('cascade');
+        Schema::table('school_levels', function (Blueprint $table) {
+            $table->enum('passing_mark', [5, 10])->default(10)->after('name');
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('exams', function (Blueprint $table) {
+        Schema::table('school_levels', function (Blueprint $table) {
             //
         });
     }

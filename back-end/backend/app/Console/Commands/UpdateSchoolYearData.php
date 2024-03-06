@@ -23,17 +23,17 @@ class UpdateSchoolYearData extends Command
     protected $description = 'Update data for the new school year';
 
 
-    private function getCurrentSchoolYear($between, $sMonth = 9)
-    {
-        $currentYear = now()->year;
-        $startMonth = $sMonth;
+    // private function getCurrentSchoolYear($between, $sMonth = 9)
+    // {
+    //     $currentYear = now()->year;
+    //     $startMonth = $sMonth;
 
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
+    //     if (now()->month < $startMonth) {
+    //         $currentYear--;
+    //     }
 
-        return $currentYear . $between . ($currentYear + 1);
-    }
+    //     return $currentYear . $between . ($currentYear + 1);
+    // }
 
     /**
      * Execute the console command.
@@ -43,7 +43,7 @@ class UpdateSchoolYearData extends Command
         $this->info('Executing code for the new school year...');
 
         $schoolYear = new SchoolYear();
-        $schoolYear->year = $this->getCurrentSchoolYear('/');
+        $schoolYear->year = getCurrentSchoolYear('/');
         $schoolYear->start_date = now();
         $schoolYear->save();
 

@@ -22,7 +22,6 @@ const CreateStudent = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       const parents = await AxiosClient.get("/admin/student-parents");
       const options1 = parents.data.map((parent) => ({
         value: cryptID(parent.id),
@@ -142,7 +141,7 @@ const CreateStudent = () => {
                         className="form-control"
                         type="text"
                         onChange={(e) => setUserNameStudent(e.target.value)}
-                        placeholder="Saisissez le code massar"
+                        placeholder="Saisir le code massar"
                       />
                       <span className="text-danger">{errors?.code_massar}</span>
                     </div>
@@ -189,7 +188,7 @@ const CreateStudent = () => {
                         name="first_name"
                         className="form-control"
                         type="text"
-                        placeholder="Saisissez le prénom"
+                        placeholder="Saisir le prénom"
                       />
                       <span className="text-danger">{errors?.first_name}</span>
                     </div>
@@ -205,7 +204,7 @@ const CreateStudent = () => {
                         className="form-control"
                         type="text"
                         onChange={(e) => setLastNameStudent(e.target.value)}
-                        placeholder="Saisissez le nom de famille"
+                        placeholder="Saisir le nom de famille"
                       />
                       <span className="text-danger">{errors?.last_name}</span>
                     </div>
@@ -233,7 +232,7 @@ const CreateStudent = () => {
                         name="date_of_birth"
                         className="form-control datetimepicker"
                         type="date"
-                        placeholder="Saisissez la date de naissance"
+                        placeholder="Saisir la date de naissance"
                       />
                       <span className="text-danger">
                         {errors?.date_of_birth}
@@ -248,7 +247,7 @@ const CreateStudent = () => {
                         name="phone_number"
                         className="form-control"
                         type="text"
-                        placeholder="Saisissez le numéro de téléphone (optionnel)"
+                        placeholder="Saisir le numéro de téléphone (optionnel)"
                       />
                       <span className="text-danger">
                         {errors?.phone_number}
@@ -262,7 +261,7 @@ const CreateStudent = () => {
                         name="cin"
                         className="form-control"
                         type="text"
-                        placeholder="Saisissez le CIN (optionnel)"
+                        placeholder="Saisir le CIN (optionnel)"
                       />
                       <span className="text-danger">{errors?.cin}</span>
                     </div>
@@ -380,7 +379,7 @@ const CreateStudent = () => {
                                     name="cin"
                                     className="form-control"
                                     type="text"
-                                    placeholder="Saisissez le CIN"
+                                    placeholder="Saisir le CIN"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_cin}
@@ -397,7 +396,7 @@ const CreateStudent = () => {
                                     name="first_name"
                                     className="form-control"
                                     type="text"
-                                    placeholder="Saisissez le prénom"
+                                    placeholder="Saisir le prénom"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_first_name}
@@ -417,7 +416,7 @@ const CreateStudent = () => {
                                     defaultValue={
                                       lastNameStudent ? lastNameStudent : null
                                     }
-                                    placeholder="Saisissez le nom de famille"
+                                    placeholder="Saisir le nom de famille"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_last_name}
@@ -434,7 +433,7 @@ const CreateStudent = () => {
                                     name="email"
                                     className="form-control"
                                     type="text"
-                                    placeholder="Saisissez l'email"
+                                    placeholder="Saisir l'email"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_email}
@@ -472,7 +471,7 @@ const CreateStudent = () => {
                                     name="date_of_birth"
                                     className="form-control datetimepicker"
                                     type="date"
-                                    placeholder="Saisissez la date de naissance"
+                                    placeholder="Saisir la date de naissance"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_date_of_birth}
@@ -490,7 +489,7 @@ const CreateStudent = () => {
                                     name="phone_number"
                                     className="form-control"
                                     type="text"
-                                    placeholder="Saisissez le numéro de telephone"
+                                    placeholder="Saisir le numéro de telephone"
                                   />
                                   <span className="text-danger">
                                     {errors?.parent_phone_number}

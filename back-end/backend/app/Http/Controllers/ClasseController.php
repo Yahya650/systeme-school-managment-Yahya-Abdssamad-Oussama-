@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classe;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 
@@ -16,7 +17,7 @@ class ClasseController extends Controller
 
         $classes = [];
 
-        foreach ($request->user('admin')->school_levels as $school_level) {
+        foreach ($request->user('admin')->school_levels()->wherePivot('types', 'like', '%educational%')->get() as $school_level) {
             foreach ($school_level->classe_types as $classe_type) {
                 foreach ($classe_type->classes as $classe) {
                     $classes[] = $classe;
@@ -59,5 +60,27 @@ class ClasseController extends Controller
     public function destroy(Classe $classe)
     {
         //
+    }
+
+
+    public function onChangeClass()
+    {
+        $classe = Classe::find(request()->classe_id);
+        if (!$classe) return response()->json(['message' => 'Classe non trouve'], 404);
+        return response()->json(['courses' => $classe->courses, 'passing_mark' => $classe->classeType->school_level->passing_mark, 'classe' => $classe]);
+    }
+
+    public function getStudentsByClasse($id)
+    {
+        request()->validate([
+            'module_id' => 'nullable|exists:modules,id',
+            'semester_id' => 'required|exists:semesters,id',
+            'type_exam_id' => 'required|exists:type_exams,id',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $classe = Classe::find($id);
+        if (!$classe) return response()->json(['message' => 'classe non trouve'], 404);
+        return response()->json($classe->students);
     }
 }

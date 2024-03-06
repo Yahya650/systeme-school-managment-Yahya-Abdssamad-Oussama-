@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('exams', function (Blueprint $table) {
-            $table->unsignedBigInteger('school_year_id')->after('semester_id');
-            $table->foreign('school_year_id')->references('id')->on('school_years')->onDelete('cascade');
+            $table->unsignedBigInteger('module_id')->nullable()->after('classe_id');
+            $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
         });
     }
 

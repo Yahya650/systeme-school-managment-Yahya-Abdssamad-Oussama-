@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Exam;
+use App\Models\Classe;
 use App\Models\Course;
+use App\Models\Module;
 use App\Models\Student;
+use App\Models\Semester;
+use App\Models\TypeExam;
 use App\Models\ExamRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,6 +22,31 @@ class ExamRecordController extends Controller
     public function index()
     {
         return response()->json(ExamRecord::all());
+    }
+    public function getLatestMarks()
+    {
+        return response()->json(request()->user('student')->examRecords()->latest()->get());
+    }
+
+
+    public function getMarks(Request $request)
+    {
+        $request->validate([
+            "semester_id" => ['required', 'exists:semesters,id'],
+            "school_year_id" => ['required', 'exists:school_years,id'],
+        ]);
+
+        $student = $request->user('student');
+        $result = [];
+
+        $student->examRecords()->each(function ($exam_record) use ($request, &$result) {
+            $exam = $exam_record->exam()->where('school_year_id', $request->school_year_id)->where('semester_id', $request->semester_id)->first();
+            if ($exam) {
+                $result[] = $exam_record; // Include entire exam record
+            }
+        });
+
+        return response()->json($result);
     }
 
     /**
@@ -137,5 +166,89 @@ class ExamRecordController extends Controller
         return response()->json([
             'message' => 'La note n\'existe pas',
         ], 404);
+    }
+
+
+    public function saveMarksByCourseManual()
+    {
+        $request = request();
+        $admin = $request->user('admin');
+        $request->validate([
+            'classe_id' => 'required|exists:classes,id',
+            'course_id' => 'required|exists:courses,id',
+            'module_id' => 'nullable|exists:modules,id',
+            'semester_id' => 'required|exists:semesters,id',
+            'type_exam_id' => 'required|exists:type_exams,id',
+            'marks' => 'required|array',
+        ]);
+
+
+        $classe = Classe::find($request->classe_id);
+        if (!$classe) return response()->json(['message' => 'Classe non trouve'], 404);
+
+        if (!$admin->school_levels()->wherePivot('school_level_id', $classe->classeType->school_level->id)->wherePivot('types', 'like', '%educational%')->exists()) {
+            return response()->json(['message' => 'Vous n\'avez pas les autorisations pour effectuer cette action'], 401);
+        }
+
+        $course = Course::find($request->course_id);
+        if (!$course) return response()->json(['message' => 'Matiére non trouve'], 404);
+        if ($course->modules()->exists() && !$request->module_id) {
+            return response()->json(['message' => 'sil vous plait selectionner une sous unité'], 409);
+        }
+
+        $semester = Semester::find($request->semester_id);
+        if (!$semester) return response()->json(['message' => 'Session non trouve'], 404);
+
+        $typeExam = TypeExam::find($request->type_exam_id);
+        if (!$typeExam) return response()->json(['message' => 'Type de controle non trouve'], 404);
+
+
+        if ($request->module_id) {
+            $module = Module::find($request->module_id);
+            if (!$module) return response()->json(['message' => 'lsous unité non trouve'], 404);
+
+            if ($exam = Exam::where('classe_id', $request->classe_id)->where('type_exam_id', $request->type_exam_id)->where('school_year_id', getCurrentSchoolYearFromDataBase()->id)->where('course_id', $request->course_id)->where('module_id', $request->module_id)->where('semester_id', $request->semester_id)->first()) {
+                foreach ($request->marks as $mark) {
+                    $exam_record = ExamRecord::where('student_id', $mark['student_id'])->where('exam_id', $exam->id)->first();
+                    if ($exam_record) {
+                        $exam_record->note = $mark['mark'];
+                        $exam_record->admin_id = $admin->id;
+                        $exam_record->save();
+                    }
+                }
+                return response()->json(['message' => 'les notes ont bien été mis à jour'], 200);
+            }
+        }
+        if ($exam = Exam::where('classe_id', $request->classe_id)->where('type_exam_id', $request->type_exam_id)->where('school_year_id', getCurrentSchoolYearFromDataBase()->id)->where('course_id', $request->course_id)->where('module_id', null)->where('semester_id', $request->semester_id)->first()) {
+            foreach ($request->marks as $mark) {
+                $exam_record = ExamRecord::where('student_id', $mark['student_id'])->where('exam_id', $exam->id)->first();
+                if ($exam_record) {
+                    $exam_record->note = $mark['mark'];
+                    $exam_record->admin_id = $admin->id;
+                    $exam_record->save();
+                }
+            }
+            return response()->json(['message' => 'les notes ont bien été mis à jour'], 200);
+        }
+
+        $exam = new Exam();
+        $exam->module_id = $request->module_id;
+        $exam->course_id = $request->course_id;
+        $exam->semester_id = $request->semester_id;
+        $exam->type_exam_id = $request->type_exam_id;
+        $exam->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $exam->classe_id = $request->classe_id;
+        $exam->save();
+
+        foreach ($request->marks as $mark) {
+            $exam_record = new ExamRecord();
+            $exam_record->exam_id = $exam->id;
+            $exam_record->student_id = $mark['student_id'];
+            $exam_record->note = $mark['mark'];
+            $exam_record->admin_id = $admin->id;
+            $exam_record->save();
+        }
+
+        return response()->json(['message' => 'Les notes ont bien été enregistrées'], 200);
     }
 }

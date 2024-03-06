@@ -14,10 +14,10 @@ class SchoolLevelSeeder extends Seeder
     {
         // Define the data for each school level
         $schoolLevelsData = [
-            ['name' => 'Préscolaire'],
-            ['name' => 'Primaire'],
-            ['name' => 'Collége'],
-            ['name' => 'Lycée'],
+            ['name' => 'Préscolaire', 'passing_mark' => "5"],
+            ['name' => 'Primaire', 'passing_mark' => "5"],
+            ['name' => 'Collége', 'passing_mark' => "10"],
+            ['name' => 'Lycée', 'passing_mark' => "10"],
         ];
 
         // Loop through the data and create SchoolLevel instances

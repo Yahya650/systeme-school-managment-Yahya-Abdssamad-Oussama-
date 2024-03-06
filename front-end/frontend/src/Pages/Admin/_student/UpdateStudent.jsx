@@ -207,7 +207,7 @@ const UpdateStudent = () => {
                           className="form-control"
                           type="text"
                           onChange={(e) => setUserNameStudent(e.target.value)}
-                          placeholder="Saisissez le code massar"
+                          placeholder="Saisir le code massar"
                           defaultValue={student?.code_massar}
                         />
                         <span className="text-danger">
@@ -262,7 +262,7 @@ const UpdateStudent = () => {
                           name="first_name"
                           className="form-control"
                           type="text"
-                          placeholder="Saisissez le prénom"
+                          placeholder="Saisir le prénom"
                           defaultValue={student?.first_name}
                         />
                         <span className="text-danger">
@@ -281,7 +281,7 @@ const UpdateStudent = () => {
                           className="form-control"
                           type="text"
                           onChange={(e) => setLastNameStudent(e.target.value)}
-                          placeholder="Saisissez le nom de famille"
+                          placeholder="Saisir le nom de famille"
                           defaultValue={student?.last_name}
                         />
                         <span className="text-danger">{errors?.last_name}</span>
@@ -314,7 +314,7 @@ const UpdateStudent = () => {
                           name="date_of_birth"
                           className="form-control datetimepicker"
                           type="date"
-                          placeholder="Saisissez la date de naissance"
+                          placeholder="Saisir la date de naissance"
                           defaultValue={student?.date_of_birth}
                         />
                         <span className="text-danger">
@@ -330,7 +330,7 @@ const UpdateStudent = () => {
                           name="phone_number"
                           className="form-control"
                           type="text"
-                          placeholder="Saisissez le numéro de téléphone (optionnel)"
+                          placeholder="Saisir le numéro de téléphone (optionnel)"
                           defaultValue={student?.phone_number}
                         />
                         <span className="text-danger">
@@ -345,7 +345,7 @@ const UpdateStudent = () => {
                           name="cin"
                           className="form-control"
                           type="text"
-                          placeholder="Saisissez le CIN (optionnel)"
+                          placeholder="Saisir le CIN (optionnel)"
                           defaultValue={student?.cin}
                         />
                         <span className="text-danger">{errors?.cin}</span>
@@ -478,7 +478,7 @@ const UpdateStudent = () => {
                                       name="cin"
                                       className="form-control"
                                       type="text"
-                                      placeholder="Saisissez le CIN"
+                                      placeholder="Saisir le CIN"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_cin}
@@ -495,7 +495,7 @@ const UpdateStudent = () => {
                                       name="first_name"
                                       className="form-control"
                                       type="text"
-                                      placeholder="Saisissez le prénom"
+                                      placeholder="Saisir le prénom"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_first_name}
@@ -515,7 +515,7 @@ const UpdateStudent = () => {
                                       defaultValue={
                                         lastNameStudent ? lastNameStudent : null
                                       }
-                                      placeholder="Saisissez le nom de famille"
+                                      placeholder="Saisir le nom de famille"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_last_name}
@@ -532,7 +532,7 @@ const UpdateStudent = () => {
                                       name="email"
                                       className="form-control"
                                       type="text"
-                                      placeholder="Saisissez l'email"
+                                      placeholder="Saisir l'email"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_email}
@@ -570,7 +570,7 @@ const UpdateStudent = () => {
                                       name="date_of_birth"
                                       className="form-control datetimepicker"
                                       type="date"
-                                      placeholder="Saisissez la date de naissance"
+                                      placeholder="Saisir la date de naissance"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_date_of_birth}
@@ -588,7 +588,7 @@ const UpdateStudent = () => {
                                       name="phone_number"
                                       className="form-control"
                                       type="text"
-                                      placeholder="Saisissez le numéro de telephone"
+                                      placeholder="Saisir le numéro de telephone"
                                     />
                                     <span className="text-danger">
                                       {errors?.parent_phone_number}
@@ -687,7 +687,7 @@ const UpdateStudent = () => {
                                         name="cin"
                                         className="form-control"
                                         type="text"
-                                        placeholder="Saisissez le CIN"
+                                        placeholder="Saisir le CIN"
                                         defaultValue={student?.parent.cin}
                                       />
                                       <span className="text-danger">
@@ -705,7 +705,7 @@ const UpdateStudent = () => {
                                         name="first_name"
                                         className="form-control"
                                         type="text"
-                                        placeholder="Saisissez le prénom"
+                                        placeholder="Saisir le prénom"
                                         defaultValue={
                                           student?.parent.first_name
                                         }
@@ -726,7 +726,7 @@ const UpdateStudent = () => {
                                         className="form-control"
                                         type="text"
                                         defaultValue={student?.parent.last_name}
-                                        placeholder="Saisissez le nom de famille"
+                                        placeholder="Saisir le nom de famille"
                                       />
                                       <span className="text-danger">
                                         {errors?.parent_last_name}
@@ -743,7 +743,7 @@ const UpdateStudent = () => {
                                         name="email"
                                         className="form-control"
                                         type="text"
-                                        placeholder="Saisissez l'email"
+                                        placeholder="Saisir l'email"
                                         defaultValue={student?.parent.email}
                                       />
                                       <span className="text-danger">
@@ -785,7 +785,7 @@ const UpdateStudent = () => {
                                         name="date_of_birth"
                                         className="form-control datetimepicker"
                                         type="date"
-                                        placeholder="Saisissez la date de naissance"
+                                        placeholder="Saisir la date de naissance"
                                         defaultValue={
                                           student?.parent.date_of_birth
                                         }

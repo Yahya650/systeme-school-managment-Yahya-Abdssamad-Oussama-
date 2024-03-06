@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('semesters', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', ['Premiere semestre', 'Deuxièmes semestre'])->nullable()->default('Premiere semestre');
+            $table->enum('name', ['Premiere Semestre', 'Deuxièmes Semestre'])->nullable()->default('Premiere semestre');
             $table->enum('semester', [1, 2])->default(1);
             $table->softDeletes();
             $table->timestamps();

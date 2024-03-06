@@ -26,6 +26,7 @@ const ShowMarks = () => {
         school_year_id: dcryptID(event.target.school_year_id.value),
         semester_id: dcryptID(event.target.semester_id.value),
       });
+      console.log(data);
       setSemester(
         ...semestersOptions.filter(
           (s) => dcryptID(s.value) == dcryptID(event.target.semester_id.value)
@@ -79,6 +80,20 @@ const ShowMarks = () => {
     fetchSchoolYears();
     fetchSemesters();
   }, []);
+
+  function getNoteForExam(notes, moduleId, courseId, examType) {
+    if (!notes) return "";
+
+    const filteredNotes = notes.filter((exam_record) => {
+      return (
+        (!moduleId || exam_record.exam.module_id === moduleId) &&
+        exam_record.exam.course_id === courseId &&
+        exam_record.exam.type.type === examType
+      );
+    });
+
+    return filteredNotes.length > 0 ? filteredNotes[0].note.toFixed(2) : "";
+  }
 
   return (
     <div className="content container-fluid">
@@ -154,7 +169,7 @@ const ShowMarks = () => {
                         <button
                           type="submit"
                           disabled={formLoading}
-                          className="btn btn-primary"
+                          className="btn btn-primary mb-3"
                         >
                           {formLoading ? (
                             <LoadingCircle />
@@ -220,155 +235,220 @@ const ShowMarks = () => {
                       <div className="col-sm-12">
                         <div className="tab-content">
                           <div className="tab-pane active" id="mcc">
-                            <table className="table table-responsive border star-student table-hover table-center mb-0 datatable table-striped">
-                              <thead className="student-thread">
-                                <tr>
-                                  <th>Matière</th>
-                                  <th>Premier contrôle</th>
-                                  <th>Deuxième contrôle</th>
-                                  <th>Troisième contrôle</th>
-                                  <th>Quatrième contrôle</th>
-                                  <th>Activités intégrées</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {user?.classe.courses.map((course, i) => (
-                                  <tr key={i}>
-                                    <td>{course.name}</td>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "cc1"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "cc2"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "cc3"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "cc4"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "AI"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
+                            <div className="table-responsive">
+                              <table className="table table-responsive border star-student table-hover table-center mb-0 datatable table-striped">
+                                <thead className="student-thread">
+                                  <tr>
+                                    <th>Matière</th>
+                                    {user?.classe.courses.filter(
+                                      (cours) => cours.modules.length > 0
+                                    ).length > 0 && <th>Sous Unité</th>}
+                                    <th>Premier contrôle</th>
+                                    <th>Deuxième contrôle</th>
+                                    <th>Troisième contrôle</th>
+                                    <th>Quatrième contrôle</th>
+                                    <th>Activités intégrées</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {user?.classe.courses.map((course, i) => (
+                                    <React.Fragment key={i}>
+                                      {course.modules &&
+                                      course.modules.length > 0 ? (
+                                        course.modules.map((module, j) => (
+                                          <tr key={`${i}-${j}`}>
+                                            {j === 0 && (
+                                              <td
+                                                rowSpan={course.modules.length}
+                                                className="border"
+                                              >
+                                                {course.name}
+                                              </td>
+                                            )}
+                                            <td key={j}>{module.name}</td>
+                                            <td>
+                                              {getNoteForExam(
+                                                notes,
+                                                module.id,
+                                                course.id,
+                                                "cc1"
+                                              )}
+                                            </td>
+                                            <td>
+                                              {getNoteForExam(
+                                                notes,
+                                                module.id,
+                                                course.id,
+                                                "cc2"
+                                              )}
+                                            </td>
+                                            <td>
+                                              {getNoteForExam(
+                                                notes,
+                                                module.id,
+                                                course.id,
+                                                "cc3"
+                                              )}
+                                            </td>
+                                            <td>
+                                              {getNoteForExam(
+                                                notes,
+                                                module.id,
+                                                course.id,
+                                                "cc4"
+                                              )}
+                                            </td>
+                                            <td>
+                                              {getNoteForExam(
+                                                notes,
+                                                module.id,
+                                                course.id,
+                                                "AI"
+                                              )}
+                                            </td>
+                                          </tr>
+                                        ))
+                                      ) : (
+                                        <tr key={i}>
+                                          <td>{course.name}</td>
+                                          {user?.classe.courses.filter(
+                                            (cours) => cours.modules.length > 0
+                                          ).length > 0 && (
+                                            <td className="text-center">-</td>
+                                          )}
+
+                                          <td>
+                                            {getNoteForExam(
+                                              notes,
+                                              null,
+                                              course.id,
+                                              "cc1"
+                                            )}
+                                          </td>
+                                          <td>
+                                            {getNoteForExam(
+                                              notes,
+                                              null,
+                                              course.id,
+                                              "cc2"
+                                            )}
+                                          </td>
+                                          <td>
+                                            {getNoteForExam(
+                                              notes,
+                                              null,
+                                              course.id,
+                                              "cc3"
+                                            )}
+                                          </td>
+                                          <td>
+                                            {getNoteForExam(
+                                              notes,
+                                              null,
+                                              course.id,
+                                              "cc4"
+                                            )}
+                                          </td>
+                                          <td>
+                                            {getNoteForExam(
+                                              notes,
+                                              null,
+                                              course.id,
+                                              "AI"
+                                            )}
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </React.Fragment>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
 
                           <div className="tab-pane" id="mn">
-                            <table className="table table-responsive border star-student table-hover table-center mb-0 datatable table-striped">
-                              <thead className="student-thread">
-                                <tr>
-                                  <th>Matière</th>
-                                  <th>Notes Controls Continues</th>
-                                  <th>Coefficient</th>
-                                  <th>Coef*Note</th>
-                                  <th>Note Examen</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {user?.classe.courses.map((course, i) => (
-                                  <tr key={i}>
-                                    <td>{course.name}</td>
-                                    <th>
-                                      {(() => {
-                                        let sum = 0;
-                                        let data = notes?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ===
-                                              course.id &&
-                                            exam_record.exam.type !== "cff"
-                                        );
-                                        data?.forEach((element) => {
-                                          sum += element.note;
-                                        });
-                                        let result = data?.length
-                                          ? sum / data.length
-                                          : 0;
-                                        return result
-                                          ? result.toFixed(2)
-                                          : null;
-                                      })()}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ? semester?.value1 == 2
-                                          ? course.ceof2
-                                          : course.ceof1
-                                        : null}
-                                    </th>
-
-                                    <th>
-                                      {(() => {
-                                        let sum = 0;
-                                        let data = notes?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ===
-                                              course.id &&
-                                            exam_record.exam.type !== "cff"
-                                        );
-                                        data?.forEach((element) => {
-                                          sum += element.note;
-                                        });
-                                        let result = data?.length
-                                          ? sum / data.length
-                                          : 0;
-                                        result = result * course.ceof1;
-                                        return result
-                                          ? result.toFixed(2)
-                                          : null;
-                                      })()}
-                                    </th>
-                                    <th>
-                                      {notes
-                                        ?.filter(
-                                          (exam_record) =>
-                                            exam_record.exam.course_id ==
-                                              course.id &&
-                                            exam_record.exam.type === "cff"
-                                        )[0]
-                                        ?.note.toFixed(2)}
-                                    </th>
+                            <div className="table-responsive">
+                              <table className="table border star-student table-hover table-center mb-0 datatable table-striped">
+                                <thead className="student-thread">
+                                  <tr>
+                                    <th>Matière</th>
+                                    <th>Notes Controls Continues</th>
+                                    <th>Coefficient</th>
+                                    <th>Coef*Note</th>
+                                    <th>Note Examen</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {user?.classe.courses.map((course, i) => (
+                                    <tr key={i}>
+                                      <td>{course.name}</td>
+                                      <th>
+                                        {(() => {
+                                          let sum = 0;
+                                          let data = notes?.filter(
+                                            (exam_record) =>
+                                              exam_record.exam.course_id ===
+                                                course.id &&
+                                              exam_record.exam.type.type !==
+                                                "cff"
+                                          );
+                                          data?.forEach((element) => {
+                                            sum += element.note;
+                                          });
+                                          let result = data?.length
+                                            ? sum / data.length
+                                            : 0;
+                                          return result
+                                            ? result.toFixed(2)
+                                            : null;
+                                        })()}
+                                      </th>
+                                      <th>
+                                        {notes
+                                          ? semester?.value1 == 2
+                                            ? course.ceof2
+                                            : course.ceof1
+                                          : null}
+                                      </th>
+
+                                      <th>
+                                        {(() => {
+                                          let sum = 0;
+                                          let data = notes?.filter(
+                                            (exam_record) =>
+                                              exam_record.exam.course_id ===
+                                                course.id &&
+                                              exam_record.exam.type.type !==
+                                                "cff"
+                                          );
+                                          data?.forEach((element) => {
+                                            sum += element.note;
+                                          });
+                                          let result = data?.length
+                                            ? sum / data.length
+                                            : 0;
+                                          result = result * course.ceof1;
+                                          return result
+                                            ? result.toFixed(2)
+                                            : null;
+                                        })()}
+                                      </th>
+                                      <th>
+                                        {notes
+                                          ?.filter(
+                                            (exam_record) =>
+                                              exam_record.exam.course_id ==
+                                                course.id &&
+                                              exam_record.exam.type.type ===
+                                                "cff"
+                                          )[0]
+                                          ?.note.toFixed(2)}
+                                      </th>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>

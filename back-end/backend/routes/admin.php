@@ -37,7 +37,9 @@ Route::middleware(['auth:admin'])->group(function () {
     });
 
     Route::apiResource('classes', ClasseController::class);
-
+    Route::post('classe/{id}/students', [ClasseController::class, 'getStudentsByClasse']);
+    Route::post('/onchange-classe', [ClasseController::class, 'onChangeClass']);
+    Route::post('/save-marks-manual', [ExamRecordController::class, 'saveMarksByCourseManual']);
 
     // Routes Students
     Route::group(['prefix' => 'etudiants'], function () {

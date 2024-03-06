@@ -38,7 +38,8 @@ class DatabaseSeeder extends Seeder
             StudentParentSeeder::class,
             StudentSeeder::class,
             SchoolYearSeeder::class,
-            TeacherClassesCoursesSeeder::class
+            TeacherClassesCoursesSeeder::class,
+            TypeExamSeeder::class
         ]);
     }
 }
