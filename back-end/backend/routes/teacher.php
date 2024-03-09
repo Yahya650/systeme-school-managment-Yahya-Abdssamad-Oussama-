@@ -14,6 +14,9 @@ Route::middleware(['auth:teacher'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return $request->user('teacher');
     });
+
+    Route::put('/update-profile', [TeacherController::class, 'updateProfile']);
+    Route::post('/update-profile-picture', [TeacherController::class, 'updatePictureProfileAuth']);
     Route::get('/logout', [TeacherController::class, 'logout']);
     Route::put('/change-password', [TeacherController::class, 'changePassword']);
 

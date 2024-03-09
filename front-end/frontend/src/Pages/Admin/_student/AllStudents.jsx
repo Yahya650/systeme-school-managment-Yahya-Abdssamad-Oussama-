@@ -737,28 +737,30 @@ const AllStudents = () => {
                   </div>
                 </div>
 
-                {students?.length > 0 || !studentsTrash || loading ? (
-                  <ReactPaginate
-                    previousLabel={"previous"}
-                    nextLabel={"next"}
-                    breakLabel={"..."}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={(page) => handlePageClick(page, fetchData)}
-                    containerClassName={
-                      "pagination justify-content-center mt-2"
-                    }
-                    pageClassName={"page-item"}
-                    pageLinkClassName={"page-link"}
-                    previousClassName={"page-item"}
-                    previousLinkClassName={"page-link"}
-                    nextClassName={"page-item"}
-                    nextLinkClassName={"page-link"}
-                    breakClassName={"page-item"}
-                    breakLinkClassName={"page-link"}
-                    activeClassName={"active"}
-                  />
+                {!loading && students?.length > 0 && !studentsTrash ? (
+                  <>
+                    <ReactPaginate
+                      previousLabel={"previous"}
+                      nextLabel={"next"}
+                      breakLabel={"..."}
+                      pageCount={pageCount}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      onPageChange={(page) => handlePageClick(page, fetchData)}
+                      containerClassName={
+                        "pagination justify-content-center mt-2"
+                      }
+                      pageClassName={"page-item"}
+                      pageLinkClassName={"page-link"}
+                      previousClassName={"page-item"}
+                      previousLinkClassName={"page-link"}
+                      nextClassName={"page-item"}
+                      nextLinkClassName={"page-link"}
+                      breakClassName={"page-item"}
+                      breakLinkClassName={"page-link"}
+                      activeClassName={"active"}
+                    />
+                  </>
                 ) : null}
               </div>
             </div>

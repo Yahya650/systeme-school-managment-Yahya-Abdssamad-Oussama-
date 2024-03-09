@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom";
 
 const _sidebar = () => {
   return (
-    <aside className="sidebar" id="sidebar" style={{ zIndex: 9999 }}>
+    <aside className="sidebar" id="sidebar">
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
@@ -15,7 +15,7 @@ const _sidebar = () => {
                 <i className="feather-grid"></i> <span> Dashboard</span>
               </NavLink>
             </li>
-            <li className="submenu">
+            <li className="">
               <NavLink to={"#"}>
                 <i className="fas fa-graduation-cap"></i>
                 <span> Étudiants</span>
@@ -27,12 +27,13 @@ const _sidebar = () => {
                 </li>
               </ul>
             </li>
-            <li className="submenu">
+            <li className="">
               <NavLink to={"#"}>
-                <i className="fa fa-star"></i> <span>Saisir notes</span>
-                <span className="menu-arrow" />
+                <i className="fa fa-star"></i>
+                <span> Saisir notes</span>
+                <span className="menu-arrow"></span>
               </NavLink>
-              <ul style={{ display: "block" }}>
+              <ul>
                 <li>
                   <NavLink to={"/admin/saisir-marks-excel"}>
                     <span>Saisir Par Fichier Excel</span>

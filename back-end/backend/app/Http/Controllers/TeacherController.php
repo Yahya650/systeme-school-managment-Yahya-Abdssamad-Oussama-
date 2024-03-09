@@ -156,7 +156,77 @@ class TeacherController extends Controller
             ], 401);
         }
 
-        return response()->json(Teacher::with(['classes', 'courses', 'exercises.course', 'exercises.classes', 'exams.course', 'exams.classe'])->find($id));
+        return response()->json(Teacher::with(['classes', 'courses', 'exercises.course', 'exercises.classes'])->find($id));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $teacher = $request->user('teacher');
+
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('teachers', 'email')->ignore($teacher->id)],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('teachers', 'cin')->ignore($teacher->id)],
+            'health_status' => 'nullable|in:good,bad,middle',
+            'date_of_birth' => 'required|date|before:today',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', Rule::unique('teachers', 'phone_number')->ignore($teacher->id)],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+
+        if ($request->profile_picture) {
+            Storage::delete('public/' . $teacher->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $teacher->profile_picture = 'picture_profiles/teacher/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        $teacher->first_name = $request->first_name;
+        $teacher->last_name = $request->last_name;
+        $teacher->gender = $request->gender;
+        $teacher->email = $request->email;
+        $teacher->cin = $request->cin;
+        $teacher->health_status = $request->health_status;
+        $teacher->date_of_birth = $request->date_of_birth;
+        $teacher->blood_type = $request->blood_type;
+        $teacher->phone_number = $request->phone_number;
+        $teacher->address = $request->address;
+
+        if (!$teacher->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de profile'
+            ]);
+        }
+
+        return response([
+            'message' => "profile mis à jour avec succès"
+        ], 200);
+    }
+
+    public function updatePictureProfileAuth(Request $request)
+    {
+        $teacher = $request->user('teacher');
+
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($teacher->profile_picture) {
+            Storage::disk('public')->delete($teacher->profile_picture);
+        }
+
+        $imagePath = 'picture_profiles/teacher/' . $teacher->cin . '-' . $teacher->last_name . "_" . $teacher->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        $teacher->profile_picture = $imagePath;
+        $teacher->save();
+
+        return response()->json([
+            'message' => "Photo de profile mise à jour avec succès"
+        ], 200);
     }
 
 

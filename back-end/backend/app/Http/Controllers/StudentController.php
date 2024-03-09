@@ -317,8 +317,11 @@ class StudentController extends Controller
         $student->address = $request->address;
         if ($student->classe_id !== $request->classe_id) {
             $classe = Classe::find($request->classe_id);
-            $classe->number_etud = $classe->number_etud + 1;
+            $classe->number_etud += 1;
             $classe->save();
+            $classe2 = Classe::find($student->classe_id);
+            $classe2->number_etud -= 1;
+            $classe2->save();
         }
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $request->student_parent_id;
@@ -419,6 +422,9 @@ class StudentController extends Controller
             $classe = Classe::find($request->classe_id);
             $classe->number_etud += 1;
             $classe->save();
+            $classe2 = Classe::find($student->classe_id);
+            $classe2->number_etud -= 1;
+            $classe2->save();
         }
         $student->classe_id = $request->classe_id;
         $student->save();
@@ -516,8 +522,11 @@ class StudentController extends Controller
         $student->address = $request->address;
         if ($student->classe_id !== $request->classe_id) {
             $classe = Classe::find($request->classe_id);
-            $classe->number_etud = $classe->number_etud + 1;
+            $classe->number_etud += 1;
             $classe->save();
+            $classe2 = Classe::find($student->classe_id);
+            $classe2->number_etud -= 1;
+            $classe2->save();
         }
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $parent->id;
@@ -666,17 +675,16 @@ class StudentController extends Controller
         // Ensure all selected students exist and are trashed
         $students = Student::onlyTrashed()->whereIn('id', $request->ids)->get();
         foreach ($students as $student) {
-            Classe::find($student->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
+            $classe = Classe::find($student->classe_id);
+            $classe->number_etud += 1;
+            $classe->save();
+            $student->restore();
         }
+
         if ($students->count() !== count($request->ids)) {
             return response()->json([
                 'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas détruits'
             ], 404);
-        }
-
-        // Restore selected students
-        foreach ($students as $student) {
-            $student->restore();
         }
 
         return response()->json([
@@ -695,17 +703,16 @@ class StudentController extends Controller
         // Ensure all selected students exist
         $students = Student::whereIn('id', $request->ids)->get();
         foreach ($students as $student) {
-            Classe::find($student->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud - 1]);
+            $classe = Classe::find($student->classe_id);
+            $classe->number_etud -= 1;
+            $classe->save();
+            $student->delete();
         }
+
         if ($students->count() !== count($request->ids)) {
             return response()->json([
                 'message' => 'Certains étudiants sélectionnés n\'existent pas ou ne sont pas supprimés'
             ], 404);
-        }
-
-        // delete selected students
-        foreach ($students as $student) {
-            $student->delete();
         }
 
         return response()->json([

@@ -29,10 +29,12 @@ const AdminContext = ({ children }) => {
     setPageCount,
     setTotal,
     setLoadingProfilePicture,
+    setLoadingProfilePictureAuth,
+    getUserProfile,
     adminsTrash,
     currentPage,
     setAdminsTrash,
-    setIds
+    setIds,
   } = useContextApi();
 
   async function getAdmins(currentPage = 1) {
@@ -55,6 +57,7 @@ const AdminContext = ({ children }) => {
       errorToast(error.response.data.message);
     }
   }
+
   async function updateProfilePicture(id, profile_picture) {
     setLoadingProfilePicture(true);
     try {

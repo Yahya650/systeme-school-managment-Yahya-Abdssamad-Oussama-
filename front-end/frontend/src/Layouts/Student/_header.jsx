@@ -12,7 +12,7 @@ const _header = () => {
     currentSchoolYearLoading,
     getCurrentSchoolYear,
   } = useContextApi();
-  
+
   useEffect(() => {
     getCurrentSchoolYear();
   }, []);
@@ -236,7 +236,7 @@ const _header = () => {
                 <p className="text-muted mb-0">Etudiant</p>
               </div>
             </div>
-            <Link className="dropdown-item" to="#">
+            <Link className="dropdown-item" to="/student/profile">
               My Profile
             </Link>
             <button

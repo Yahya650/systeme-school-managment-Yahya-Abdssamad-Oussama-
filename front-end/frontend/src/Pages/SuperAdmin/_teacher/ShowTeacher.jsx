@@ -249,7 +249,7 @@ const ShowTeacher = () => {
                             <h5>
                               {teacher.last_login_date
                                 ? teacher.last_login_date
-                                : "he is never LogIn"}
+                                : "Pas de connexion"}
                             </h5>
                           </div>
                         </div>

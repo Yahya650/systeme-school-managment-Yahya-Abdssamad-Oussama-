@@ -95,7 +95,6 @@ const StudentContext = ({ children }) => {
           <div>
             <b>Code Massar : </b> {data.code_massar} <br />
             <b>Nouveau mot de passe: </b> {data.password} <br />
-            <b>Password : </b> {data.message} <br />
           </div>
         ),
         icon: "success",
@@ -158,6 +157,7 @@ const StudentContext = ({ children }) => {
       }
     }
   }
+
   async function updateStudentWithCreateParent(id, dataForm) {
     try {
       const { data } = await AxiosClient.put(
@@ -199,6 +199,7 @@ const StudentContext = ({ children }) => {
       toast.dismiss(toastId);
     }
   }
+
   async function restoreStudent(id) {
     const toastId = toast.loading("Restauration en cours...", {
       style: { color: "white", background: "black" },
@@ -330,7 +331,6 @@ const StudentContext = ({ children }) => {
   }
 
   async function getLatestMarks() {
-    console.log("aaa");
     try {
       const { data } = await AxiosClient.get("/student/get-latest-marks");
       setLatestMarks(data);

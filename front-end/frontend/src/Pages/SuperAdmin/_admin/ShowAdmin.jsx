@@ -243,7 +243,7 @@ const ShowAdmin = () => {
                             <h5>
                               {admin.last_login_date
                                 ? admin.last_login_date
-                                : "he is never LogIn"}
+                                : "Pas de connexion"}
                             </h5>
                           </div>
                         </div>

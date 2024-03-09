@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useContextApi } from "../../config/Context/ContextApi";
+import { BACKEND_URL } from "../../config/Api/AxiosClient";
 
 const _header = () => {
   const {
@@ -17,7 +18,7 @@ const _header = () => {
   }, []);
 
   return (
-    <header className="header" style={{ zIndex: 9999 }}>
+    <header className="header">
       <div className="header-left">
         <Link to="/admin/dashboard" className="logo">
           <img
@@ -196,13 +197,19 @@ const _header = () => {
             <span className="user-img">
               <img
                 className="rounded-circle"
-                src="/assets/img/profiles/avatar-01.jpg"
+                src={
+                  user?.profile_picture
+                    ? BACKEND_URL + "/storage/" + user?.profile_picture
+                    : user?.gender == "male"
+                    ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                    : "/assets/img/default-profile-picture-grey-female-icon.png"
+                }
                 width="31"
                 alt="Soeng Souy"
               />
               <div className="user-text">
                 <h6>{user?.last_name + " " + user?.first_name}</h6>
-                <p className="text-muted mb-0">Administrator</p>
+                <p className="text-muted mb-0">Administrateur</p>
               </div>
             </span>
           </Link>
@@ -210,17 +217,23 @@ const _header = () => {
             <div className="user-header">
               <div className="avatar avatar-sm">
                 <img
-                  src="/assets/img/profiles/avatar-01.jpg"
+                  src={
+                    user?.profile_picture
+                      ? BACKEND_URL + "/storage/" + user?.profile_picture
+                      : user?.gender == "male"
+                      ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                      : "/assets/img/default-profile-picture-grey-female-icon.png"
+                  }
                   alt="User Image"
                   className="avatar-img rounded-circle"
                 />
               </div>
               <div className="user-text">
                 <h6>{user?.last_name + " " + user?.first_name}</h6>
-                <p className="text-muted mb-0">Administrator</p>
+                <p className="text-muted mb-0">Administrateur</p>
               </div>
             </div>
-            <Link className="dropdown-item" to="#">
+            <Link className="dropdown-item" to="/admin/profile">
               My Profile
             </Link>
             <button

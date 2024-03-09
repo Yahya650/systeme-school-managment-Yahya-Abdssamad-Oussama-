@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const _sidebar = () => {
   return (
@@ -14,6 +14,18 @@ const _sidebar = () => {
               <Link to="/student/dashboard">
                 <i className="feather-grid"></i> <span> Dashboard</span>
               </Link>
+            </li>
+            <li className="submenu">
+              <NavLink to="#" className="subdrop">
+                <i className="fa fa-star"></i>
+                <span> Notes</span>
+                <span className="menu-arrow"></span>
+              </NavLink>
+              <ul style={{ display: "block" }}>
+                <li>
+                  <NavLink to="/student/marks">Voir mes notes</NavLink>
+                </li>
+              </ul>
             </li>
           </ul>
         </div>

@@ -6,7 +6,7 @@ import LoadingCircle from "../../Components/LoadingCircle";
 import _footer from "./../../Layouts/_footer";
 import LoadingCircleContext from "../../Components/LoadingCircleContext";
 
-const ProfileSuperAdmin = () => {
+const ProfileTeacher = () => {
   const {
     user,
     calculateAge,
@@ -37,7 +37,7 @@ const ProfileSuperAdmin = () => {
       health_status: e.target.health_status.value,
     };
     setLoadingForm(true);
-    const state = await updateProfile("super-admin", FormData);
+    const state = await updateProfile("teacher", FormData);
     if (state) setShowFormUpdateProfile(false);
     setLoadingForm(false);
   };
@@ -104,7 +104,7 @@ const ProfileSuperAdmin = () => {
                           accept="image/jpeg, image/png, image/jpg"
                           onChange={async (e) => {
                             await updateProfilePictureAuth(
-                              "super-admin",
+                              "teacher",
                               e.target.files[0]
                             );
                           }}
@@ -533,42 +533,42 @@ const ProfileSuperAdmin = () => {
                     </div>
                   </div>
                   {/* <div className="col-lg-3">
-                          <div className="card">
-                            <div className="card-body">
-                              <h5 className="card-title d-flex justify-content-between">
-                                <span>Account Status</span>
-                                <Link className="edit-link" to="#">
-                                  <i className="far fa-edit me-1" />
-                                  Edit
-                                </Link>
-                              </h5>
-                              <button className="btn btn-success" type="button">
-                                <i className="fe fe-check-verified" /> Active
-                              </button>
-                            </div>
-                          </div>
-                          <div className="card">
-                            <div className="card-body">
-                              <h5 className="card-title d-flex justify-content-between">
-                                <span>Skills </span>
-                                <Link className="edit-link" to="#">
-                                  <i className="far fa-edit me-1" />
-                                  Edit
-                                </Link>
-                              </h5>
-                              <div className="skill-tags">
-                                <span>Html5</span>
-                                <span>CSS3</span>
-                                <span>WordPress</span>
-                                <span>Javascript</span>
-                                <span>Android</span>
-                                <span>iOS</span>
-                                <span>Angular</span>
-                                <span>PHP</span>
+                              <div className="card">
+                                <div className="card-body">
+                                  <h5 className="card-title d-flex justify-content-between">
+                                    <span>Account Status</span>
+                                    <Link className="edit-link" to="#">
+                                      <i className="far fa-edit me-1" />
+                                      Edit
+                                    </Link>
+                                  </h5>
+                                  <button className="btn btn-success" type="button">
+                                    <i className="fe fe-check-verified" /> Active
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </div> */}
+                              <div className="card">
+                                <div className="card-body">
+                                  <h5 className="card-title d-flex justify-content-between">
+                                    <span>Skills </span>
+                                    <Link className="edit-link" to="#">
+                                      <i className="far fa-edit me-1" />
+                                      Edit
+                                    </Link>
+                                  </h5>
+                                  <div className="skill-tags">
+                                    <span>Html5</span>
+                                    <span>CSS3</span>
+                                    <span>WordPress</span>
+                                    <span>Javascript</span>
+                                    <span>Android</span>
+                                    <span>iOS</span>
+                                    <span>Angular</span>
+                                    <span>PHP</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div> */}
                 </div>
               </div>
               <div id="password_tab" className="tab-pane fade">
@@ -583,7 +583,7 @@ const ProfileSuperAdmin = () => {
                           onSubmit={async (e) => {
                             e.preventDefault();
                             setLoadingResetPassword(true);
-                            await changePassword("super-admin", {
+                            await changePassword("teacher", {
                               old_password: e.target.old_password.value,
                               new_password: e.target.new_password.value,
                               new_password_confirmation:
@@ -654,4 +654,4 @@ const ProfileSuperAdmin = () => {
   );
 };
 
-export default ProfileSuperAdmin;
+export default ProfileTeacher;

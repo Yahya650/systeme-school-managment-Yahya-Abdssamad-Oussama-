@@ -20,6 +20,8 @@ Route::middleware(['auth:admin'])->group(function () {
         return $request->user('admin');
     });
     Route::put('/change-password', [AdminController::class, 'changePassword']);
+    Route::put('/update-profile', [AdminController::class, 'updateProfile']);
+    Route::post('/update-profile-picture', [AdminController::class, 'updatePictureProfileAuth']);
     Route::get('/logout', [AdminController::class, 'logout']);
 
     Route::post('/upload-timetable/{idClass}', [TimeTableController::class, 'store']);
