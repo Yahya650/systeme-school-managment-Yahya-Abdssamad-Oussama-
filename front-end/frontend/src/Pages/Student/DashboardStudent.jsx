@@ -118,7 +118,11 @@ const DashboardStudent = () => {
               >
                 <div className="db-info">
                   <h6>Filiere</h6>
-                  <h3>{user?.classe?.filiere?.name}</h3>
+                  <h3>
+                    {!user?.classe?.filiere
+                      ? "Cette Classe n'a pas de Filiere"
+                      : user?.classe?.filiere.name}
+                  </h3>
                 </div>
                 <div className="db-icon p-2">
                   <img
@@ -160,66 +164,74 @@ const DashboardStudent = () => {
             <div className="card-header px-4 pt-4 d-flex justify-content-between align-items-center">
               <h5 className="card-title">Dernières notes</h5>
               <div className="">
-                <Link
-                  to="/student/marks"
-                  className="btn btn-primary btn-sm py-0"
-                >
-                  <FontAwesomeIcon icon={faEye} /> Voir Tous les Notes
-                </Link>
+                {!latestMarks && (
+                  <Link
+                    to="/student/marks"
+                    className="btn btn-primary btn-sm py-0"
+                  >
+                    <FontAwesomeIcon icon={faEye} /> Voir Tous les Notes
+                  </Link>
+                )}
               </div>
             </div>
             <div className="card-body pt-3">
               {!latestMarksLoading ? (
-                latestMarks
-                  ?.filter((record) => record.exam.course.modules.length === 0)
-                  .slice(0, 5)
-                  .map((record, index) => (
-                    <div
-                      key={index}
-                      className="d-flex justify-content-between border-bottom py-2 mb-0"
-                    >
-                      <div className="d-flex flex-column">
-                        <figure className="pb-0 mb-0">
-                          <blockquote className="">
-                            <p className="pb-0 mb-0 text-secondary-emphasis">
-                              {record.exam.course.name}
-                            </p>
-                          </blockquote>
-                          <figcaption
-                            className="blockquote-footer pb-0 mb-0"
-                            style={{ color: "#abb5ce" }}
-                          >
-                            {record.exam.type.name}
-                          </figcaption>
-                        </figure>
-                      </div>
-                      <div className="d-flex flex-column text-end">
-                        {record.note >
-                        user?.classe.classe_type.school_level.passing_mark ? (
-                          <span className=" text-end text-success">
-                            <b>{record.note}</b>
-                          </span>
-                        ) : record.note <
+                !latestMarks ? (
+                  latestMarks
+                    ?.filter(
+                      (record) => record.exam.course.modules.length === 0
+                    )
+                    .slice(0, 5)
+                    .map((record, index) => (
+                      <div
+                        key={index}
+                        className="d-flex justify-content-between border-bottom py-2 mb-0"
+                      >
+                        <div className="d-flex flex-column">
+                          <figure className="pb-0 mb-0">
+                            <blockquote className="">
+                              <p className="pb-0 mb-0 text-secondary-emphasis">
+                                {record.exam.course.name}
+                              </p>
+                            </blockquote>
+                            <figcaption
+                              className="blockquote-footer pb-0 mb-0"
+                              style={{ color: "#abb5ce" }}
+                            >
+                              {record.exam.type.name}
+                            </figcaption>
+                          </figure>
+                        </div>
+                        <div className="d-flex flex-column text-end">
+                          {record.note >
                           user?.classe.classe_type.school_level.passing_mark ? (
-                          <span className="text-end text-danger">
-                            <b>{record.note}</b>
+                            <span className=" text-end text-success">
+                              <b>{record.note}</b>
+                            </span>
+                          ) : record.note <
+                            user?.classe.classe_type.school_level
+                              .passing_mark ? (
+                            <span className="text-end text-danger">
+                              <b>{record.note}</b>
+                            </span>
+                          ) : (
+                            <span className="text-end text-warning ">
+                              <b>{record.note}</b>
+                            </span>
+                          )}
+                          <span style={{ color: "#abb5ce" }}>
+                            {format(new Date(record.created_at), "dd/MM")}
                           </span>
-                        ) : (
-                          <span className="text-end text-warning ">
-                            <b>{record.note}</b>
-                          </span>
-                        )}
-                        <span style={{ color: "#abb5ce" }}>
-                          {format(new Date(record.created_at), "dd/MM")}
-                        </span>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))
+                ) : (
+                  <div className="d-flex justify-content-center align-items-center h-100">
+                    <p className="text-center">Aucune note pour le moment</p>
+                  </div>
+                )
               ) : (
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
-                >
+                <div className="d-flex justify-content-center align-items-center h-100">
                   <LoadingCircleContext />
                 </div>
               )}
