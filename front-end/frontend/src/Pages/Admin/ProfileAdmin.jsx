@@ -6,7 +6,7 @@ import LoadingCircle from "../../Components/LoadingCircle";
 import _footer from "./../../Layouts/_footer";
 import LoadingCircleContext from "../../Components/LoadingCircleContext";
 
-const ProfileSuperAdmin = () => {
+const ProfileAdmin = () => {
   const {
     user,
     calculateAge,
@@ -37,7 +37,7 @@ const ProfileSuperAdmin = () => {
       health_status: e.target.health_status.value,
     };
     setLoadingForm(true);
-    const state = await updateProfile("super-admin", FormData);
+    const state = await updateProfile("admin", FormData);
     if (state) setShowFormUpdateProfile(false);
     setLoadingForm(false);
   };
@@ -104,7 +104,7 @@ const ProfileSuperAdmin = () => {
                           accept="image/jpeg, image/png, image/jpg"
                           onChange={async (e) => {
                             await updateProfilePictureAuth(
-                              "super-admin",
+                              "admin",
                               e.target.files[0]
                             );
                           }}
@@ -583,7 +583,7 @@ const ProfileSuperAdmin = () => {
                           onSubmit={async (e) => {
                             e.preventDefault();
                             setLoadingResetPassword(true);
-                            await changePassword("super-admin", {
+                            await changePassword("admin", {
                               old_password: e.target.old_password.value,
                               new_password: e.target.new_password.value,
                               new_password_confirmation:
@@ -654,4 +654,4 @@ const ProfileSuperAdmin = () => {
   );
 };
 
-export default ProfileSuperAdmin;
+export default ProfileAdmin;

@@ -51,8 +51,6 @@ class SuperAdminController extends Controller
         }
     }
 
-
-
     public function changePassword(Request $request)
     {
         $request->validate([
@@ -105,9 +103,73 @@ class SuperAdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SuperAdmin $superAdmin)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email'],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/'],
+            'health_status' => 'nullable|in:good,bad,middle',
+            'date_of_birth' => 'required|date|before:today',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string'],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $superAdmin = $request->user('super_admin');
+
+        if ($request->profile_picture) {
+            Storage::delete('public/' . $superAdmin->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/superAdmin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $superAdmin->profile_picture = 'picture_profiles/superAdmin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        $superAdmin->first_name = $request->first_name;
+        $superAdmin->last_name = $request->last_name;
+        $superAdmin->gender = $request->gender;
+        $superAdmin->email = $request->email;
+        $superAdmin->cin = $request->cin;
+        $superAdmin->health_status = $request->health_status;
+        $superAdmin->date_of_birth = $request->date_of_birth;
+        $superAdmin->blood_type = $request->blood_type;
+        $superAdmin->phone_number = $request->phone_number;
+        $superAdmin->address = $request->address;
+
+        if (!$superAdmin->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de profile'
+            ]);
+        }
+
+        return response([
+            'message' => "profile mis à jour avec succès"
+        ], 200);
+    }
+
+    public function updatePictureProfile(Request $request)
+    {
+        $superAdmin = $request->user('super_admin');
+
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($superAdmin->profile_picture) {
+            Storage::disk('public')->delete($superAdmin->profile_picture);
+        }
+
+        $imagePath = 'picture_profiles/super_admin/' . $superAdmin->cin . '-' . $superAdmin->last_name . "_" . $superAdmin->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        $superAdmin->profile_picture = $imagePath;
+        $superAdmin->save();
+
+        return response()->json([
+            'message' => "Photo de profile mise à jour avec succès"
+        ], 200);
     }
 
     /**

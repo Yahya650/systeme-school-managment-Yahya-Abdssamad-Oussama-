@@ -323,7 +323,6 @@ const UpdateAdmin = () => {
                         </span>
                       </div>
                     </div>
-
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>health status</label>
@@ -344,13 +343,11 @@ const UpdateAdmin = () => {
                         </span>
                       </div>
                     </div>
-
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
                           Téléphone <span className="login-danger">*</span>
                         </label>
-
                         <input
                           name="phone_number"
                           className="form-control"
@@ -362,7 +359,6 @@ const UpdateAdmin = () => {
                         </span>
                       </div>
                     </div>
-
                     <div className="col-12 col-sm-12">
                       <table className="table mb-2 table-bordered">
                         <thead>
@@ -466,7 +462,6 @@ const UpdateAdmin = () => {
                         {errors?.responsibility}
                       </span>
                     </div>
-
                     <div className="col-12 mt-3">
                       <div className="student-submit">
                         <button

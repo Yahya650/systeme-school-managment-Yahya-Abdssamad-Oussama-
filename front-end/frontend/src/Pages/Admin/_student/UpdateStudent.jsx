@@ -215,7 +215,12 @@ const UpdateStudent = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="col-12 col-sm-8" style={{ zIndex: 999 }}>
+                    <div
+                      className="col-12 col-sm-8"
+                      styles={{
+                        menu: (base) => ({ ...base, zIndex: 9999 }),
+                      }}
+                    >
                       <div className="form-group local-forms">
                         <label>
                           Classe <span className="login-danger">*</span>
@@ -364,7 +369,12 @@ const UpdateStudent = () => {
                         <span className="text-danger">{errors?.address}</span>
                       </div>
                     </div>
-                    <div className="col-4 col-sm-4" style={{ zIndex: 999 }}>
+                    <div
+                      className="col-4 col-sm-4"
+                      styles={{
+                        menu: (base) => ({ ...base, zIndex: 9999 }),
+                      }}
+                    >
                       <div className="form-group local-forms">
                         <label>
                           Parents <span className="login-danger">*</span>

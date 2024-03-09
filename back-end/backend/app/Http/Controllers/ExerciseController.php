@@ -12,19 +12,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ExerciseController extends Controller
 {
-
-    private function getCurrentSchoolYear()
-    {
-        $currentYear = now()->year;
-        $startMonth = 9;
-
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
-
-        return $currentYear . '_' . ($currentYear + 1);
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -144,6 +131,7 @@ class ExerciseController extends Controller
 
         return response()->json(['message' => 'Exercice introuvable'], 404);
     }
+
 
     /**
      * Remove the specified resource from storage.

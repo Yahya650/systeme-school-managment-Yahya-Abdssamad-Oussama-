@@ -15,6 +15,9 @@ Route::middleware(['auth:super_admin'])->group(function () {
     Route::get('/profile', function (Request $request) {
         return $request->user('super_admin');
     });
+
+    Route::put('/update-profile', [SuperAdminController::class, 'update']);
+    Route::post('/update-profile-picture', [SuperAdminController::class, 'updatePictureProfile']);
     Route::put('/change-password', [SuperAdminController::class, 'changePassword']);
     Route::get('/logout', [SuperAdminController::class, 'logout']);
     // End Routes Admin

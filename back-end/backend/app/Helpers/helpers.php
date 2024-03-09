@@ -5,7 +5,7 @@ use App\Models\SchoolYear;
 include 'HashidsHelper.php';
 
 
-function getCurrentSchoolYear($between, $sMonth = 9)
+function getCurrentSchoolYear($between = '-', $sMonth = 9)
 {
     $currentYear = now()->year;
     $startMonth = $sMonth;

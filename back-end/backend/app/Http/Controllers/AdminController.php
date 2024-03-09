@@ -176,6 +176,29 @@ class AdminController extends Controller
             'message' => "Photo de profil mise à jour avec succès"
         ], 200);
     }
+    
+    public function updatePictureProfileAuth(Request $request)
+    {
+        $admin = $request->user('admin');
+
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($admin->profile_picture) {
+            Storage::disk('public')->delete($admin->profile_picture);
+        }
+
+        $imagePath = 'picture_profiles/admin/' . $admin->cin . '-' . $admin->last_name . "_" . $admin->first_name . "-" . now()->timestamp . "." . $request->file('profile_picture')->extension();
+        Storage::disk('public')->put($imagePath, file_get_contents($request->file('profile_picture')));
+
+        $admin->profile_picture = $imagePath;
+        $admin->save();
+
+        return response()->json([
+            'message' => "Photo de profile mise à jour avec succès"
+        ], 200);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -249,6 +272,53 @@ class AdminController extends Controller
 
         return response([
             'message' => "Administrateur mis à jour avec succès"
+        ], 200);
+    }
+    public function updateProfile(Request $request)
+    {
+
+        $admin = $request->user('admin');
+
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => ['required', Rule::in(['male', 'female'])],
+            'email' => ['required', 'email', Rule::unique('admins', 'email')->ignore($admin->id)],
+            'cin' => ['required', 'regex:/^[A-Z]{1,2}\d+$/', Rule::unique('admins', 'cin')->ignore($admin->id)],
+            'health_status' => 'nullable|in:good,bad,middle',
+            'date_of_birth' => 'required|date|before:today',
+            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'phone_number' => ['required', 'string', Rule::unique('admins', 'phone_number')->ignore($admin->id)],
+            'address' => 'nullable|string|max:255',
+        ]);
+
+
+        if ($request->profile_picture) {
+            Storage::delete('public/' . $admin->profile_picture);
+            Storage::disk('local')->put('public/picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension(), file_get_contents($request->profile_picture));
+            $admin->profile_picture = 'picture_profiles/admin/' . $request->cin . '_' . $request->last_name . "-" . $request->first_name . "." . $request->profile_picture->extension();
+        }
+
+        $admin->first_name = $request->first_name;
+        $admin->last_name = $request->last_name;
+        $admin->gender = $request->gender;
+        $admin->email = $request->email;
+        $admin->cin = $request->cin;
+        $admin->health_status = $request->health_status;
+        $admin->date_of_birth = $request->date_of_birth;
+        $admin->blood_type = $request->blood_type;
+        $admin->phone_number = $request->phone_number;
+        $admin->address = $request->address;
+
+        if (!$admin->save()) {
+            return response()->json([
+                'message' => 'Erreur lors de la mise à jour de profile'
+            ]);
+        }
+
+        return response([
+            'message' => "profile mis à jour avec succès"
         ], 200);
     }
 

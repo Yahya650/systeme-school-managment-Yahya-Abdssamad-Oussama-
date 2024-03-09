@@ -37,7 +37,9 @@ const Context = createContext({
   loadingProfilePicture: null,
   currentSchoolYear: null,
   setCurrentSchoolYear: () => {},
+  updateProfile: () => {},
   currentSchoolYearLoading: null,
+  loadingProfilePictureAuth: null,
   setCurrentSchoolYearLoading: () => {},
   adminsTrash: null,
   teachersTrash: null,
@@ -52,6 +54,7 @@ const Context = createContext({
   handlePageClick: () => {},
   setLoadingProfilePicture: () => {},
   changePassword: () => {},
+  updateProfilePictureAuth: () => {},
   setIds: () => {},
   ids: null,
 });
@@ -75,6 +78,8 @@ export const ContextApi = ({ children }) => {
   const [total, setTotal] = useState(null);
   const [ids, setIds] = useState([]);
   const [currentSchoolYear, setCurrentSchoolYear] = useState(null);
+  const [loadingProfilePictureAuth, setLoadingProfilePictureAuth] =
+    useState(false);
   const [currentSchoolYearLoading, setCurrentSchoolYearLoading] =
     useState(true);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
@@ -87,8 +92,10 @@ export const ContextApi = ({ children }) => {
     setCurrentSchoolYearLoading(false);
   };
 
-  const getUserProfile = async () => {
-    setLoadingContaxt(true);
+  const getUserProfile = async (ifLoading = true) => {
+    if (ifLoading) {
+      setLoadingContaxt(true);
+    }
     if (localStorage.getItem("ud")) {
       try {
         const { data } = await AxiosClient.get(
@@ -225,11 +232,54 @@ export const ContextApi = ({ children }) => {
     }
   };
 
+  const updateProfilePictureAuth = async (guard, profile_picture) => {
+    setLoadingProfilePictureAuth(true);
+    try {
+      const formDataFile = new FormData();
+      formDataFile.append("profile_picture", profile_picture);
+
+      const { data } = await AxiosClient.post(
+        "/" + guard + "/update-profile-picture",
+        formDataFile,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      await getUserProfile(false);
+      successToast(data.message);
+    } catch (error) {
+      errorToast(error.response.data.message);
+    } finally {
+      setLoadingProfilePictureAuth(false);
+    }
+  };
+
+  const updateProfile = async (guard, formData) => {
+    try {
+      const { data } = await AxiosClient.put(
+        "/" + guard + "/update-profile",
+        formData
+      );
+      await getUserProfile(false);
+      successToast(data.message);
+      setErrors(null);
+      return true;
+    } catch (error) {
+      setErrors(error.response.data.errors);
+      errorToast(error.response.data.message);
+      return false;
+    }
+  };
+
   return (
     <Context.Provider
       value={{
         Login,
         logout,
+        updateProfilePictureAuth,
+        updateProfile,
         errors,
         user,
         setErrors,
@@ -244,6 +294,7 @@ export const ContextApi = ({ children }) => {
         setAdmin,
         setTeacher,
         adminsTrash,
+        loadingProfilePictureAuth,
         teachersTrash,
         setAdminsTrash,
         setTeachersTrash,

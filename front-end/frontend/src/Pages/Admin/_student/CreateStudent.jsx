@@ -146,12 +146,15 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.code_massar}</span>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-8" style={{ zIndex: 999 }}>
+                  <div className="col-12 col-sm-8">
                     <div className="form-group local-forms">
                       <label>
                         Classe <span className="login-danger">*</span>
                       </label>
                       <Select
+                        styles={{
+                          menu: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
                         name="classe_id"
                         isLoading={loading}
                         options={classeOptions}
@@ -278,7 +281,12 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.address}</span>
                     </div>
                   </div>
-                  <div className="col-4 col-sm-4" style={{ zIndex: 999 }}>
+                  <div
+                    className="col-4 col-sm-4"
+                    styles={{
+                      menu: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  >
                     <div className="form-group local-forms">
                       <label>
                         Parents <span className="login-danger">*</span>

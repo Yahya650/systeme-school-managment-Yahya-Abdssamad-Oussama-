@@ -74,12 +74,7 @@ class Teacher extends Authenticatable
     {
         return $this->belongsTo(SuperAdmin::class);
     }
-
-    public function exams()
-    {
-        return $this->hasMany(Exam::class);
-    }
-
+    
     public function absences()
     {
         return $this->hasMany(Absence::class);

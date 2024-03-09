@@ -10,6 +10,7 @@ import TeacherLayout from "./Layouts/Teacher/TeacherLayout";
 import ParentStudentLayout from "./Layouts/ParentStudent/ParentStudentLayout";
 import StudentLayout from "./Layouts/Student/StudentLayout";
 import GuestLayout from "./Layouts/Guest/GuestLayout";
+
 import LoadingCircleContext from "./Components/LoadingCircleContext";
 
 // Lazy load your pages
@@ -102,6 +103,12 @@ const SaveMarksManual = React.lazy(() =>
 );
 const SaveMarksExcel = React.lazy(() =>
   import("./Pages/Admin/_student/SaveMarksExcel")
+);
+const ProfileAdmin = React.lazy(() => import("./Pages/Admin/ProfileAdmin"));
+const ProfileStudent = React.lazy(() => import("./Pages/Student/ProfileStudent"));
+
+const ProfileTeacher = React.lazy(() =>
+  import("./Pages/Teacher/ProfileTeacher")
 );
 
 const LezyLoadingSuspense = ({ component }) => (
@@ -268,6 +275,10 @@ function App() {
           element={<LezyLoadingSuspense component={<DashboardAdmin />} />}
         />
         <Route
+          path="profile"
+          element={<LezyLoadingSuspense component={<ProfileAdmin />} />}
+        />
+        <Route
           path="create-student"
           element={<LezyLoadingSuspense component={<CreateStudent />} />}
         />
@@ -300,6 +311,10 @@ function App() {
           path="dashboard"
           element={<LezyLoadingSuspense component={<DashboardTeacher />} />}
         />
+        <Route
+          path="profile"
+          element={<LezyLoadingSuspense component={<ProfileTeacher />} />}
+        />
       </Route>
 
       {/* ParentStudent Layout Routes */}
@@ -324,6 +339,10 @@ function App() {
         <Route
           path="marks"
           element={<LezyLoadingSuspense component={<ShowMarks />} />}
+        />
+        <Route
+          path="profile"
+          element={<LezyLoadingSuspense component={<ProfileStudent />} />}
         />
       </Route>
     </Routes>
