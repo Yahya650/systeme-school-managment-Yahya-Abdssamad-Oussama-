@@ -25,7 +25,7 @@ return new class extends Migration
             $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable();
             $table->string('phone_number')->unique();
             $table->string('address')->nullable();
-            $table->date('last_login_date')->nullable();
+            $table->dateTime('last_login_date')->nullable();
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();

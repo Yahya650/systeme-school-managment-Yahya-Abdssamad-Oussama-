@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import _footer from "../../../Layouts/_footer";
 import { Link } from "react-router-dom";
 import { useAdminContext } from "../../../Functions/AdminContext";
@@ -12,16 +12,25 @@ import LoadingCircle from "../../../Components/LoadingCircle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
+  faSearch,
   faTrashCan,
   faTrashCanArrowUp,
+  faUndo,
 } from "@fortawesome/free-solid-svg-icons";
+import { errorToast } from "../../../config/Toasts/toasts";
 
 const AllAdmins = () => {
   const [loading, setLoading] = useState(true);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [typeFetch, setTypeFetch] = useState("normal");
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingRestore, setloadingRestore] = useState(false);
   const [loadingRestoreSelected, setloadingRestoreSelected] = useState(false);
   const [loadingDeleteSelected, setloadingDeleteSelected] = useState(false);
+  const cin = useRef(null);
+  const first_name = useRef(null);
+  const phone_number = useRef(null);
+
   const {
     admins,
     pageCount,
@@ -32,6 +41,7 @@ const AllAdmins = () => {
     setCurrentPage,
     setAdmins,
     setAdminsTrash,
+    total,
   } = useContextApi();
   const {
     getAdmins,
@@ -39,23 +49,64 @@ const AllAdmins = () => {
     restoreAdminSelected,
     deleteAdminSelected,
     restoreAdmin,
+    getAdminsBySearch,
     getAdminsTrash,
   } = useAdminContext();
 
   const fetchData = async (doLoading = true, val_currentPage) => {
     doLoading && setLoading(true);
+    setIds([]);
     setAdminsTrash(null);
+    setTypeFetch("normal");
     await getAdmins(val_currentPage);
     setLoading(false);
+  };
+
+  const handleResetSearchForm = async (doFetch = true) => {
+    if (typeFetch === "deleted" && doFetch) handleGetTrash();
+    else if (typeFetch === "normal" && doFetch) fetchData();
+  };
+
+  const handleSubmit = async (e, doLoading = true, val_currentPage) => {
+    e.preventDefault();
+    if (
+      e.target.cin.value === "" &&
+      e.target.first_name.value === "" &&
+      e.target.phone_number.value === ""
+    ) {
+      errorToast("s'il vous plait choisir minimum une cin");
+      return;
+    }
+    if (doLoading) {
+      setLoading(true);
+      setLoadingSearch(true);
+    }
+    setIds([]);
+    const formData = {
+      cin: e.target.cin.value,
+      first_name: e.target.first_name.value,
+      phone_number: e.target.phone_number.value,
+    };
+    if (adminsTrash) {
+      setAdmins(null);
+      await getAdminsBySearch(val_currentPage, formData, "deleted");
+    } else if (admins) {
+      setAdminsTrash(null);
+      await getAdminsBySearch(val_currentPage, formData, "normal");
+    }
+    setLoading(false);
+    setLoadingSearch(false);
   };
 
   const handleGetTrash = async (doLoading = true, val_currentPage) => {
     doLoading && setLoading(true);
     setIds([]);
+    setTypeFetch("deleted");
     setAdmins(null);
     await getAdminsTrash(val_currentPage);
     setLoading(false);
   };
+
   const handleRestoreSelected = async () => {
     setloadingRestoreSelected(true);
     await restoreAdminSelected(ids);
@@ -104,11 +155,13 @@ const AllAdmins = () => {
       </div>
 
       <div className="student-group-form">
-        <div className="row">
+        <form onSubmit={handleSubmit} className="row">
           <div className="col-lg-3 col-md-6">
             <div className="form-group">
               <input
                 type="text"
+                name="cin"
+                ref={cin}
                 className="form-control"
                 placeholder="Rechercher par CIN ..."
               />
@@ -118,28 +171,51 @@ const AllAdmins = () => {
             <div className="form-group">
               <input
                 type="text"
+                name="first_name"
+                ref={first_name}
                 className="form-control"
-                placeholder="Rechercher par nom et prenom ..."
+                placeholder="Rechercher par Prenom ..."
               />
             </div>
           </div>
-          <div className="col-lg-4 col-md-6">
+          <div className="col-lg-3 col-md-6">
             <div className="form-group">
               <input
                 type="text"
+                name="phone_number"
+                ref={phone_number}
                 className="form-control"
-                placeholder="Rechercher par téléphone ..."
+                placeholder="Rechercher par Téléphone ..."
               />
             </div>
           </div>
-          <div className="col-lg-2">
-            <div className="search-student-btn">
-              <button type="btn" className="btn btn-primary">
-                Rechercher
+          <div className="col-lg-3">
+            <div className="search-student-btn d-flex justify-content-center">
+              <button
+                type="submit"
+                disabled={loadingSearch || loading}
+                className="btn btn-primary"
+              >
+                {!loadingSearch ? (
+                  <>
+                    <FontAwesomeIcon icon={faSearch} /> Rechercher
+                  </>
+                ) : (
+                  <LoadingCircle />
+                )}
+              </button>
+              <button
+                type="reset"
+                disabled={loadingSearch || loading}
+                className="btn btn-primary ms-2"
+                style={{ minWidth: 0 }}
+                onClick={handleResetSearchForm}
+              >
+                <FontAwesomeIcon icon={faUndo} />
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
 
       <div className="row">
@@ -382,29 +458,31 @@ const AllAdmins = () => {
                             ))}
                           </tbody>
                         </table>
-                        <ReactPaginate
-                          previousLabel={"previous"}
-                          nextLabel={"next"}
-                          breakLabel={"..."}
-                          pageCount={pageCount}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={(page) =>
-                            handlePageClick(page, fetchData)
-                          }
-                          containerClassName={
-                            "pagination justify-content-center mt-2"
-                          }
-                          pageClassName={"page-item"}
-                          pageLinkClassName={"page-link"}
-                          previousClassName={"page-item"}
-                          previousLinkClassName={"page-link"}
-                          nextClassName={"page-item"}
-                          nextLinkClassName={"page-link"}
-                          breakClassName={"page-item"}
-                          breakLinkClassName={"page-link"}
-                          activeClassName={"active"}
-                        />
+                        {total !== 0 && (
+                          <ReactPaginate
+                            previousLabel={"previous"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={(page) =>
+                              handlePageClick(page, fetchData)
+                            }
+                            containerClassName={
+                              "pagination justify-content-center mt-2"
+                            }
+                            pageClassName={"page-item"}
+                            pageLinkClassName={"page-link"}
+                            previousClassName={"page-item"}
+                            previousLinkClassName={"page-link"}
+                            nextClassName={"page-item"}
+                            nextLinkClassName={"page-link"}
+                            breakClassName={"page-item"}
+                            breakLinkClassName={"page-link"}
+                            activeClassName={"active"}
+                          />
+                        )}
                       </>
                     ) : (
                       <div className="alert alert-danger" role="alert">
@@ -516,29 +594,31 @@ const AllAdmins = () => {
                           ))}
                         </tbody>
                       </table>
-                      <ReactPaginate
-                        previousLabel={"previous"}
-                        nextLabel={"next"}
-                        breakLabel={"..."}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={(page) =>
-                          handlePageClick(page, handleGetTrash)
-                        }
-                        containerClassName={
-                          "pagination justify-content-center mt-2"
-                        }
-                        pageClassName={"page-item"}
-                        pageLinkClassName={"page-link"}
-                        previousClassName={"page-item"}
-                        previousLinkClassName={"page-link"}
-                        nextClassName={"page-item"}
-                        nextLinkClassName={"page-link"}
-                        breakClassName={"page-item"}
-                        breakLinkClassName={"page-link"}
-                        activeClassName={"active"}
-                      />
+                      {total !== 0 && (
+                        <ReactPaginate
+                          previousLabel={"previous"}
+                          nextLabel={"next"}
+                          breakLabel={"..."}
+                          pageCount={pageCount}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={(page) =>
+                            handlePageClick(page, handleGetTrash)
+                          }
+                          containerClassName={
+                            "pagination justify-content-center mt-2"
+                          }
+                          pageClassName={"page-item"}
+                          pageLinkClassName={"page-link"}
+                          previousClassName={"page-item"}
+                          previousLinkClassName={"page-link"}
+                          nextClassName={"page-item"}
+                          nextLinkClassName={"page-link"}
+                          breakClassName={"page-item"}
+                          breakLinkClassName={"page-link"}
+                          activeClassName={"active"}
+                        />
+                      )}
                     </>
                   ) : (
                     <div className="alert alert-danger" role="alert">

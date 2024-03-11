@@ -145,7 +145,7 @@ class ClasseSeeder extends Seeder
             // Sixième Année (Primaire)
             [
                 'code' => '6AP' . Filiere::find(6)->code . '-1',
-                'number_etud' => 1,
+                'number_etud' => 2,
                 'number_etud_max' => 50,
                 'classe_type_id' => 9,
                 'filiere_id' => 6,

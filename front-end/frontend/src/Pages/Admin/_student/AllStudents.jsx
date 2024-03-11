@@ -5,25 +5,37 @@ import { useContextApi } from "../../../config/Context/ContextApi";
 import { useStudentContext } from "../../../Functions/StudentContext";
 import LoadingCircleContext from "../../../Components/LoadingCircleContext";
 import ReactPaginate from "react-paginate";
-import { BACKEND_URL } from "../../../config/Api/AxiosClient";
+import { AxiosClient, BACKEND_URL } from "../../../config/Api/AxiosClient";
 import cryptID from "../../../config/security/cryptID";
 import dcryptID from "../../../config/security/dcryptID";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Select from "react-select";
 import {
   faTrashCan,
   faArrowLeft,
   faTrashCanArrowUp,
+  faSearch,
+  faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingCircle from "../../../Components/LoadingCircle";
+import { errorToast } from "../../../config/Toasts/toasts";
 
 const AllStudents = () => {
   const [loading, setLoading] = useState(true);
+  const [loadingSearch, setLoadingSearch] = useState(false);
+  const [typeFetch, setTypeFetch] = useState("normal");
+  const [loadingParents, setLoadingParents] = useState(true);
+  const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingRestore, setloadingRestore] = useState(false);
   const [loadingRestoreSelected, setloadingRestoreSelected] = useState(false);
   const [loadingDeleteSelected, setloadingDeleteSelected] = useState(false);
-  const btnGrid1 = useRef();
-  // const grid2 = useRef();
+  const [classeOptions, setClasseOptions] = useState([]);
+  const [parentOptions, setParentOptions] = useState([]);
+  const btnGrid1 = useRef(null);
+  const classe_id = useRef(null);
+  const parent_id = useRef(null);
+  const code_massar = useRef(null);
   const {
     students,
     pageCount,
@@ -34,7 +46,9 @@ const AllStudents = () => {
     setIds,
     ids,
     setCurrentPage,
+    total,
   } = useContextApi();
+
   const {
     getStudents,
     removeStudent,
@@ -42,23 +56,97 @@ const AllStudents = () => {
     restoreStudent,
     restoreStudentSelected,
     deleteStudentSelected,
+    getStudentsBySearch,
   } = useStudentContext();
 
   const fetchData = async (doLoading = true, val_currentPage) => {
     doLoading && setLoading(true);
     setIds([]);
     setStudentsTrash(null);
+    setTypeFetch("normal");
     await getStudents(val_currentPage);
     setLoading(false);
+  };
+
+  const handleResetSearchForm = async (doFetch = true) => {
+    btnGrid1.current.click();
+    if (typeFetch === "deleted" && doFetch) handleGetTrash();
+    else if (typeFetch === "normal" && doFetch) fetchData();
+    classe_id.current?.setValue({
+      value: "",
+      label: "Rechercher par une classe...",
+    });
+    parent_id.current?.setValue({
+      value: "",
+      label: "Rechercher par une Parent...",
+    });
+  };
+
+  const fetchParents = async () => {
+    const parents = await AxiosClient.get("/admin/student-parents");
+    const options1 = parents.data.map((parent) => ({
+      value: cryptID(parent.id),
+      label: `${parent.cin} - ${parent.last_name} ${parent.first_name}`,
+    }));
+    setParentOptions(options1);
+    setLoadingParents(false);
+  };
+
+  const fetchClasses = async () => {
+    const classes = await AxiosClient.get("/admin/classes");
+    const options = classes.data.map((classe) => ({
+      value: cryptID(classe.id),
+      label:
+        classe.filiere_id !== null
+          ? `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name} - (${classe.filiere.name})`
+          : `${classe.code} ${classe.classe_type.school_level.name}-${classe.classe_type.name}`,
+    }));
+    setClasseOptions(options);
+    setLoadingClasses(false);
+  };
+
+  const handleSubmit = async (e, doLoading = true, val_currentPage) => {
+    e.preventDefault();
+    if (
+      e.target.code_massar.value === "" &&
+      e.target.parent_id.value === "" &&
+      e.target.classe_id.value === ""
+    ) {
+      errorToast("s'il vous plait choisir minimum une classe");
+      return;
+    }
+    btnGrid1.current.click();
+    if (doLoading) {
+      setLoading(true);
+      setLoadingSearch(true);
+    }
+
+    setIds([]);
+    const formData = {
+      code_massar: e.target.code_massar.value,
+      parent_id: dcryptID(e.target.parent_id.value),
+      classe_id: dcryptID(e.target.classe_id.value),
+    };
+    if (studentsTrash) {
+      setStudents(null);
+      await getStudentsBySearch(val_currentPage, formData, "deleted");
+    } else if (students) {
+      setStudentsTrash(null);
+      await getStudentsBySearch(val_currentPage, formData, "normal");
+    }
+    setLoading(false);
+    setLoadingSearch(false);
   };
 
   const handleGetTrash = async (doLoading = true, val_currentPage) => {
     doLoading && setLoading(true);
     setIds([]);
+    setTypeFetch("deleted");
     setStudents(null);
     await getStudentsTrash(val_currentPage);
     setLoading(false);
   };
+
   const handleRestoreSelected = async () => {
     setloadingRestoreSelected(true);
     await restoreStudentSelected(ids);
@@ -74,7 +162,6 @@ const AllStudents = () => {
     await restoreStudent(cryptID(id));
     setloadingRestore(false);
   };
-
   const handleDelete = async (id) => {
     setLoadingDelete(true);
     setIds([]);
@@ -85,7 +172,13 @@ const AllStudents = () => {
   useEffect(() => {
     setCurrentPage(1);
     fetchData();
+    fetchParents();
+    fetchClasses();
   }, []);
+
+  // useEffect(() => {
+  //   handleResetSearchForm(false);
+  // }, [typeFetch]);
 
   return (
     <div className="content container-fluid">
@@ -106,42 +199,87 @@ const AllStudents = () => {
       </div>
 
       <div className="student-group-form">
-        <div className="row">
+        <form onSubmit={handleSubmit} className="row d-flex align-item-center">
+          <div className="col-lg-3 col-md-6">
+            <div className="form-group">
+              <Select
+                styles={{
+                  menu: (base) => ({ ...base, zIndex: 9999 }),
+                }}
+                name="parent_id"
+                ref={parent_id}
+                isLoading={loadingParents}
+                options={[
+                  {
+                    value: "",
+                    label: "Rechercher par une Parent...",
+                  },
+                  ...parentOptions,
+                ]}
+                placeholder="Rechercher par une Parent..."
+                isSearchable={true}
+              />
+            </div>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <div className="form-group">
+              <Select
+                styles={{
+                  menu: (base) => ({ ...base, zIndex: 9999 }),
+                }}
+                name="classe_id"
+                ref={classe_id}
+                isLoading={loadingClasses}
+                options={[
+                  {
+                    value: "",
+                    label: "Rechercher par une classe...",
+                  },
+                  ...classeOptions,
+                ]}
+                placeholder="Rechercher par une classe..."
+                isSearchable={true}
+              />
+            </div>
+          </div>
           <div className="col-lg-3 col-md-6">
             <div className="form-group">
               <input
+                name="code_massar"
+                ref={code_massar}
                 type="text"
                 className="form-control"
                 placeholder="Rechercher par Code massar ..."
               />
             </div>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Rechercher par nom ..."
-              />
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-6">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Rechercher par CIN de Parent ..."
-              />
-            </div>
-          </div>
-          <div className="col-lg-2">
-            <div className="search-student-btn">
-              <button type="btn" className="btn btn-primary">
-                Rechercher
+          <div className="col-lg-3">
+            <div className="search-student-btn d-flex justify-content-center">
+              <button
+                type="submit"
+                disabled={loadingSearch || loading}
+                className="btn btn-primary"
+              >
+                {!loadingSearch ? (
+                  <>
+                    <FontAwesomeIcon icon={faSearch} /> Rechercher
+                  </>
+                ) : (
+                  <LoadingCircle />
+                )}
+              </button>
+              <button
+                type="reset"
+                disabled={loadingSearch || loading}
+                className="btn btn-primary ms-2"
+                style={{ minWidth: 0 }}
+                onClick={handleResetSearchForm}
+              >
+                <FontAwesomeIcon icon={faUndo} />
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
 
       <div className="row">
@@ -156,11 +294,9 @@ const AllStudents = () => {
                         to="#"
                         disabled={loading || loadingDelete || loadingRestore}
                         onClick={fetchData}
-                        // style={{ minWidth: "120px" }}
                         className="border border-2 btn bg-danger-light me-2"
                       >
                         <FontAwesomeIcon icon={faArrowLeft} />
-                        {/* <span className="ms-1">Retour</span> */}
                       </button>
                     )}
                     <h3 className="page-title">
@@ -548,29 +684,31 @@ const AllStudents = () => {
                                 ))}
                               </tbody>
                             </table>
-                            <ReactPaginate
-                              previousLabel={"previous"}
-                              nextLabel={"next"}
-                              breakLabel={"..."}
-                              pageCount={pageCount}
-                              marginPagesDisplayed={2}
-                              pageRangeDisplayed={3}
-                              onPageChange={(page) =>
-                                handlePageClick(page, handleGetTrash)
-                              }
-                              containerClassName={
-                                "pagination justify-content-center mt-2"
-                              }
-                              pageClassName={"page-item"}
-                              pageLinkClassName={"page-link"}
-                              previousClassName={"page-item"}
-                              previousLinkClassName={"page-link"}
-                              nextClassName={"page-item"}
-                              nextLinkClassName={"page-link"}
-                              breakClassName={"page-item"}
-                              breakLinkClassName={"page-link"}
-                              activeClassName={"active"}
-                            />
+                            {total !== 0 && (
+                              <ReactPaginate
+                                previousLabel={"previous"}
+                                nextLabel={"next"}
+                                breakLabel={"..."}
+                                pageCount={pageCount}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={(page) =>
+                                  handlePageClick(page, handleGetTrash)
+                                }
+                                containerClassName={
+                                  "pagination justify-content-center mt-2"
+                                }
+                                pageClassName={"page-item"}
+                                pageLinkClassName={"page-link"}
+                                previousClassName={"page-item"}
+                                previousLinkClassName={"page-link"}
+                                nextClassName={"page-item"}
+                                nextLinkClassName={"page-link"}
+                                breakClassName={"page-item"}
+                                breakLinkClassName={"page-link"}
+                                activeClassName={"active"}
+                              />
+                            )}
                           </>
                         ) : (
                           <div className="alert alert-danger" role="alert">
@@ -737,7 +875,10 @@ const AllStudents = () => {
                   </div>
                 </div>
 
-                {!loading && students?.length > 0 && !studentsTrash ? (
+                {!loading &&
+                students?.length > 0 &&
+                !studentsTrash &&
+                total !== 0 ? (
                   <>
                     <ReactPaginate
                       previousLabel={"previous"}

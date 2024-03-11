@@ -593,7 +593,7 @@ const ProfileSuperAdmin = () => {
                           }}
                         >
                           <div className="form-group">
-                            <label>Old Password</label>
+                            <label>Ancien mot de passe</label>
                             <input
                               type="password"
                               className="form-control"

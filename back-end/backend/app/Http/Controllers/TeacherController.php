@@ -491,4 +491,42 @@ class TeacherController extends Controller
             'message' => 'Enseignant ajouté à la classe avec succès'
         ]);
     }
+
+
+    public function search(Request $request)
+    {
+        $cin = $request->cin;
+        $first_name = $request->first_name;
+        $phone_number = $request->phone_number;
+        $type = $request->type;
+
+        $teachersQuery = Teacher::query()->withTrashed();
+
+        if ($cin) $teachersQuery->where('cin', 'like', '%' . $cin . '%');
+        if ($first_name) $teachersQuery->where('first_name', 'like', '%' . $first_name . '%');
+        if ($phone_number) $teachersQuery->where('phone_number', 'like', '%' . $phone_number . '%');
+
+        $teachers = $teachersQuery->get();
+
+        if ($type === "deleted") {
+            $deletedTeacher = $teachers->filter(function ($teacher) {
+                return $teacher->deleted_at !== null;
+            });
+            return response()->json([
+                'data' => $deletedTeacher->values(),
+                'current_page' => 1, // Assuming it's always the first page for deleted Teacher
+                'per_page' => 0,
+                'total' => 0,
+                'last_page' => 0 // Assuming it's always the last page for deleted Teacher
+            ]);
+        }
+
+        return response()->json([
+            'data' => $teachers,
+            'current_page' => 1, // Assuming it's always the first page for normal Teacher
+            'per_page' => 0,
+            'total' => 0,
+            'last_page' => 0 // Assuming it's always the last page for normal Teacher
+        ]);
+    }
 }

@@ -15,6 +15,7 @@ const ContextStudent = createContext({
   updateStudent: () => {},
   removeStudent: () => {},
   getStudentsTrash: () => {},
+  getStudentsBySearch: () => {},
   createStudent: () => {},
   getLatestMarks: () => {},
   updateStudentWithParent: () => {},
@@ -55,6 +56,25 @@ const StudentContext = ({ children }) => {
       errorToast(error.response.data.message);
     }
   }
+  async function getStudentsBySearch(currentPage = 1, paramsData, type) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/admin/etudiants/search?page=" + currentPage,
+        {
+          params: { ...paramsData, type },
+        }
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      if (type === "deleted") {
+        setStudentsTrash(data.data);
+      } else if (type === "normal") {
+        setStudents(data.data);
+      }
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
 
   async function updateStudent(id, dataForm) {
     try {
@@ -63,7 +83,6 @@ const StudentContext = ({ children }) => {
       setErrors(null);
       navigateTo(-1);
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message);
       if (error.response.status === 422) {
         setErrors(error.response.data.errors);
@@ -261,7 +280,6 @@ const StudentContext = ({ children }) => {
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -334,9 +352,7 @@ const StudentContext = ({ children }) => {
     try {
       const { data } = await AxiosClient.get("/student/get-latest-marks");
       setLatestMarks(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   return (
@@ -352,6 +368,7 @@ const StudentContext = ({ children }) => {
         restoreStudent,
         getStudentsTrash,
         latestMarks,
+        getStudentsBySearch,
         createStudent,
         deleteStudentSelected,
         updateStudentWithParent,

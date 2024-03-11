@@ -98,7 +98,6 @@ const SaveMarksManual = () => {
         });
         successToast(data.message);
       } catch (error) {
-        console.log(error);
         errorToast(error.response.data.message);
       } finally {
         setSaveMarkFormLoading(false);
@@ -161,7 +160,6 @@ const SaveMarksManual = () => {
       }
       setStudents(data);
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message);
       setErrors(error.response.data.errors);
     } finally {
