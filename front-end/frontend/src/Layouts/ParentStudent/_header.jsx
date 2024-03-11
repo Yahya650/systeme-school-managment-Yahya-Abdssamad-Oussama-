@@ -212,7 +212,7 @@ const _header = () => {
               My Profile
             </Link>
             <button
-              className="dropdown-item"
+              className="dropdown-item  text-danger"
               onClick={async () => {
                 setLoadingContaxt(true);
                 await logout("student-parent");

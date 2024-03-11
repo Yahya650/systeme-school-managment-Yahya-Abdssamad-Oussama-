@@ -16,12 +16,12 @@ const _sidebar = () => {
               </Link>
             </li>
             <li className="">
-              <Link to={"#"} className="subdrop">
+              <Link to={"#"}>
                 <i className="fas fa-graduation-cap"></i>
                 <span> Administrateurs</span>
                 <span className="menu-arrow"></span>
               </Link>
-              <ul style={{ display: "block" }}>
+              <ul>
                 <li>
                   <NavLink to="/super-admin/all-admins">
                     Tous les administrateurs
@@ -31,12 +31,12 @@ const _sidebar = () => {
             </li>
 
             <li className="">
-              <NavLink to="#" className="subdrop">
+              <NavLink to="#">
                 <i className="fas fa-chalkboard-teacher"></i>
                 <span> Enseignants</span>
                 <span className="menu-arrow"></span>
               </NavLink>
-              <ul style={{ display: "block" }}>
+              <ul>
                 <li>
                   <NavLink to="/super-admin/all-teachers">
                     liste des enseignants

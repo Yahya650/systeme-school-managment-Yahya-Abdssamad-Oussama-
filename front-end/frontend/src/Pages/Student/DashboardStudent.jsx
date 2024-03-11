@@ -19,9 +19,10 @@ const DashboardStudent = () => {
     const fetching = async () => {
       try {
         const { data } = await AxiosClient.get("/student/get-latest-marks");
-        setLatestMarks(data);
+        setLatestMarks(
+          data?.filter((record) => record.exam.course.modules.length === 0)
+        );
       } catch (error) {
-        console.log(error);
       } finally {
         setLatestMarksLoading(false);
       }
@@ -32,7 +33,6 @@ const DashboardStudent = () => {
         const { data } = await AxiosClient.get("/student/get-parent");
         setParent(data);
       } catch (error) {
-        console.log(error);
       } finally {
         setParentLoading(false);
       }
@@ -176,7 +176,7 @@ const DashboardStudent = () => {
             </div>
             <div className="card-body pt-3">
               {!latestMarksLoading ? (
-                !latestMarks ? (
+                latestMarks?.length > 0 ? (
                   latestMarks
                     ?.filter(
                       (record) => record.exam.course.modules.length === 0

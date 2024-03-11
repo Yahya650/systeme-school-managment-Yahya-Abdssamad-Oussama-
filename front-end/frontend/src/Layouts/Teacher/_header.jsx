@@ -15,7 +15,7 @@ const _header = () => {
   useEffect(() => {
     getCurrentSchoolYear();
   }, []);
-  
+
   return (
     <header className="header">
       <div className="header-left">
@@ -224,7 +224,7 @@ const _header = () => {
               My Profile
             </Link>
             <button
-              className="dropdown-item"
+              className="dropdown-item  text-danger"
               onClick={async () => {
                 setLoadingContaxt(true);
                 await logout("teacher");

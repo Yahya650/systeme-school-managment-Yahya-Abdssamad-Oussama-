@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classe;
+use App\Models\ExamRecord;
 use App\Models\Student;
 use Nette\Utils\Random;
 use Illuminate\Support\Str;
@@ -316,6 +317,9 @@ class StudentController extends Controller
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
         if ($student->classe_id !== $request->classe_id) {
+            if (($student->classe->classeType->id !== Classe::find($request->classe_id)->classeType->id) || ($student->classe->filiere_id !== Classe::find($request->classe_id)->filiere_id)) {
+                ExamRecord::where('student_id', $student->id)->delete();
+            }
             $classe = Classe::find($request->classe_id);
             $classe->number_etud += 1;
             $classe->save();
@@ -419,6 +423,9 @@ class StudentController extends Controller
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
         if ($student->classe_id !== $request->classe_id) {
+            if (($student->classe->classeType->id !== Classe::find($request->classe_id)->classeType->id) || ($student->classe->filiere_id !== Classe::find($request->classe_id)->filiere_id)) {
+                ExamRecord::where('student_id', $student->id)->delete();
+            }
             $classe = Classe::find($request->classe_id);
             $classe->number_etud += 1;
             $classe->save();
@@ -521,6 +528,9 @@ class StudentController extends Controller
         $student->phone_number = $request->phone_number;
         $student->address = $request->address;
         if ($student->classe_id !== $request->classe_id) {
+            if (($student->classe->classeType->id !== Classe::find($request->classe_id)->classeType->id) || ($student->classe->filiere_id !== Classe::find($request->classe_id)->filiere_id)) {
+                ExamRecord::where('student_id', $student->id)->delete();
+            }
             $classe = Classe::find($request->classe_id);
             $classe->number_etud += 1;
             $classe->save();
@@ -751,9 +761,6 @@ class StudentController extends Controller
         ]);
     }
 
-
-
-
     public function getStudentWithAllInfo($id)
     {
         if (!Student::find($id)) {
@@ -802,5 +809,43 @@ class StudentController extends Controller
         return response()->json([
             'message' => "Photo de profile mise à jour avec succès"
         ], 200);
+    }
+
+
+    public function search(Request $request)
+    {
+        $code_massar = $request->code_massar;
+        $parent_id = $request->parent_id;
+        $classe_id = $request->classe_id;
+        $type = $request->type;
+
+        $studentsQuery = Student::query()->withTrashed();
+
+        if ($code_massar) $studentsQuery->where('code_massar', 'like', '%' . $code_massar . '%');
+        if ($parent_id) $studentsQuery->where('student_parent_id', 'like', '%' . $parent_id . '%');
+        if ($classe_id) $studentsQuery->where('classe_id', 'like', '%' . $classe_id . '%');
+
+        $students = $studentsQuery->get();
+
+        if ($type === "deleted") {
+            $deletedStudents = $students->filter(function ($student) {
+                return $student->deleted_at !== null;
+            });
+            return response()->json([
+                'data' => $deletedStudents->values(),
+                'current_page' => 1, // Assuming it's always the first page for deleted students
+                'per_page' => 0,
+                'total' => 0,
+                'last_page' => 0 // Assuming it's always the last page for deleted students
+            ]);
+        }
+
+        return response()->json([
+            'data' => $students,
+            'current_page' => 1, // Assuming it's always the first page for normal students
+            'per_page' => 0,
+            'total' => 0,
+            'last_page' => 0 // Assuming it's always the last page for normal students
+        ]);
     }
 }

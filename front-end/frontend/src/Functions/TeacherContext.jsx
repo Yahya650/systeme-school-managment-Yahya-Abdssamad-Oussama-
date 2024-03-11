@@ -11,6 +11,7 @@ const ContextTeacher = createContext({
   getTeachers: () => {},
   updateTeacher: () => {},
   removeTeacher: () => {},
+  getTeachersBySearch: () => {},
   createTeacher: () => {},
   getTeacher: () => {},
   getTeachersTrash: () => {},
@@ -203,7 +204,6 @@ const TeacherContext = ({ children }) => {
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -222,12 +222,13 @@ const TeacherContext = ({ children }) => {
         }
       );
       await getTeachers(
-        currentPage !== 1 && teachers.length === ids.length ? currentPage - 1 : 1
+        currentPage !== 1 && teachers.length === ids.length
+          ? currentPage - 1
+          : 1
       );
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -251,6 +252,27 @@ const TeacherContext = ({ children }) => {
     }
   }
 
+  async function getTeachersBySearch(currentPage = 1, paramsData, type) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/professors/search?page=" + currentPage,
+        {
+          params: { ...paramsData, type },
+        }
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      if (type === "deleted") {
+        setTeachersTrash(data.data);
+      } else if (type === "normal") {
+        setTeachers(data.data);
+      }
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
+
+
   return (
     <ContextTeacher.Provider
       value={{
@@ -259,6 +281,7 @@ const TeacherContext = ({ children }) => {
         removeTeacher,
         createTeacher,
         updateProfilePicture,
+        getTeachersBySearch,
         getTeacher,
         getTeachersTrash,
         restoreTeacherSelected,

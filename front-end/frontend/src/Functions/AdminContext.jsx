@@ -13,6 +13,7 @@ const ContextAdmin = createContext({
   updateAdmin: () => {},
   removeAdmin: () => {},
   createAdmin: () => {},
+  getAdminsBySearch: () => {},
   updateProfilePicture: () => {},
   renewPassword: () => {},
   restoreAdminSelected: () => {},
@@ -200,7 +201,6 @@ const AdminContext = ({ children }) => {
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -224,7 +224,6 @@ const AdminContext = ({ children }) => {
       setIds([]);
       successToast(data.message, 3000, "top-center");
     } catch (error) {
-      console.log(error);
       errorToast(error.response.data.message, 6000, "top-center");
     } finally {
       toast.dismiss(toastId);
@@ -248,11 +247,32 @@ const AdminContext = ({ children }) => {
     }
   }
 
+  async function getAdminsBySearch(currentPage = 1, paramsData, type) {
+    try {
+      const { data } = await AxiosClient.get(
+        "/super-admin/administrators/search?page=" + currentPage,
+        {
+          params: { ...paramsData, type },
+        }
+      );
+      setTotal(data.total);
+      setPageCount(data.last_page);
+      if (type === "deleted") {
+        setAdminsTrash(data.data);
+      } else if (type === "normal") {
+        setAdmins(data.data);
+      }
+    } catch (error) {
+      errorToast(error.response.data.message);
+    }
+  }
+
   return (
     <ContextAdmin.Provider
       value={{
         getAdmins,
         restoreAdmin,
+        getAdminsBySearch,
         getAdminsTrash,
         restoreAdminSelected,
         deleteAdminSelected,

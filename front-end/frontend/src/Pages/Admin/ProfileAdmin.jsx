@@ -124,9 +124,7 @@ const ProfileAdmin = () => {
                   </div>
                 </div>
                 <div className="col-auto profile-btn">
-                  <Link href className="btn btn-primary">
-                    Edit
-                  </Link>
+                  <Link className="btn btn-primary">Edit</Link>
                 </div>
               </div>
             </div>
@@ -147,7 +145,7 @@ const ProfileAdmin = () => {
                     data-bs-toggle="tab"
                     to="#password_tab"
                   >
-                    Password
+                    Mot de passe
                   </Link>
                 </li>
               </ul>
@@ -175,8 +173,8 @@ const ProfileAdmin = () => {
                               style={{ height: "200px" }}
                             >
                               <tbody>
-                                <tr className="">
-                                  <td className={""}>
+                                <tr>
+                                  <td>
                                     <div className="d-flex justify-content-between">
                                       <p className="text-muted mb-0">CIN :</p>
                                       <p className="mb-0">{user?.cin}</p>
@@ -194,7 +192,7 @@ const ProfileAdmin = () => {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td className={""}>
+                                  <td>
                                     <div className="d-flex justify-content-between">
                                       <p className="text-muted mb-0">
                                         Mobile :
@@ -216,7 +214,7 @@ const ProfileAdmin = () => {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td className={""}>
+                                  <td>
                                     <div className="d-flex justify-content-between">
                                       <p className="text-muted mb-0">
                                         gender :
@@ -239,7 +237,7 @@ const ProfileAdmin = () => {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td className={""}>
+                                  <td>
                                     <div className="d-flex justify-content-between">
                                       <p className="text-muted mb-0">
                                         Blood type :
@@ -575,7 +573,7 @@ const ProfileAdmin = () => {
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title border-bottom pb-3">
-                      Change Password
+                      Change Mot de passe
                     </h5>
                     <div className="row mt-3">
                       <div className="col-md-10 col-lg-6">
@@ -593,7 +591,7 @@ const ProfileAdmin = () => {
                           }}
                         >
                           <div className="form-group">
-                            <label>Old Password</label>
+                            <label>Ancien Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -604,7 +602,7 @@ const ProfileAdmin = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>New Password</label>
+                            <label>Nouveau Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -615,7 +613,7 @@ const ProfileAdmin = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>Confirm Password</label>
+                            <label>Confirmez le Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -633,7 +631,7 @@ const ProfileAdmin = () => {
                             {loadingResetPassword ? (
                               <LoadingCircle />
                             ) : (
-                              "Save Changes"
+                              "Enregistrer le Mot de passe"
                             )}
                           </button>
                         </form>

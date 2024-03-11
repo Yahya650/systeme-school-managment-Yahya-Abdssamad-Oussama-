@@ -593,7 +593,7 @@ const ProfileTeacher = () => {
                           }}
                         >
                           <div className="form-group">
-                            <label>Old Password</label>
+                            <label>Ancien Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -604,7 +604,7 @@ const ProfileTeacher = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>New Password</label>
+                            <label>Nouveau Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -615,7 +615,7 @@ const ProfileTeacher = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>Confirm Password</label>
+                            <label>Confirmez le Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -633,7 +633,7 @@ const ProfileTeacher = () => {
                             {loadingResetPassword ? (
                               <LoadingCircle />
                             ) : (
-                              "Save Changes"
+                              "Enregistrer le mot de passe"
                             )}
                           </button>
                         </form>

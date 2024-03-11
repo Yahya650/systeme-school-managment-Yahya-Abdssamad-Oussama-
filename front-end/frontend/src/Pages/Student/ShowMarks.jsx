@@ -53,7 +53,6 @@ const ShowMarks = () => {
           }))
         );
       } catch (error) {
-        console.log(error);
         errorToast(error.response.data.message);
       } finally {
         setSchoolYearLoading(false);
@@ -71,7 +70,6 @@ const ShowMarks = () => {
         );
         setErrors(null);
       } catch (error) {
-        console.log(error);
         errorToast(error.response.data.message);
       } finally {
         setSemesterLoading(false);

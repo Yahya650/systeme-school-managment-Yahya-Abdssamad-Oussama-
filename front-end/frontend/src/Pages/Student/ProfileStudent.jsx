@@ -94,7 +94,7 @@ const ProfileStudent = () => {
                     data-bs-toggle="tab"
                     to="#password_tab"
                   >
-                    Password
+                    Mot de passe
                   </Link>
                 </li>
               </ul>
@@ -231,7 +231,7 @@ const ProfileStudent = () => {
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title border-bottom pb-3">
-                      Change Password
+                      Change Mot de passe
                     </h5>
                     <div className="row mt-3">
                       <div className="col-md-10 col-lg-6">
@@ -249,7 +249,7 @@ const ProfileStudent = () => {
                           }}
                         >
                           <div className="form-group">
-                            <label>Old Password</label>
+                            <label>Ancien Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -260,7 +260,7 @@ const ProfileStudent = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>New Password</label>
+                            <label>Nouveau Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -271,7 +271,7 @@ const ProfileStudent = () => {
                             </span>
                           </div>
                           <div className="form-group">
-                            <label>Confirm Password</label>
+                            <label>Confirmez le Mot de passe</label>
                             <input
                               type="password"
                               className="form-control"
@@ -289,7 +289,7 @@ const ProfileStudent = () => {
                             {loadingResetPassword ? (
                               <LoadingCircle />
                             ) : (
-                              "Save Changes"
+                              "Enregistrer le Mot de passe"
                             )}
                           </button>
                         </form>

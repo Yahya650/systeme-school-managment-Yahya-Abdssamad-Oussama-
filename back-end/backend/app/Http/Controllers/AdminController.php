@@ -176,7 +176,7 @@ class AdminController extends Controller
             'message' => "Photo de profil mise à jour avec succès"
         ], 200);
     }
-    
+
     public function updatePictureProfileAuth(Request $request)
     {
         $admin = $request->user('admin');
@@ -499,6 +499,44 @@ class AdminController extends Controller
 
         return response()->json([
             'message' => 'Tous les administrateurs sélectionnés ont été supprimés avec succès'
+        ]);
+    }
+
+
+    public function search(Request $request)
+    {
+        $cin = $request->cin;
+        $first_name = $request->first_name;
+        $phone_number = $request->phone_number;
+        $type = $request->type;
+
+        $adminsQuery = Admin::query()->withTrashed();
+
+        if ($cin) $adminsQuery->where('cin', 'like', '%' . $cin . '%');
+        if ($first_name) $adminsQuery->where('first_name', 'like', '%' . $first_name . '%');
+        if ($phone_number) $adminsQuery->where('phone_number', 'like', '%' . $phone_number . '%');
+
+        $admins = $adminsQuery->get();
+
+        if ($type === "deleted") {
+            $deletedAdmins = $admins->filter(function ($admin) {
+                return $admin->deleted_at !== null;
+            });
+            return response()->json([
+                'data' => $deletedAdmins->values(),
+                'current_page' => 1, // Assuming it's always the first page for deleted Admins
+                'per_page' => 0,
+                'total' => 0,
+                'last_page' => 0 // Assuming it's always the last page for deleted Admins
+            ]);
+        }
+
+        return response()->json([
+            'data' => $admins,
+            'current_page' => 1, // Assuming it's always the first page for normal Admins
+            'per_page' => 0,
+            'total' => 0,
+            'last_page' => 0 // Assuming it's always the last page for normal Admins
         ]);
     }
 }

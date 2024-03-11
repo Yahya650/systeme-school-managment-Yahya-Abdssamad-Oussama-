@@ -281,12 +281,7 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.address}</span>
                     </div>
                   </div>
-                  <div
-                    className="col-4 col-sm-4"
-                    styles={{
-                      menu: (base) => ({ ...base, zIndex: 9999 }),
-                    }}
-                  >
+                  <div className="col-4 col-sm-4">
                     <div className="form-group local-forms">
                       <label>
                         Parents <span className="login-danger">*</span>
@@ -298,6 +293,9 @@ const CreateStudent = () => {
                           } else {
                             setShowFormParent(false);
                           }
+                        }}
+                        styles={{
+                          menu: (base) => ({ ...base, zIndex: 9999 }),
                         }}
                         name="student_parent_id"
                         isLoading={loading}

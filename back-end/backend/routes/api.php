@@ -42,6 +42,7 @@ Route::group(['prefix' => 'student-parent'], function () {
     require __DIR__ . '/student_parent.php';
 });
 
+// Global APIs
 Route::get('/current-school-year', [SchoolYearController::class, 'getCurrent']);
 Route::apiResource('school-years', SchoolYearController::class);
 Route::apiResource('semesters', SemesterController::class);
