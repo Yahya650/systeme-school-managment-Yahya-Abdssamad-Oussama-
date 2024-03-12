@@ -7,6 +7,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReportMail;
+use App\Models\SchoolYear;
 
 class ReportController extends Controller
 {
@@ -31,47 +32,46 @@ class ReportController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $idStudent)
+    public function store(Request $request)
     {
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'student_id' => 'required|exists:students,id',
         ]);
 
+        $student = Student::find($request->student_id);
 
-        if (!Student::find($idStudent)) {
+        if (!$student) {
             return response()->json(['message' => 'Étudiant non trouvé'], 404);
         }
 
         $admin = $request->user('admin');
 
-        if (!$admin->school_levels()->wherePivot('school_level_id', Student::find($idStudent)->classe->classeType->school_level->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists()) {
+        if (!$admin->school_levels()->wherePivot('school_level_id', $student->classe->classeType->school_level->id)->wherePivot('types', 'like', '%educational%')->exists()) {
             return response()->json(['message' => 'Vous n\'avez pas les autorisations pour effectuer cette action'], 401);
         }
-
-        // make mailer for send this raport to parent
-
-        // ...
-
-        // make mailer for send this report to parent
-        // $parentEmail = Student::find($idStudent)->parent->email;
-        // $reportData = [
-        //     'title' => $request->title,
-        //     'content' => $request->content,
-        //     'student' => Student::find($idStudent),
-        // ];
-
-        // Mail::to($parentEmail)->send(new ReportMail($reportData));
-
 
         $report = new Report();
         $report->title = $request->title;
         $report->content = $request->content;
-        $report->student_id = $idStudent;
+        $report->school_year_id = SchoolYear::latest()->first()->id;
+        $report->student_id = $request->student_id;
         $report->admin_id = $admin->id;
         $report->save();
 
-        return response()->json(['message' => 'Rapport envoyé'], 200);
+        // make mailer for send this report to parent
+        $parent = $student->parent;
+        $parentEmail = $parent->email;
+        $reportData = [
+            'title' => $report->title,
+            'content' => $report->content,
+            'student' => $student,
+        ];
+
+        Mail::to($parentEmail)->send(new ReportMail($reportData));
+
+        return response()->json(['message' => 'Rapport crée et envoyé au parent ' . $parent->last_name . ' ' . $parent->first_name . ' avec succès'], 200);
     }
 
     /**

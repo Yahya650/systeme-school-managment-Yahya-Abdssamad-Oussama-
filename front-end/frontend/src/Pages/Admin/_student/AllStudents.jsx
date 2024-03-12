@@ -10,12 +10,16 @@ import cryptID from "../../../config/security/cryptID";
 import dcryptID from "../../../config/security/dcryptID";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
+import { Tooltip } from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+
 import {
   faTrashCan,
   faArrowLeft,
   faTrashCanArrowUp,
   faSearch,
   faUndo,
+  faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingCircle from "../../../Components/LoadingCircle";
 import { errorToast } from "../../../config/Toasts/toasts";
@@ -23,7 +27,9 @@ import { errorToast } from "../../../config/Toasts/toasts";
 const AllStudents = () => {
   const [loading, setLoading] = useState(true);
   const [loadingSearch, setLoadingSearch] = useState(false);
+  const [loadingCreateReport, setLoadingCreateReport] = useState(false);
   const [typeFetch, setTypeFetch] = useState("normal");
+  const [studentId, setStudentId] = useState(null);
   const [loadingParents, setLoadingParents] = useState(true);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -35,7 +41,10 @@ const AllStudents = () => {
   const btnGrid1 = useRef(null);
   const classe_id = useRef(null);
   const parent_id = useRef(null);
+  const title = useRef(null);
+  const content = useRef(null);
   const code_massar = useRef(null);
+  const close_createReport_modal = useRef(null);
   const {
     students,
     pageCount,
@@ -47,6 +56,7 @@ const AllStudents = () => {
     ids,
     setCurrentPage,
     total,
+    errors,
   } = useContextApi();
 
   const {
@@ -57,6 +67,7 @@ const AllStudents = () => {
     restoreStudentSelected,
     deleteStudentSelected,
     getStudentsBySearch,
+    createReport,
   } = useStudentContext();
 
   const fetchData = async (doLoading = true, val_currentPage) => {
@@ -169,16 +180,29 @@ const AllStudents = () => {
     setLoadingDelete(false);
   };
 
+  const handelCreateReport = async (e) => {
+    e.preventDefault();
+    const formData = {
+      title: e.target.title.value,
+      content: e.target.content.value,
+      student_id: studentId,
+    };
+    setLoadingCreateReport(true);
+    const state = await createReport(formData);
+    if (state) {
+      title.current.value = "";
+      content.current.value = "";
+      close_createReport_modal.current.click()
+    }
+    setLoadingCreateReport(false);
+  };
+
   useEffect(() => {
     setCurrentPage(1);
     fetchData();
     fetchParents();
     fetchClasses();
   }, []);
-
-  // useEffect(() => {
-  //   handleResetSearchForm(false);
-  // }, [typeFetch]);
 
   return (
     <div className="content container-fluid">
@@ -548,6 +572,31 @@ const AllStudents = () => {
                                           >
                                             <i className="feather-trash"></i>
                                           </button>
+
+                                          <button
+                                            onClick={() =>
+                                              setStudentId(student.id)
+                                            }
+                                            className="btn btn-sm bg-danger-light ms-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#reportModal"
+                                            data-tooltip-id={
+                                              "my-tooltip" + cryptID(student.id)
+                                            }
+                                            data-tooltip-content={
+                                              "écrire un rapport pour " +
+                                              student.last_name
+                                            }
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faNewspaper}
+                                            />
+                                          </button>
+                                          <Tooltip
+                                            id={
+                                              "my-tooltip" + cryptID(student.id)
+                                            }
+                                          />
                                         </div>
                                       </td>
                                     </tr>
@@ -904,6 +953,91 @@ const AllStudents = () => {
                   </>
                 ) : null}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal Create Report */}
+      <div
+        className="modal fade"
+        id="reportModal"
+        tabIndex={-1}
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                écrire un rapport
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handelCreateReport}>
+                <div className="mb-3">
+                  <label htmlFor="title" className="form-label">
+                  Objet<span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    ref={title}
+                    className={
+                      errors?.title ? "form-control is-invalid" : "form-control"
+                    }
+                    id="title"
+                    name="title"
+                  />
+                  <span className="text text-danger">{errors?.title}</span>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="content" className="form-label">
+                    Description<span className="login-danger">*</span>{" "}
+                    <small
+                      style={{ fontSize: "10px" }}
+                      className="text-secondary"
+                    >
+                      (max: 500)
+                    </small>
+                  </label>
+                  <textarea
+                    ref={content}
+                    name="content"
+                    id="content"
+                    cols="30"
+                    rows="10"
+                    maxLength={500}
+                    className={
+                      errors?.content
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                  ></textarea>
+                  <span className="text text-danger">{errors?.content}</span>
+                </div>
+                <div className="modal-footer pb-0">
+                  <button
+                    ref={close_createReport_modal}
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className={"btn btn-primary"}
+                    disabled={loadingCreateReport}
+                  >
+                    {!loadingCreateReport ? "Save changes" : <LoadingCircle />}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
