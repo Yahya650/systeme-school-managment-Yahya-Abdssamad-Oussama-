@@ -49,8 +49,7 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);
         Route::post('/update-mark/{id}', [ExamRecordController::class, 'update']);
 
-        Route::post('/create-report/{idStudent}', [ReportController::class, 'store']);
-        Route::apiResource('reports', ReportController::class)->only(['index', 'destroy', 'show']);
+        Route::apiResource('reports', ReportController::class)->only(['index', 'destroy', 'show', 'store']);
 
         Route::apiResource('absences', AbsenceController::class)->only(['index', 'show', 'destroy']);
         Route::post('/{id}/update-absence', [AbsenceController::class, 'update']);

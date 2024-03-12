@@ -23,6 +23,7 @@ const ContextStudent = createContext({
   createStudentWithParent: () => {},
   restoreStudentSelected: () => {},
   deleteStudentSelected: () => {},
+  createReport: () => {},
   updateStudentWithCreateParent: () => {},
   latestMarks: null,
 });
@@ -54,6 +55,21 @@ const StudentContext = ({ children }) => {
       setStudents(data.data);
     } catch (error) {
       errorToast(error.response.data.message);
+    }
+  }
+  async function createReport(formData) {
+    try {
+      const { data } = await AxiosClient.post(
+        "/admin/etudiants/reports",
+        formData
+      );
+      successToast(data.message, 10000);
+      setErrors(null);
+      return true;
+    } catch (error) {
+      setErrors(error.response.data.errors);
+      errorToast(error.response.data.message);
+      return false;
     }
   }
   async function getStudentsBySearch(currentPage = 1, paramsData, type) {
@@ -369,6 +385,7 @@ const StudentContext = ({ children }) => {
         getStudentsTrash,
         latestMarks,
         getStudentsBySearch,
+        createReport,
         createStudent,
         deleteStudentSelected,
         updateStudentWithParent,
