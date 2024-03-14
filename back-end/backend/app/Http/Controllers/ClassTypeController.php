@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Class_type;
+use App\Models\ClasseType;
 use Illuminate\Http\Request;
 
 class ClassTypeController extends Controller
@@ -12,7 +13,7 @@ class ClassTypeController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(ClasseType::with(['classes', 'filieres'])->get());
     }
 
     /**

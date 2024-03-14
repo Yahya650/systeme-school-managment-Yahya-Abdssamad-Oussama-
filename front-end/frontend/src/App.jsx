@@ -105,10 +105,14 @@ const SaveMarksExcel = React.lazy(() =>
   import("./Pages/Admin/_student/SaveMarksExcel")
 );
 const ProfileAdmin = React.lazy(() => import("./Pages/Admin/ProfileAdmin"));
-const ProfileStudent = React.lazy(() => import("./Pages/Student/ProfileStudent"));
-
+const ProfileStudent = React.lazy(() =>
+  import("./Pages/Student/ProfileStudent")
+);
 const ProfileTeacher = React.lazy(() =>
   import("./Pages/Teacher/ProfileTeacher")
+);
+const ClassesManager = React.lazy(() =>
+  import("./Pages/SuperAdmin/classes/ClassesManager")
 );
 
 const LezyLoadingSuspense = ({ component }) => (
@@ -264,6 +268,10 @@ function App() {
         <Route
           path="all-teachers"
           element={<LezyLoadingSuspense component={<AllTeachers />} />}
+        />
+        <Route
+          path="manage-classes"
+          element={<LezyLoadingSuspense component={<ClassesManager />} />}
         />
       </Route>
 

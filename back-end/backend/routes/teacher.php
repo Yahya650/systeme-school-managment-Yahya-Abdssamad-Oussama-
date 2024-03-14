@@ -24,9 +24,9 @@ Route::middleware(['auth:teacher'])->group(function () {
     Route::post('/create-absence', [AbsenceController::class, 'store']);
 
     // Routes Exams
-    Route::post('/upload-exam', [ExamController::class, 'store']);
-    Route::post('/update-exam/{id}', [ExamController::class, 'update']);
-    Route::apiResource('exams', ExamController::class)->only(['index', 'destroy', 'show']);
+    // Route::post('/upload-exam', [ExamController::class, 'store']);
+    // Route::post('/update-exam/{id}', [ExamController::class, 'update']);
+    // Route::apiResource('exams', ExamController::class)->only(['index', 'destroy', 'show']);
 
     // Routes Exercises
     Route::post('/upload-exercise', [ExerciseController::class, 'store']);

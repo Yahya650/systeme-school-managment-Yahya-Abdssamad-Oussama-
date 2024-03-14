@@ -192,7 +192,7 @@ const AllStudents = () => {
     if (state) {
       title.current.value = "";
       content.current.value = "";
-      close_createReport_modal.current.click()
+      close_createReport_modal.current.click();
     }
     setLoadingCreateReport(false);
   };
@@ -982,7 +982,7 @@ const AllStudents = () => {
               <form onSubmit={handelCreateReport}>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">
-                  Objet<span className="login-danger">*</span>
+                    Objet<span className="login-danger">*</span>
                   </label>
                   <input
                     type="text"

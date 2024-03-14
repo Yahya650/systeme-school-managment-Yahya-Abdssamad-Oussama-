@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\SchoolLevelController;
-use App\Http\Controllers\SuperAdminController;
-use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\ClassTypeController;
+use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SchoolLevelController;
 
 
 // Routes Authentication Super Admin
@@ -29,6 +31,8 @@ Route::middleware(['auth:super_admin'])->group(function () {
     });
 
     Route::apiResource('school_levels', SchoolLevelController::class);
+    Route::post('/add-classes', [ClasseController::class, 'store']);
+    Route::apiResource('classe-types', ClassTypeController::class);
 
     // Routes Admins
     Route::group(['prefix' => 'administrators'], function () {

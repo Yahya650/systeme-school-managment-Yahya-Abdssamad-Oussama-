@@ -1,3 +1,5 @@
+import { faUserTie, faUsersLine } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
@@ -17,7 +19,7 @@ const _sidebar = () => {
             </li>
             <li className="">
               <Link to={"#"}>
-                <i className="fas fa-graduation-cap"></i>
+                <FontAwesomeIcon icon={faUserTie} />
                 <span> Administrateurs</span>
                 <span className="menu-arrow"></span>
               </Link>
@@ -40,6 +42,20 @@ const _sidebar = () => {
                 <li>
                   <NavLink to="/super-admin/all-teachers">
                     liste des enseignants
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+            <li className="">
+              <NavLink to="#">
+                <FontAwesomeIcon icon={faUsersLine} />
+                <span> Classes</span>
+                <span className="menu-arrow"></span>
+              </NavLink>
+              <ul>
+                <li>
+                  <NavLink to="/super-admin/manage-classes">
+                    Management les classes
                   </NavLink>
                 </li>
               </ul>
