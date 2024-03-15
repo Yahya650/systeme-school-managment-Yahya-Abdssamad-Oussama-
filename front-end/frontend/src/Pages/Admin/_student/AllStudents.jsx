@@ -57,6 +57,7 @@ const AllStudents = () => {
     setCurrentPage,
     total,
     errors,
+    setErrors
   } = useContextApi();
 
   const {
@@ -959,6 +960,15 @@ const AllStudents = () => {
       </div>
       {/* Modal Create Report */}
       <div
+        ref={(modal) => {
+          if (modal) {
+            modal.addEventListener("hidden.bs.modal", () => {
+              setErrors(null);
+              title.current.value = "";
+              content.current.value = "";
+            });
+          }
+        }}
         className="modal fade"
         id="reportModal"
         tabIndex={-1}

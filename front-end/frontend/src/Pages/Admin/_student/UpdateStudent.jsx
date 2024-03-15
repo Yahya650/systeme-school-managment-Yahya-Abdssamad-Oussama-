@@ -116,7 +116,7 @@ const UpdateStudent = () => {
         // student data
         cin: e.target.cin[0].value?.toUpperCase(),
         code_massar: e.target.code_massar.value.toUpperCase(),
-        email: e.target.email[0].value,
+        email: e.target.code_massar.value.toUpperCase() + "@taalim.ma",
         first_name: e.target.first_name[0].value,
         last_name: e.target.last_name[0].value,
         phone_number: e.target.phone_number[0].value,
@@ -144,7 +144,7 @@ const UpdateStudent = () => {
         // student data
         cin: e.target.cin.value?.toUpperCase(),
         code_massar: e.target.code_massar.value.toUpperCase(),
-        email: e.target.email.value,
+        email: e.target.code_massar.value.toUpperCase() + "@taalim.ma",
         first_name: e.target.first_name.value,
         last_name: e.target.last_name.value,
         phone_number: e.target.phone_number.value,
@@ -245,16 +245,21 @@ const UpdateStudent = () => {
                         <label>
                           UserName<span className="login-danger">*</span>
                         </label>
-                        <input
-                          name="email"
-                          className="form-control"
-                          disabled
-                          type="text"
-                          value={
-                            userNameStudent && userNameStudent + "@taalim.ma"
-                          }
-                          placeholder="ex: R000000000@taalim.ma"
-                        />
+                        <div className="input-group">
+                          <input
+                            type="text"
+                            name="email"
+                            disabled
+                            className="form-control"
+                            placeholder="Saisir username"
+                            aria-label="Recipient's username"
+                            aria-describedby="basic-addon2"
+                            value={userNameStudent}
+                          />
+                          <span className="input-group-text" id="basic-addon2">
+                            @taalim.ma
+                          </span>
+                        </div>
                         <span className="text-danger">{errors?.email}</span>
                       </div>
                     </div>

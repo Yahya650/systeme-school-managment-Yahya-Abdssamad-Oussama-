@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Class_type;
 use App\Models\ClasseType;
+use App\Models\SchoolLevel;
 use Illuminate\Http\Request;
 
 class ClassTypeController extends Controller
@@ -46,5 +47,11 @@ class ClassTypeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function getClasseTypesBySchoolLevel($id)
+    {
+        return response()->json(SchoolLevel::find($id)->classe_types);
     }
 }

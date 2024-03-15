@@ -61,12 +61,12 @@ const ClassesManager = () => {
       <div className="page-header">
         <div className="row align-items-center">
           <div className="col">
-            <h3 className="page-title">Add Event</h3>
+            <h3 className="page-title">Les Classes</h3>
             <ul className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="event.html">Events</a>
+                <a href="event.html">Classes</a>
               </li>
-              <li className="breadcrumb-item active">Add Event</li>
+              <li className="breadcrumb-item active">Management les classe</li>
             </ul>
           </div>
         </div>
@@ -98,14 +98,17 @@ const ClassesManager = () => {
                               <td>{classeType.school_level.name}</td>
                               <td>
                                 <div className="d-flex flex-nowrap gap-2 align-items-center">
-                                  <input
-                                    id={"classeCount" + cryptID(classeType.id)}
-                                    type="text"
-                                    disabled
-                                    value={classeType.classes.length}
-                                    className="form-control"
-                                  />
-                                  <div>
+                                  <div className="input-group">
+                                    {/* <span className="input-group-text">$</span> */}
+                                    <input
+                                      id={
+                                        "classeCount" + cryptID(classeType.id)
+                                      }
+                                      type="text"
+                                      disabled
+                                      value={classeType.classes.length}
+                                      className="form-control"
+                                    />
                                     <button
                                       type="button"
                                       className="btn btn-primary"
@@ -137,6 +140,18 @@ const ClassesManager = () => {
         </div>
       </div>
       <div
+        ref={(modal) => {
+          if (modal) {
+            modal.addEventListener("hidden.bs.modal", () => {
+              setErrors(null);
+              numberEtudMax.current.value = "";
+              filiereId.current?.setValue({
+                value: "",
+                label: "Selectionner un filière...",
+              });
+            });
+          }
+        }}
         className="modal fade"
         id="addClasse"
         tabIndex={-1}
@@ -196,7 +211,7 @@ const ClassesManager = () => {
                     </label>
                     <input
                       ref={numberEtudMax}
-                      type="text"
+                      type="number"
                       className={
                         "form-control" +
                         " " +
@@ -215,14 +230,6 @@ const ClassesManager = () => {
                     type="button"
                     className="btn btn-secondary"
                     data-bs-dismiss="modal"
-                    onClick={() => {
-                      setErrors(null);
-                      numberEtudMax.current.value = "";
-                      filiereId.current?.setValue({
-                        value: "",
-                        label: "Selectionner un filière...",
-                      });
-                    }}
                   >
                     Close
                   </button>

@@ -49,13 +49,18 @@ const _sidebar = () => {
             <li className="">
               <NavLink to="#">
                 <FontAwesomeIcon icon={faUsersLine} />
-                <span> Classes</span>
+                <span> Les Classes</span>
                 <span className="menu-arrow"></span>
               </NavLink>
               <ul>
                 <li>
                   <NavLink to="/super-admin/manage-classes">
                     Management les classes
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/super-admin/liste-classes">
+                    Liste des classes
                   </NavLink>
                 </li>
               </ul>

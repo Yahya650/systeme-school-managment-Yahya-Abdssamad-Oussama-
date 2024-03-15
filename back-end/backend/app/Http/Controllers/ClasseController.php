@@ -19,7 +19,6 @@ class ClasseController extends Controller
     {
 
         $classes = [];
-
         foreach ($request->user('admin')->school_levels as $school_level) {
             foreach ($school_level->classe_types as $classe_type) {
                 foreach ($classe_type->classes as $classe) {
@@ -76,6 +75,24 @@ class ClasseController extends Controller
         // mnin tbghi dir create l classe dkhal m3ah les modules liki9ra 3la 7sab classe type and l filier likintami liha
     }
 
+    public function modifyClasses()
+    {
+        $request = request();
+
+        $request->validate([
+            'numbersEtudMax' => 'required|array',
+        ]);
+
+        foreach ($request->numbersEtudMax as $numberEtudMax) {
+            $classe = Classe::find($numberEtudMax['classe_id']);
+            if (!$classe) return response()->json(['message' => 'classe non trouve'], 404);
+            $classe->number_etud_max = $numberEtudMax['number_etud_max'];
+            $classe->save();
+        }
+
+        return response()->json(["message" => "les classes modifié avec succès"]);
+    }
+
     /**
      * Display the specified resource.
      */
@@ -120,5 +137,17 @@ class ClasseController extends Controller
         $classe = Classe::find($id);
         if (!$classe) return response()->json(['message' => 'classe non trouve'], 404);
         return response()->json($classe->students);
+    }
+
+    public function filterClasses()
+    {
+        $request = request();
+        // $request->validate([
+        //     'classe_type_id' => 'required|exists:classe_types,id',
+        // ]);
+        $classeType = ClasseType::find($request->classe_type_id);
+        if (!$classeType) return response()->json(['message' => 'le type de classe non trouve'], 404);
+
+        return response()->json($classeType->classes);
     }
 }

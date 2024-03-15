@@ -6,22 +6,12 @@ use App\Models\Classe;
 use App\Models\Student;
 use App\Models\TimeTable;
 use Illuminate\Http\Request;
+use App\Mail\TimeTableUploaded;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class TimeTableController extends Controller
 {
-
-    private function getCurrentSchoolYear()
-    {
-        $currentYear = now()->year;
-        $startMonth = 9;
-
-        if (now()->month < $startMonth) {
-            $currentYear--;
-        }
-
-        return $currentYear . '_' . ($currentYear + 1);
-    }
 
     public function timetableForStudent(Request $request)
     {
@@ -79,12 +69,12 @@ class TimeTableController extends Controller
         $schoolLevel = $classe->classeType->school_level;
 
 
-        if (!$admin->school_levels()->wherePivot('school_level_id', $schoolLevel->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists()) {
+        if (!$admin->school_levels()->wherePivot('school_level_id', $classe->classeType->school_level->id)->wherePivot('types', 'like', '%educational%')->exists()) {
             return response()->json(['message' => 'Vous n\'avez pas la permission de modifier ou ajouter ce emploi du temps'], 401);
         }
 
         if ($classe->time_table_id) {
-            Storage::exists("public/" . $classe->time_table->file) && Storage::disk('local')->delete("public/" . $classe->time_table->file);
+            Storage::exists("public/" . $classe->time_table?->file) && Storage::disk('local')->delete("public/" . $classe->time_table?->file);
             TimeTable::find($classe->time_table_id)->forceDelete();
         }
 
@@ -144,7 +134,7 @@ class TimeTableController extends Controller
         $admin = $request->user('admin');
         $schoolLevel = $classe->classeType->school_level;
 
-        if (!$admin->school_levels()->wherePivot('school_level_id', $schoolLevel->id)->wherePivot('type', 'educational')->wherePivot('deleted_at', null)->exists()) {
+        if (!$admin->school_levels()->wherePivot('school_level_id', $classe->classeType->school_level->id)->wherePivot('types', 'like', '%educational%')->exists()) {
             return response()->json(['message' => 'Vous n\'avez pas la permission de modifier ce emploi du temps'], 401);
         }
 
@@ -178,5 +168,45 @@ class TimeTableController extends Controller
         TimeTable::find($id)->delete();
 
         return response()->json(['message' => 'Emploi du temps supprimé avec succès']);
+    }
+
+    public function uploadTimeTableBySP($classId)
+    {
+
+        $request = request();
+        $request->validate([
+            'file' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
+            "start_date" => ['required', 'date', 'after:' . now()->toDateString()],
+        ]);
+
+        $classe = Classe::find($classId);
+        if (!$classe) return response()->json(['message' => 'Classe introuvable'], 404);
+
+        if ($classe->time_table_id) {
+            Storage::exists("public/" . $classe->time_table?->file) && Storage::disk('local')->delete("public/" . $classe->time_table?->file);
+            TimeTable::find($classe->time_table_id)->forceDelete();
+        }
+
+        $schoolLevel = $classe->classeType->school_level;
+
+        $timeTable = new TimeTable();
+        $timeTable->title = $classe->code . '-' . getCurrentSchoolYear();
+        $timeTable->start_date = $request->start_date;
+
+        Storage::exists("public/" . $classe->time_table?->file) && Storage::disk('local')->delete("public/" . $classe->time_table?->file);
+        $directoryPath = 'time_tables/' . ($schoolLevel->name === 'Primaire' ? 'primary' : ($schoolLevel->name === 'Collége' ? "collége" : ($schoolLevel->name === 'Préscolaire' ? 'préscolaire' : 'high_school'))) . '/' .
+            $classe->code . '-' . getCurrentSchoolYear() . '.' . $request->file->extension();
+        Storage::disk('local')->put("public/" . $directoryPath, file_get_contents($request->file));
+        $timeTable->file = $directoryPath;
+
+        $timeTable->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $timeTable->classe_id = $classe->id;
+        $timeTable->save();
+
+        foreach ($classe->students as $student) {
+            Mail::to($student->parent->email)->send(new TimeTableUploaded($student, $timeTable));
+        }
+
+        return response()->json(['message' => 'Emploi du temps mis à jour et envoyé aux les parents avec succès']);
     }
 }

@@ -3,26 +3,29 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
-class ReportMail extends Mailable
+class TimeTableUploaded extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $reportData;
+
+    public $student;
+    public $timeTable;
+
 
     /**
      * Create a new message instance.
      */
-    public function __construct($reportData)
+    public function __construct($student, $timeTable)
     {
-        $this->reportData = $reportData;
+        $this->student = $student;
+        $this->timeTable = $timeTable;
     }
-
 
     /**
      * Get the message envelope.
@@ -30,21 +33,18 @@ class ReportMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Report',
+            subject: 'Emploi du temps Updated',
         );
     }
 
-
     /**
      * Get the message content definition.
-     *
-     * @return \Illuminate\Mail\Mailables\Content
      */
-    public function content()
+    public function content(): Content
     {
         return new Content(
-            view: 'emails.report',
-            with: ['reportData' => $this->reportData, 'title' => "Report"],
+            view: 'emails.timeTableUploaded',
+            with: ['student' => $this->student, 'title' => "Emploi du temps Updated", 'timeTable' => $this->timeTable],
         );
     }
 

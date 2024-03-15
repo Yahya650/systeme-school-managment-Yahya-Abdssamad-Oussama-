@@ -114,6 +114,9 @@ const ProfileTeacher = React.lazy(() =>
 const ClassesManager = React.lazy(() =>
   import("./Pages/SuperAdmin/classes/ClassesManager")
 );
+const ListeClasses = React.lazy(() =>
+  import("./Pages/SuperAdmin/classes/ListeClasses")
+);
 
 const LezyLoadingSuspense = ({ component }) => (
   <Suspense
@@ -272,6 +275,10 @@ function App() {
         <Route
           path="manage-classes"
           element={<LezyLoadingSuspense component={<ClassesManager />} />}
+        />
+        <Route
+          path="liste-classes"
+          element={<LezyLoadingSuspense component={<ListeClasses />} />}
         />
       </Route>
 
