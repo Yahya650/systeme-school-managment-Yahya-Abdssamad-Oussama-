@@ -181,8 +181,11 @@ const UpdateAdmin = () => {
                           Prénom<span className="login-danger">*</span>
                         </label>
                         <input
-                          name="first_name"
-                          className="form-control"
+                          name={"first_name"}
+                          className={
+                            "form-control" +
+                            (errors?.first_name ? " is-invalid" : "")
+                          }
                           type="text"
                           defaultValue={admin?.first_name}
                         />
@@ -199,7 +202,10 @@ const UpdateAdmin = () => {
                         </label>
                         <input
                           name="last_name"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (errors?.last_name ? " is-invalid" : "")
+                          }
                           type="text"
                           defaultValue={admin?.last_name}
                         />
@@ -213,7 +219,9 @@ const UpdateAdmin = () => {
                         </label>
                         <input
                           name="cin"
-                          className="form-control"
+                          className={
+                            "form-control" + (errors?.cin ? " is-invalid" : "")
+                          }
                           type="text"
                           defaultValue={admin?.cin}
                         />
@@ -227,7 +235,10 @@ const UpdateAdmin = () => {
                         </label>
                         <input
                           name="email"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (errors?.email ? " is-invalid" : "")
+                          }
                           type="text"
                           defaultValue={admin?.email}
                         />
@@ -240,7 +251,10 @@ const UpdateAdmin = () => {
                           Genre <span className="login-danger">*</span>
                         </label>
                         <select
-                          className="form-control select"
+                          className={
+                            "form-control select" +
+                            (errors?.gender ? " is-invalid" : "")
+                          }
                           defaultValue={admin?.gender}
                           name="gender"
                         >
@@ -259,7 +273,10 @@ const UpdateAdmin = () => {
                         </label>
                         <input
                           name="date_of_birth"
-                          className="form-control datetimepicker"
+                          className={
+                            "form-control datetimepicker" +
+                            (errors?.date_of_birth ? " is-invalid" : "")
+                          }
                           type="date"
                           placeholder="JJ-MM-AAAA"
                           defaultValue={admin?.date_of_birth}
@@ -274,7 +291,10 @@ const UpdateAdmin = () => {
                         <label>Address</label>
                         <input
                           name="address"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (errors?.address ? " is-invalid" : "")
+                          }
                           placeholder="Veuillez entrer votre adresse"
                           type="text"
                           defaultValue={admin?.address}
@@ -287,7 +307,10 @@ const UpdateAdmin = () => {
                         <label>Blood Type</label>
                         <select
                           defaultValue={admin?.blood_type}
-                          className="form-control select"
+                          className={
+                            "form-control select" +
+                            (errors?.blood_type ? " is-invalid" : "")
+                          }
                           name="blood_type"
                         >
                           <option value={""}>
@@ -327,9 +350,12 @@ const UpdateAdmin = () => {
                       <div className="form-group local-forms">
                         <label>health status</label>
                         <select
-                          defaultValue={admin?.health_status}
                           name="health_status"
-                          className="form-control select"
+                          defaultValue={admin?.health_status}
+                          className={
+                            "form-control select" +
+                            (errors?.health_status ? " is-invalid" : "")
+                          }
                         >
                           <option value={""}>
                             Veuillez sélectionner une health status
@@ -350,7 +376,10 @@ const UpdateAdmin = () => {
                         </label>
                         <input
                           name="phone_number"
-                          className="form-control"
+                          className={
+                            "form-control" +
+                            (errors?.phone_number ? " is-invalid" : "")
+                          }
                           type="text"
                           defaultValue={admin?.phone_number}
                         />
@@ -360,7 +389,12 @@ const UpdateAdmin = () => {
                       </div>
                     </div>
                     <div className="col-12 col-sm-12">
-                      <table className="table mb-2 table-bordered">
+                      <table
+                        className="table mb-2 table-bordered"
+                        style={{
+                          color: errors?.responsibility ? "red" : "black",
+                        }}
+                      >
                         <thead>
                           <tr>
                             <th>Level Schools</th>
@@ -372,7 +406,12 @@ const UpdateAdmin = () => {
                             <tr key={i}>
                               <td>
                                 <input
-                                  className="form-check-input"
+                                  className={
+                                    "form-check-input" +
+                                    (errors?.responsibility
+                                      ? " is-invalid"
+                                      : "")
+                                  }
                                   type="checkbox"
                                   name={schoolLevel.name}
                                   id={"level" + schoolLevel.id}
@@ -399,7 +438,12 @@ const UpdateAdmin = () => {
                                   <div className="d-flex justify-content-evenly align-item-center gap-2">
                                     <div>
                                       <input
-                                        className="form-check-input"
+                                        className={
+                                          "form-check-input" +
+                                          (errors?.responsibility
+                                            ? " is-invalid"
+                                            : "")
+                                        }
                                         type="checkbox"
                                         name={"type" + schoolLevel.id}
                                         id={"financial" + schoolLevel.id}
@@ -426,7 +470,12 @@ const UpdateAdmin = () => {
                                     </div>
                                     <div>
                                       <input
-                                        className="form-check-input"
+                                        className={
+                                          "form-check-input" +
+                                          (errors?.responsibility
+                                            ? " is-invalid"
+                                            : "")
+                                        }
                                         type="checkbox"
                                         name={"type" + schoolLevel.id}
                                         id={"educational" + schoolLevel.id}

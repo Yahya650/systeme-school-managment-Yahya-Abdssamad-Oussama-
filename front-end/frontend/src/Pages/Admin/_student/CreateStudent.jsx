@@ -138,7 +138,10 @@ const CreateStudent = () => {
                       </label>
                       <input
                         name="code_massar"
-                        className="form-control"
+                        className={
+                          "form-control" +
+                          (errors?.code_massar ? " is-invalid" : "")
+                        }
                         type="text"
                         onChange={(e) => setUserNameStudent(e.target.value)}
                         placeholder="Saisir le code massar"
@@ -172,7 +175,9 @@ const CreateStudent = () => {
                       </label>
                       <input
                         name="email"
-                        className="form-control"
+                        className={
+                          "form-control" + (errors?.email ? " is-invalid" : "")
+                        }
                         type="text"
                         defaultValue={
                           userNameStudent && userNameStudent + "@taalim.ma"
@@ -189,7 +194,10 @@ const CreateStudent = () => {
                       </label>
                       <input
                         name="first_name"
-                        className="form-control"
+                        className={
+                          "form-control" +
+                          (errors?.first_name ? " is-invalid" : "")
+                        }
                         type="text"
                         placeholder="Saisir le prénom"
                       />
@@ -204,7 +212,10 @@ const CreateStudent = () => {
                       </label>
                       <input
                         name="last_name"
-                        className="form-control"
+                        className={
+                          "form-control" +
+                          (errors?.last_name ? " is-invalid" : "")
+                        }
                         type="text"
                         onChange={(e) => setLastNameStudent(e.target.value)}
                         placeholder="Saisir le nom de famille"
@@ -217,7 +228,13 @@ const CreateStudent = () => {
                       <label>
                         Gender <span className="login-danger">*</span>
                       </label>
-                      <select className="form-control select" name="gender">
+                      <select
+                        className={
+                          "form-control select" +
+                          (errors?.gender ? " is-invalid" : "")
+                        }
+                        name="gender"
+                      >
                         <option value={""}>Sélectionnez le Gender</option>
                         <option value={"male"}>Masculin</option>
                         <option value={"female"}>Féminin</option>
@@ -233,7 +250,10 @@ const CreateStudent = () => {
                       </label>
                       <input
                         name="date_of_birth"
-                        className="form-control datetimepicker"
+                        className={
+                          "form-control datetimepicker" +
+                          (errors?.date_of_birth ? " is-invalid" : "")
+                        }
                         type="date"
                         placeholder="Saisir la date de naissance"
                       />
@@ -245,10 +265,12 @@ const CreateStudent = () => {
                   <div className="col-12 col-sm-4">
                     <div className="form-group local-forms">
                       <label>Téléphone</label>
-
                       <input
                         name="phone_number"
-                        className="form-control"
+                        className={
+                          "form-control" +
+                          (errors?.phone_number ? " is-invalid" : "")
+                        }
                         type="text"
                         placeholder="Saisir le numéro de téléphone (optionnel)"
                       />
@@ -262,7 +284,9 @@ const CreateStudent = () => {
                       <label>CIN</label>
                       <input
                         name="cin"
-                        className="form-control"
+                        className={
+                          "form-control" + (errors?.cin ? " is-invalid" : "")
+                        }
                         type="text"
                         placeholder="Saisir le CIN (optionnel)"
                       />
@@ -274,7 +298,10 @@ const CreateStudent = () => {
                       <label>Address</label>
                       <input
                         name="address"
-                        className="form-control"
+                        className={
+                          "form-control" +
+                          (errors?.address ? " is-invalid" : "")
+                        }
                         placeholder="Veuillez entrer votre adresse (optionnel)"
                         type="text"
                       />
@@ -319,7 +346,10 @@ const CreateStudent = () => {
                       <label>Blood Type</label>
                       <select
                         placeholder=""
-                        className="form-control select"
+                        className={
+                          "form-control select" +
+                          (errors?.blood_type ? " is-invalid" : "")
+                        }
                         name="blood_type"
                       >
                         <option value="">
@@ -343,7 +373,10 @@ const CreateStudent = () => {
                       <select
                         placeholder=""
                         name="health_status"
-                        className="form-control select"
+                        className={
+                          "form-control select" +
+                          (errors?.health_status ? " is-invalid" : "")
+                        }
                       >
                         <option value="">
                           Selezionnez le health status (optionnel)
@@ -383,7 +416,10 @@ const CreateStudent = () => {
                                   </label>
                                   <input
                                     name="cin"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      (errors?.parent_cin ? " is-invalid" : "")
+                                    }
                                     type="text"
                                     placeholder="Saisir le CIN"
                                   />
@@ -400,7 +436,12 @@ const CreateStudent = () => {
                                   </label>
                                   <input
                                     name="first_name"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      (errors?.parent_first_name
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     type="text"
                                     placeholder="Saisir le prénom"
                                   />
@@ -417,7 +458,12 @@ const CreateStudent = () => {
                                   </label>
                                   <input
                                     name="last_name"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      (errors?.parent_last_name
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     type="text"
                                     defaultValue={
                                       lastNameStudent ? lastNameStudent : null
@@ -437,7 +483,12 @@ const CreateStudent = () => {
                                   </label>
                                   <input
                                     name="email"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      (errors?.parent_email
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     type="text"
                                     placeholder="Saisir l'email"
                                   />
@@ -453,7 +504,12 @@ const CreateStudent = () => {
                                     <span className="login-danger">*</span>
                                   </label>
                                   <select
-                                    className="form-control select"
+                                    className={
+                                      "form-control select" +
+                                      (errors?.parent_gender
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     name="gender"
                                   >
                                     <option value={""}>
@@ -475,7 +531,12 @@ const CreateStudent = () => {
                                   </label>
                                   <input
                                     name="date_of_birth"
-                                    className="form-control datetimepicker"
+                                    className={
+                                      "form-control datetimepicker" +
+                                      (errors?.parent_date_of_birth
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     type="date"
                                     placeholder="Saisir la date de naissance"
                                   />
@@ -493,7 +554,12 @@ const CreateStudent = () => {
 
                                   <input
                                     name="phone_number"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      (errors?.parent_phone_number
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     type="text"
                                     placeholder="Saisir le numéro de telephone"
                                   />
@@ -506,7 +572,12 @@ const CreateStudent = () => {
                                 <div className="form-group local-forms">
                                   <label>Blood Type</label>
                                   <select
-                                    className="form-control select"
+                                    className={
+                                      "form-control select" +
+                                      (errors?.parent_blood_type
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     name="blood_type"
                                   >
                                     <option value={""}>
@@ -531,7 +602,12 @@ const CreateStudent = () => {
                                   <label>health status</label>
                                   <select
                                     name="health_status"
-                                    className="form-control select"
+                                    className={
+                                      "form-control select" +
+                                      (errors?.parent_health_status
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                   >
                                     <option value={""}>
                                       Sélectionner une health status (optionnel)
@@ -550,7 +626,12 @@ const CreateStudent = () => {
                                   <label>Address</label>
                                   <input
                                     name="address"
-                                    className="form-control"
+                                    className={
+                                      "form-control" +
+                                      +(errors?.parent_address
+                                        ? " is-invalid"
+                                        : "")
+                                    }
                                     placeholder="Veuillez entrer votre adresse (optionnel)"
                                     type="text"
                                   />

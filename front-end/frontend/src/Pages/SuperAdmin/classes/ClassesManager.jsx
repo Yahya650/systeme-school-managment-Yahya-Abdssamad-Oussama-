@@ -12,7 +12,7 @@ const ClassesManager = () => {
   const [formLoading, setFormLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentFilieres, setCurrentFilieres] = useState([]);
-  const [classeTypeId, setClasseTypeId] = useState(null);
+  const [classeTypeId, setClasseTypeId] = useState("");
   const [allClasseTypes, setAllClasseTypes] = useState(null);
   const close_createClasse_modal = useRef(null);
   const filiereId = useRef(null);
@@ -106,7 +106,7 @@ const ClassesManager = () => {
                                       }
                                       type="text"
                                       disabled
-                                      value={classeType.classes.length}
+                                      value={classeType?.classes?.length}
                                       className="form-control"
                                     />
                                     <button
@@ -192,7 +192,7 @@ const ClassesManager = () => {
                         }),
                       }}
                       name="filiere_id"
-                      options={currentFilieres.map((filiere) => ({
+                      options={currentFilieres?.map((filiere) => ({
                         value: cryptID(filiere.id),
                         label: filiere.name + " - " + filiere.code,
                       }))}
