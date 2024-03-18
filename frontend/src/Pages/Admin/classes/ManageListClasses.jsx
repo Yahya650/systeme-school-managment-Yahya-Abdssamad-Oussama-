@@ -12,7 +12,7 @@ import { faSearch, faUndo } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import dcryptID from "../../../config/security/dcryptID";
 
-const ListeClasses = () => {
+const ManageListClasses = () => {
   const [classes, setClasses] = useState(null);
   const [classe, setClasse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ const ListeClasses = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const { data } = await AxiosClient.get("/super-admin/all-classes");
+      const { data } = await AxiosClient.get("/admin/classes");
       setClasses(data);
     } catch (error) {
       errorToast(error.response.data.message);
@@ -63,7 +63,7 @@ const ListeClasses = () => {
     try {
       setclasseTypeLoading(true);
       const { data } = await AxiosClient.get(
-        "/super-admin/get-classe-types-by-school-level/" + dcryptID(e.value)
+        "/admin/get-classe-types-by-school-level/" + dcryptID(e.value)
       );
       setClasseTypes(data);
     } catch (error) {
@@ -73,45 +73,12 @@ const ListeClasses = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let isValide = true;
-    let numbersEtudMax = [];
-    for (let i = 0; i < classes.length; i++) {
-      if (
-        !$("#number_etud_max" + cryptID(classes[i].id)).val() ||
-        $("#number_etud_max" + cryptID(classes[i].id)).val() < 0
-      ) {
-        errorToast("Veuillez remplir tous les champs");
-        isValide = false;
-        break;
-      }
-      numbersEtudMax.push({
-        number_etud_max: $("#number_etud_max" + cryptID(classes[i].id)).val(),
-        classe_id: classes[i].id,
-      });
-    }
-    if (isValide) {
-      setFormLoading(true);
-      try {
-        const { data } = await AxiosClient.post("/super-admin/modify-classes", {
-          numbersEtudMax,
-        });
-        successToast(data.message);
-      } catch (error) {
-        errorToast(error.response.data.message);
-      } finally {
-        setFormLoading(false);
-      }
-    }
-  };
-
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     setLoadingSearch(true);
     setLoading(true);
     try {
-      const { data } = await AxiosClient.get("/super-admin/filter-classe", {
+      const { data } = await AxiosClient.get("/admin/filter-classe", {
         params: {
           classe_type_id: dcryptID(e.target.classe_type_id.value),
         },
@@ -144,7 +111,7 @@ const ListeClasses = () => {
       const formDataFile = new FormData();
       formDataFile.append("file", fileTimeTable.current.files[0]);
       const { data } = await AxiosClient.post(
-        "/super-admin/upload-timetable/" + classe.id,
+        "/admin/upload-timetable/" + classe.id,
         formDataFile,
         {
           headers: {
@@ -274,106 +241,69 @@ const ListeClasses = () => {
               </div>
               {!loading ? (
                 <div className="table-responsive">
-                  <form onSubmit={handleSubmit}>
-                    <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                      <thead className="student-thread">
-                        <tr>
-                          <th>Code</th>
-                          <th>Numero des Etudiants</th>
-                          <th>Numero Maximal des Etudiants</th>
-                          <th>Année Scolaire</th>
-                          <th>Filiere</th>
-                          <th>Emploi du temps</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {classes ? (
-                          <>
-                            {classes.map((classe, i) => (
-                              <tr key={i}>
-                                <td>{classe.code}</td>
-                                <td>{classe.number_etud}</td>
-                                <td>
-                                  <input
-                                    onChange={(e) => {
-                                      if (
-                                        e.target.value == "" ||
-                                        isNaN(e.target.value) ||
-                                        e.target.value < 0
-                                      ) {
-                                        e.target.classList.add("is-invalid");
-                                      } else {
-                                        e.target.classList.remove("is-invalid");
-                                      }
-                                    }}
-                                    type="number"
-                                    className="form-control"
-                                    id={"number_etud_max" + cryptID(classe.id)}
-                                    defaultValue={classe.number_etud_max}
-                                  />
-                                </td>
-                                <td>
-                                  {classe.classe_type.name +
-                                    " " +
-                                    classe.classe_type.school_level.name}
-                                </td>
-                                <td>{classe.filiere?.name}</td>
-                                <td className="text-center">
-                                  {/* {classe.time_table ? "oui" : "non"} */}
-                                  <button
-                                    type="button"
-                                    data-tooltip-id={
-                                      "my-tooltip" + cryptID(classe.id)
-                                    }
-                                    data-tooltip-content={
-                                      "upload Emploi du temps pour la classe : " +
-                                      classe.code
-                                    }
-                                    onClick={() => {
-                                      setClasse(classe);
-                                    }}
-                                    className="btn btn-sm bg-danger-light"
-                                    data-bs-toggle="modal"
-                                    data-bs-target={"#uploadTimeTable"}
-                                  >
-                                    <i className="feather-upload"></i>
-                                  </button>
-                                  <Tooltip
-                                    id={"my-tooltip" + cryptID(classe.id)}
-                                  />
-                                </td>
-                              </tr>
-                            ))}
-                            <tr>
-                              <td></td>
-                              <td></td>
+                  <table className="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
+                    <thead className="student-thread">
+                      <tr>
+                        <th>Code</th>
+                        <th>Numero des Etudiants</th>
+                        <th>Numero Maximal des Etudiants</th>
+                        <th>Année Scolaire</th>
+                        <th>Filiere</th>
+                        <th>Emploi du temps</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {classes ? (
+                        <>
+                          {classes.map((classe, i) => (
+                            <tr key={i}>
+                              <td>{classe.code}</td>
+                              <td>{classe.number_etud}</td>
                               <td>
-                                <div className="w-100 d-flex justify-content-center mt-1">
-                                  <button
-                                    type="submit"
-                                    disabled={formLoading}
-                                    className="btn btn-primary px-4 py-2"
-                                  >
-                                    {formLoading ? (
-                                      <LoadingCircle />
-                                    ) : (
-                                      <>
-                                        <i className="fas fa-save" />{" "}
-                                        Enregistrer
-                                      </>
-                                    )}
-                                  </button>
-                                </div>
+                                <input
+                                  disabled
+                                  type="number"
+                                  className="form-control"
+                                  id={"number_etud_max" + cryptID(classe.id)}
+                                  value={classe.number_etud_max}
+                                />
                               </td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
+                              <td>
+                                {classe.classe_type.name +
+                                  " " +
+                                  classe.classe_type.school_level.name}
+                              </td>
+                              <td>{classe.filiere?.name}</td>
+                              <td className="text-center">
+                                {/* {classe.time_table ? "oui" : "non"} */}
+                                <button
+                                  type="button"
+                                  data-tooltip-id={
+                                    "my-tooltip" + cryptID(classe.id)
+                                  }
+                                  data-tooltip-content={
+                                    "upload Emploi du temps pour la classe : " +
+                                    classe.code
+                                  }
+                                  onClick={() => {
+                                    setClasse(classe);
+                                  }}
+                                  className="btn btn-sm bg-danger-light"
+                                  data-bs-toggle="modal"
+                                  data-bs-target={"#uploadTimeTable"}
+                                >
+                                  <i className="feather-upload"></i>
+                                </button>
+                                <Tooltip
+                                  id={"my-tooltip" + cryptID(classe.id)}
+                                />
+                              </td>
                             </tr>
-                          </>
-                        ) : null}
-                      </tbody>
-                    </table>
-                  </form>
+                          ))}
+                        </>
+                      ) : null}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <div className="w-100 d-flex justify-content-center align-items-center my-5">
@@ -488,4 +418,4 @@ const ListeClasses = () => {
   );
 };
 
-export default ListeClasses;
+export default ManageListClasses;

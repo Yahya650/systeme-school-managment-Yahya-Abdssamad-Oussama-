@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\SchoolLevel;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,12 @@ class SchoolLevelController extends Controller
      */
     public function index()
     {
+        $request = request();
+        if ($request->user('admin')) {
+            $school_levels = Admin::find($request->user('admin')->id)->school_levels;
+            return response()->json($school_levels);
+        }
+
         $school_levels = SchoolLevel::all();
         return response()->json($school_levels);
     }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\TypeExamController;
 use App\Http\Controllers\SchoolYearController;
+use App\Http\Controllers\SchoolLevelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +48,4 @@ Route::get('/current-school-year', [SchoolYearController::class, 'getCurrent']);
 Route::apiResource('school-years', SchoolYearController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('type-exams', TypeExamController::class);
-    
+Route::apiResource('school_levels', SchoolLevelController::class);

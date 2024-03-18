@@ -1,10 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import _footer from "../../Layouts/_footer";
 import { useContextApi } from "../../config/Context/ContextApi";
+import { AxiosClient } from "../../config/Api/AxiosClient";
+import LoadingCircleContext from "../../Components/LoadingCircleContext";
 
 const DashboardAdmin = () => {
-  const { user } = useContextApi();
+  const { user, calculateAge } = useContextApi();
+  const [lastMarks, setLastMarks] = useState(null);
+  const [lastMarksLoading, setLastMarksLoading] = useState(true);
+  useEffect(() => {
+    const fetchMarks = async () => {
+      try {
+        const { data } = await AxiosClient.get("/admin/etudiants/last-marks");
+        setLastMarks(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLastMarksLoading(false);
+      }
+    };
+    fetchMarks();
+  }, []);
   return (
     <div className="content container-fluid">
       <div className="page-header">
@@ -34,12 +51,13 @@ const DashboardAdmin = () => {
             <div className="card-body">
               <div className="db-widgets d-flex justify-content-between align-items-center">
                 <div className="db-info">
-                  <h6>Étudiants</h6>
-                  <h3>50055</h3>
+                  <h6>CIN</h6>
+                  <h3>{user?.cin}</h3>
                 </div>
                 <div className="db-icon">
                   <img
-                    src="/assets/img/icons/dash-icon-01.svg"
+                    width={54}
+                    src="/assets/img/icons/5808095.webp"
                     alt="Icône du tableau de bord"
                   />
                 </div>
@@ -52,12 +70,13 @@ const DashboardAdmin = () => {
             <div className="card-body">
               <div className="db-widgets d-flex justify-content-between align-items-center">
                 <div className="db-info">
-                  <h6>Récompenses</h6>
-                  <h3>50+</h3>
+                  <h6>L'age</h6>
+                  <h3>{calculateAge(user.date_of_birth)}</h3>
                 </div>
                 <div className="db-icon">
                   <img
-                    src="/assets/img/icons/dash-icon-02.svg"
+                    width={65}
+                    src="/assets/img/icons/birthday-cake-3d-rendering-icon-illustration-free-png.webp"
                     alt="Icône du tableau de bord"
                   />
                 </div>
@@ -104,7 +123,7 @@ const DashboardAdmin = () => {
       </div>
 
       <div className="row">
-        <div className="col-xl-6 d-flex">
+        <div className="col-xl-12 d-flex">
           <div className="card flex-fill student-space comman-shadow">
             <div className="card-header d-flex align-items-center">
               <h5 className="card-title">Étudiants Stars</h5>
@@ -116,131 +135,81 @@ const DashboardAdmin = () => {
                 </li>
               </ul>
             </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="table star-student table-hover table-center table-borderless table-striped">
-                  <thead className="thead-light">
-                    <tr>
-                      <th>ID</th>
-                      <th>Nom</th>
-                      <th className="text-center">Notes</th>
-                      <th className="text-center">Pourcentage</th>
-                      <th className="text-end">Année</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="text-nowrap">
-                        <div>PRE2209</div>
-                      </td>
-                      <td className="text-nowrap">
-                        <Link to="#">
-                          <img
-                            className="rounded-circle"
-                            src="/assets/img/profiles/avatar-02.jpg"
-                            width="25"
-                            alt="Star Students"
-                          />
-                          John Smith
-                        </Link>
-                      </td>
-                      <td className="text-center">1185</td>
-                      <td className="text-center">98%</td>
-                      <td className="text-end">
-                        <div>2019</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-nowrap">
-                        <div>PRE1245</div>
-                      </td>
-                      <td className="text-nowrap">
-                        <Link to="#">
-                          <img
-                            className="rounded-circle"
-                            src="/assets/img/profiles/avatar-01.jpg"
-                            width="25"
-                            alt="Star Students"
-                          />
-                          Jolie Hoskins
-                        </Link>
-                      </td>
-                      <td className="text-center">1195</td>
-                      <td className="text-center">99.5%</td>
-                      <td className="text-end">
-                        <div>2018</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-nowrap">
-                        <div>PRE1625</div>
-                      </td>
-                      <td className="text-nowrap">
-                        <Link to="#">
-                          <img
-                            className="rounded-circle"
-                            src="/assets/img/profiles/avatar-03.jpg"
-                            width="25"
-                            alt="Star Students"
-                          />
-                          Pennington Joy
-                        </Link>
-                      </td>
-                      <td className="text-center">1196</td>
-                      <td className="text-center">99.6%</td>
-                      <td className="text-end">
-                        <div>2017</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-nowrap">
-                        <div>PRE2516</div>
-                      </td>
-                      <td className="text-nowrap">
-                        <Link to="#">
-                          <img
-                            className="rounded-circle"
-                            src="/assets/img/profiles/avatar-04.jpg"
-                            width="25"
-                            alt="Star Students"
-                          />
-                          Millie Marsden
-                        </Link>
-                      </td>
-                      <td className="text-center">1187</td>
-                      <td className="text-center">98.2%</td>
-                      <td className="text-end">
-                        <div>2016</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-nowrap">
-                        <div>PRE2209</div>
-                      </td>
-                      <td className="text-nowrap">
-                        <Link to="#">
-                          <img
-                            className="rounded-circle"
-                            src="/assets/img/profiles/avatar-05.jpg"
-                            width="25"
-                            alt="Star Students"
-                          />
-                          John Smith
-                        </Link>
-                      </td>
-                      <td className="text-center">1185</td>
-                      <td className="text-center">98%</td>
-                      <td className="text-end">
-                        <div>2015</div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {!lastMarksLoading ? (
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table star-student table-hover table-center table-borderless table-striped">
+                    <thead className="thead-light">
+                      <tr>
+                        <th>Code Massar</th>
+                        <th>Matiére</th>
+                        <th className="text-center">Les Etudentes</th>
+                        <th className="text-center">Notes</th>
+                        <th className="text-end">Année</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {lastMarks?.map((mark, i) => (
+                        <tr key={i}>
+                          <td>{mark.student.code_massar}</td>
+                          <td className="text-nowrap">
+                            <div>{mark.exam.course.name}</div>
+                          </td>
+                          <td className="text-nowrap text-center">
+                            <Link to="#">
+                              <img
+                                className="rounded-circle"
+                                src={
+                                  mark.student.profile_picture
+                                    ? BACKEND_URL +
+                                      "/storage/" +
+                                      mark.student.profile_picture
+                                    : mark.student.gender == "male"
+                                    ? "/assets/img/default-profile-picture-grey-male-icon.png"
+                                    : "/assets/img/default-profile-picture-grey-female-icon.png"
+                                }
+                                width="25"
+                                alt="Star Students"
+                              />
+                              {mark.student.first_name} {mark.student.last_name}
+                            </Link>
+                          </td>
+                          <td className="text-center">
+                            {mark.note >
+                            mark?.student.classe.classe_type.school_level
+                              .passing_mark ? (
+                              <span className=" text-end text-success">
+                                <b>{mark.note}</b>
+                              </span>
+                            ) : mark.note <
+                              mark?.student.classe.classe_type.school_level
+                                .passing_mark ? (
+                              <span className="text-end text-danger">
+                                <b>{mark.note}</b>
+                              </span>
+                            ) : (
+                              <span className="text-end text-warning">
+                                <b>{mark.note}</b>
+                              </span>
+                            )}
+                          </td>
+                          <td className="text-end">
+                            <div>2019</div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="w-100 d-flex justify-content-center align-items-center my-5 py-5">
+                <LoadingCircleContext />
+              </div>
+            )}
           </div>
         </div>
-        <div className="col-xl-6 d-flex">
+        {/* <div className="col-xl-6 d-flex">
           <div className="card flex-fill comman-shadow">
             <div className="card-header d-flex align-items-center">
               <h5 className="card-title">Activité des Étudiants</h5>
@@ -320,7 +289,7 @@ const DashboardAdmin = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className="row">

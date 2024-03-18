@@ -1,7 +1,52 @@
 import React from "react";
+import "../../../public/assets/css/guestStyle.css";
+import { Link } from "react-router-dom";
 
 const IndexGuest = () => {
-  return <div>Guest</div>;
+  return (
+    <div className="containerDiv flex-wrap">
+      {/* super admin */}
+      <Link to={"/super-admin/login"} className="custmCard">
+        <div className="profileImage" />
+        <div className="textContainer">
+          <div className="name">Directeur</div>
+          <div className="profile"></div>
+        </div>
+      </Link>
+      {/*  admin */}
+      <Link to={"/admin/login"} className="custmCard">
+        <div className="profileImage" />
+        <div className="textContainer">
+          <div className="name">Membre de la direction</div>
+          <div className="profile"></div>
+        </div>
+      </Link>
+      {/* teacher */}
+      <Link to={"/teacher/login"} className="custmCard">
+        <div className="profileImage" />
+        <div className="textContainer">
+          <div className="name">Professor</div>
+          <div className="profile"></div>
+        </div>
+      </Link>
+      {/* students  */}
+      <Link to={"/student/login"} className="custmCard">
+        <div className="profileImage" />
+        <div className="textContainer">
+          <div className="name">Etudiant</div>
+          <div className="profile"></div>
+        </div>
+      </Link>
+      {/* parents */}
+      <Link to={"/student-parent/login"} className="custmCard">
+        <div className="profileImage" />
+        <div className="textContainer">
+          <div className="name">Parent</div>
+          <div className="profile"></div>
+        </div>
+      </Link>
+    </div>
+  );
 };
 
 export default IndexGuest;
