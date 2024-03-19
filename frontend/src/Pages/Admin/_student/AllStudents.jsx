@@ -57,7 +57,7 @@ const AllStudents = () => {
     setCurrentPage,
     total,
     errors,
-    setErrors
+    setErrors,
   } = useContextApi();
 
   const {
@@ -896,9 +896,15 @@ const AllStudents = () => {
                                 <div className="card-footer">
                                   <div className="row align-items-center">
                                     <div className="col-auto">
-                                      <span className="badge bg-success-dark">
-                                        Paid
-                                      </span>
+                                      {student.paymentStatus.status ? (
+                                        <span className="badge bg-success">
+                                          Paye
+                                        </span>
+                                      ) : (
+                                        <span className="badge bg-danger">
+                                          Non Paye
+                                        </span>
+                                      )}
                                     </div>
                                   </div>
                                 </div>

@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('phone_number')->unique()->nullable();
             $table->string('address')->nullable();
             $table->dateTime('last_login_date')->nullable();
-            $table->boolean('status_pay')->default(false);
             $table->rememberToken();
 
             $table->unsignedBigInteger('admin_id')->nullable();

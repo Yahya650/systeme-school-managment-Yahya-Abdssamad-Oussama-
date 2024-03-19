@@ -51,7 +51,6 @@ class ClasseController extends Controller
                 'number_etud_max' => 'required|integer',
             ]);
         }
-
         $request->validate([
             'classe_type_id' => 'required|exists:classe_types,id',
             'number_etud_max' => 'required|integer',
@@ -82,8 +81,8 @@ class ClasseController extends Controller
             return response()->json(["message" => "classe ajouté avec succès"]);
         }
 
+        // this for Préscolaire level
         $code = $classeType->code . '-' . Classe::where('filiere_id', null)->where('classe_type_id', $request->classe_type_id)->count() + 1;
-
         $classe = new Classe();
         $classe->code = $code;
         $classe->filiere_id = $request->filiere_id;
@@ -151,7 +150,7 @@ class ClasseController extends Controller
     public function getStudentsByClasse($id)
     {
         $request = request();
-        
+
         $request->validate([
             'module_id' => 'nullable|exists:modules,id',
             'semester_id' => 'required|exists:semesters,id',
@@ -167,7 +166,7 @@ class ClasseController extends Controller
     public function filterClasses()
     {
         $request = request();
-        
+
         $classeType = ClasseType::find($request->classe_type_id);
         if (!$classeType) return response()->json(['message' => 'le type de classe non trouve'], 404);
 

@@ -20,6 +20,8 @@ Route::middleware(['auth:student_parent'])->group(function () {
         Route::get('/timetable/{idStudent}', [TimeTableController::class, 'timetableForParent']);
         Route::get('/{idStudent}', [StudentController::class, 'getStudentWithAllInfo']);
         Route::get('/exercises', [ExerciseController::class, 'getExercisesForAllChildrens']);
+        // make api for return marks for every students
+        // make api for return absences for every students
     });
 });
 

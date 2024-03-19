@@ -738,7 +738,7 @@ const UpdateStudent = () => {
                                       name="address"
                                       className={
                                         "form-control" +
-                                        +(errors?.parent_address
+                                        (errors?.parent_address
                                           ? " is-invalid"
                                           : "")
                                       }
@@ -1015,7 +1015,7 @@ const UpdateStudent = () => {
                                         name="address"
                                         className={
                                           "form-control" +
-                                          +(errors?.parent_address
+                                          (errors?.parent_address
                                             ? " is-invalid"
                                             : "")
                                         }

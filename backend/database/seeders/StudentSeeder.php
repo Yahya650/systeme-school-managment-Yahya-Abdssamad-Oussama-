@@ -53,5 +53,4 @@ class StudentSeeder extends Seeder
             Student::create($studentData);
         }
     }
-
 }
