@@ -10,6 +10,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ClassTypeController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\ExamRecordController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SchoolLevelController;
 use App\Http\Controllers\StudentParentController;
 
@@ -47,9 +48,13 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('classe/{id}/students', [ClasseController::class, 'getStudentsByClasse']);
     Route::post('/onchange-classe', [ClasseController::class, 'onChangeClass']);
     Route::post('/save-marks-manual', [ExamRecordController::class, 'saveMarksByCourseManual']);
+    Route::apiResource('payments', PaymentController::class);
 
     // Routes Students
     Route::group(['prefix' => 'etudiants'], function () {
+
+        Route::post('/get-payments-by-schoolYear/{id}', [PaymentController::class, 'getPaymentsBySchoolYear']);
+
         Route::get('/last-marks', [ExamRecordController::class, 'lastMarks']);
         Route::post('/save-mark', [ExamRecordController::class, 'store']);
         Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);

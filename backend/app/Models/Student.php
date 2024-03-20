@@ -21,9 +21,9 @@ class Student extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 
-    protected $appends = ['role', 'paymentStatus'];
+    protected $appends = ['role', 'paymentStatus', 'monthlyFee'];
 
-    protected $with = ['classe', 'parent', 'reports.admin', 'absences.course', 'absences.teacher', 'payments'];
+    protected $with = ['classe', 'parent', 'reports.admin', 'absences.course', 'absences.teacher', 'payments', 'monthlyFees'];
 
     public function getRoleAttribute()
     {
@@ -33,6 +33,11 @@ class Student extends Authenticatable
     public function getPaymentStatusAttribute()
     {
         return $this->paymentStatus();
+    }
+
+    public function getMonthlyFeeAttribute()
+    {
+        return $this->monthlyFees()->where('school_year_id', getCurrentSchoolYearFromDataBase()->id)->first();
     }
 
     protected $fillable = [
@@ -70,34 +75,29 @@ class Student extends Authenticatable
             $schoolYearId = getCurrentSchoolYearFromDataBase()->id;
         }
 
-        $paymentsForSchoolYear = $this->payments()->where('school_year_id', $schoolYearId);
+        $paymentsBySchoolYear = $this->payments()->where('school_year_id', $schoolYearId);
 
-        if ($paymentsForSchoolYear->count() == 0) {
+        if ($paymentsBySchoolYear->count() == 0) {
             return [
                 'status' => false,
                 'months_not_paid' => 1,
-                'amount_due' => $this->monthlyFees()->where('student_id', $this->id)->where('school_year_id', $schoolYearId)->latest()->first()->amount
+                'amount_due' => $this->monthlyFees()->where('school_year_id', $schoolYearId)->latest()->first()->amount
             ];
         }
 
-        $lastPayment = $paymentsForSchoolYear->latest()->first();
-        $lastPaymentDate = $lastPayment->created_at;
-        $lastPaymentMonth = $lastPayment->month;
+        $lastPayment = $paymentsBySchoolYear->latest()->first();
 
-        $currentDate = Carbon::now();
-        $totalAmountPaid = $paymentsForSchoolYear->sum('amount');
-        $totalMonthsPaid = $paymentsForSchoolYear->count();
-        $monthlyFee = $this->monthlyFees()->where('student_id', $this->id)->where('school_year_id', $schoolYearId)->latest()->first()->amount;
-        $monthsNotPaid = max(0, $currentDate->diffInMonths(Carbon::parse($lastPaymentMonth)));
+        $monthlyFee = $this->monthlyFees()->where('school_year_id', $schoolYearId)->latest()->first()->amount;
+        $monthsNotPaid = max(0, Carbon::now()->diffInMonths(Carbon::parse($lastPayment->month)));
         $amountStillDue = $monthsNotPaid * $monthlyFee;
 
         return [
             'status' => $monthsNotPaid == 0,
             'months_not_paid' => $monthsNotPaid,
             'amount_due' => $amountStillDue,
-            'amount_paid' => $totalMonthsPaid,
-            'total_money_paid' => $totalAmountPaid,
-            'lastPaymentDate' => $lastPaymentDate,
+            'months_paid' => $paymentsBySchoolYear->count(),
+            'total_money_paid' => $paymentsBySchoolYear->sum('amount'),
+            'lastPaymentDate' => $lastPayment->created_at,
         ];
     }
 
