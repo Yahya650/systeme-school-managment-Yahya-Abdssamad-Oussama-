@@ -82,7 +82,7 @@ const CreateAdmin = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await AxiosClient.get("/super-admin/school_levels");
+      const { data } = await AxiosClient.get("/school_levels");
       setSchoolLevels(data);
     };
     fetchData();
