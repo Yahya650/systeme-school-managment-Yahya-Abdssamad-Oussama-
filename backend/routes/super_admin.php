@@ -34,9 +34,10 @@ Route::middleware(['auth:super_admin'])->group(function () {
     Route::post('/upload-timetable/{idClass}', [TimeTableController::class, 'uploadTimeTableBySP']);
     Route::get('/get-classe-types-by-school-level/{idSchoolLevel}', [ClassTypeController::class, 'getClasseTypesBySchoolLevel']);
     Route::get('/filter-classe', [ClasseController::class, 'filterClasses']);
+    Route::post('/add-classes', [ClasseController::class, 'store']);
     Route::get('/all-classes', [ClasseController::class, 'getAllClasses']);
     Route::post('/modify-classes', [ClasseController::class, 'modifyClasses']);
-    Route::apiResource('classe-types', ClassTypeController::class); 
+    Route::apiResource('classe-types', ClassTypeController::class);
 
     // Routes Admins
     Route::group(['prefix' => 'administrators'], function () {
