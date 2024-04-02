@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Classe;
 use App\Models\ExamRecord;
+use App\Models\MonthlyFee;
 use App\Models\Student;
 use Nette\Utils\Random;
 use Illuminate\Support\Str;
@@ -52,6 +53,7 @@ class StudentController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
+            'monthly_fee' => 'required|numeric',
             'classe_id' => 'required|exists:classes,id',
 
             // validate parent data
@@ -122,7 +124,11 @@ class StudentController extends Controller
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
         Classe::find($request->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
-
+        MonthlyFee::create([
+            'student_id' => $newStudent->id,
+            'amount' => $request->monthly_fee,
+            'school_year_id' => getCurrentSchoolYearFromDataBase()->id,
+        ]);
 
         return response([
             'code_massar' => $request->code_massar,
@@ -151,6 +157,7 @@ class StudentController extends Controller
             'phone_number' => ['nullable', Rule::unique('students', 'phone_number')],
             'address' => 'nullable|string|max:255',
             'student_parent_id' => 'required|exists:student_parents,id',
+            'monthly_fee' => 'required|numeric',
             'classe_id' => 'required|exists:classes,id',
         ]);
 
@@ -184,6 +191,11 @@ class StudentController extends Controller
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
         Classe::find($request->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
+        $newMonthlyFee = new MonthlyFee();
+        $newMonthlyFee->student_id = $newStudent->id;
+        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $newMonthlyFee->save();
 
         return response([
             'code_massar' => $request->code_massar,
@@ -214,7 +226,7 @@ class StudentController extends Controller
         // Eager load the necessary relationships and retrieve the latest students
         $students = $request->user('admin')->school_levels()
             ->wherePivot('types', 'like', '%educational%')
-            ->with('classe_types.classes.students')
+            ->with(['classe_types.classes.students'])
             ->get()
             ->flatMap(function ($schoolLevel) {
                 return $schoolLevel->classe_types->flatMap(function ($classeType) {
@@ -292,6 +304,7 @@ class StudentController extends Controller
             'date_of_birth' => 'required|date|before:today',
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
+            'monthly_fee' => ['required'],
             'address' => 'nullable|string|max:255',
             'student_parent_id' => 'required|exists:student_parents,id',
             'classe_id' => 'required|exists:classes,id',
@@ -330,6 +343,11 @@ class StudentController extends Controller
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $request->student_parent_id;
         $student->save();
+        $newMonthlyFee = new MonthlyFee();
+        $newMonthlyFee->student_id = $student->id;
+        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $newMonthlyFee->save();
 
         return response([
             'message' => "Étudiant mis à jour avec succès"
@@ -369,6 +387,7 @@ class StudentController extends Controller
             'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
+            'monthly_fee' => 'required|numeric',
             'classe_id' => 'required|exists:classes,id',
 
             // validate parent data
@@ -436,6 +455,12 @@ class StudentController extends Controller
         $student->classe_id = $request->classe_id;
         $student->save();
 
+        $newMonthlyFee = new MonthlyFee();
+        $newMonthlyFee->student_id = $student->id;
+        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $newMonthlyFee->save();
+
         return response([
             'message' => "Étudiant et Parent mis à jour avec succès"
         ], 200);
@@ -473,6 +498,7 @@ class StudentController extends Controller
             'phone_number' => ['nullable', 'string', Rule::unique('students', 'phone_number')->ignore($id)],
             'address' => 'nullable|string|max:255',
             'classe_id' => 'required|exists:classes,id',
+            'monthly_fee' => 'required|numeric',
 
             // validate parent data
             'parent_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -541,6 +567,12 @@ class StudentController extends Controller
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $parent->id;
         $student->save();
+
+        $newMonthlyFee = new MonthlyFee();
+        $newMonthlyFee->student_id = $student->id;
+        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $newMonthlyFee->save();
 
         return response([
             'message' => "Étudiant mis à jour et parent enregistre avec succès",

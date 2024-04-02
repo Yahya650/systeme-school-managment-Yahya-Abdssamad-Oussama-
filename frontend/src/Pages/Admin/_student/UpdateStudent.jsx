@@ -197,27 +197,6 @@ const UpdateStudent = () => {
                         </span>
                       </h5>
                     </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Code Massar <span className="login-danger">*</span>
-                        </label>
-                        <input
-                          name="code_massar"
-                          className={
-                            "form-control" +
-                            (errors?.code_massar ? " is-invalid" : "")
-                          }
-                          type="text"
-                          onChange={(e) => setUserNameStudent(e.target.value)}
-                          placeholder="Saisir le code massar"
-                          defaultValue={student?.code_massar}
-                        />
-                        <span className="text-danger">
-                          {errors?.code_massar}
-                        </span>
-                      </div>
-                    </div>
                     <div
                       className="col-12 col-sm-8"
                       styles={{
@@ -240,6 +219,47 @@ const UpdateStudent = () => {
                         />
                         <span className="text text-danger">
                           {errors?.classe_id}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Frais mensuels(DH) <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="monthly_fee"
+                          className={
+                            "form-control" +
+                            (errors?.monthly_fee ? " is-invalid" : "")
+                          }
+                          type="text"
+                          placeholder="Saisir le frais mensuels"
+                          defaultValue={student?.monthlyFee.amount}
+                        />
+                        <span className="text-danger">
+                          {errors?.monthly_fee}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
+                          Code Massar <span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="code_massar"
+                          className={
+                            "form-control" +
+                            (errors?.code_massar ? " is-invalid" : "")
+                          }
+                          type="text"
+                          onChange={(e) => setUserNameStudent(e.target.value)}
+                          placeholder="Saisir le code massar"
+                          defaultValue={student?.code_massar}
+                        />
+                        <span className="text-danger">
+                          {errors?.code_massar}
                         </span>
                       </div>
                     </div>
@@ -272,20 +292,21 @@ const UpdateStudent = () => {
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
-                          Prénom<span className="login-danger">*</span>
+                          Date de naissance
+                          <span className="login-danger">*</span>
                         </label>
                         <input
-                          name="first_name"
+                          name="date_of_birth"
                           className={
-                            "form-control" +
-                            (errors?.first_name ? " is-invalid" : "")
+                            "form-control datetimepicker" +
+                            (errors?.date_of_birth ? " is-invalid" : "")
                           }
-                          type="text"
-                          placeholder="Saisir le prénom"
-                          defaultValue={student?.first_name}
+                          type="date"
+                          placeholder="Saisir la date de naissance"
+                          defaultValue={student?.date_of_birth}
                         />
                         <span className="text-danger">
-                          {errors?.first_name}
+                          {errors?.date_of_birth}
                         </span>
                       </div>
                     </div>
@@ -312,6 +333,26 @@ const UpdateStudent = () => {
                     <div className="col-12 col-sm-4">
                       <div className="form-group local-forms">
                         <label>
+                          Prénom<span className="login-danger">*</span>
+                        </label>
+                        <input
+                          name="first_name"
+                          className={
+                            "form-control" +
+                            (errors?.first_name ? " is-invalid" : "")
+                          }
+                          type="text"
+                          placeholder="Saisir le prénom"
+                          defaultValue={student?.first_name}
+                        />
+                        <span className="text-danger">
+                          {errors?.first_name}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>
                           Gender <span className="login-danger">*</span>
                         </label>
                         <select
@@ -329,62 +370,7 @@ const UpdateStudent = () => {
                         <span className="text-danger">{errors?.gender}</span>
                       </div>
                     </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>
-                          Date de naissance
-                          <span className="login-danger">*</span>
-                        </label>
-                        <input
-                          name="date_of_birth"
-                          className={
-                            "form-control datetimepicker" +
-                            (errors?.date_of_birth ? " is-invalid" : "")
-                          }
-                          type="date"
-                          placeholder="Saisir la date de naissance"
-                          defaultValue={student?.date_of_birth}
-                        />
-                        <span className="text-danger">
-                          {errors?.date_of_birth}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>Téléphone</label>
-
-                        <input
-                          name="phone_number"
-                          className={
-                            "form-control" +
-                            (errors?.phone_number ? " is-invalid" : "")
-                          }
-                          type="text"
-                          placeholder="Saisir le numéro de téléphone (optionnel)"
-                          defaultValue={student?.phone_number}
-                        />
-                        <span className="text-danger">
-                          {errors?.phone_number}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                      <div className="form-group local-forms">
-                        <label>CIN</label>
-                        <input
-                          name="cin"
-                          className={
-                            "form-control" + (errors?.cin ? " is-invalid" : "")
-                          }
-                          type="text"
-                          placeholder="Saisir le CIN (optionnel)"
-                          defaultValue={student?.cin}
-                        />
-                        <span className="text-danger">{errors?.cin}</span>
-                      </div>
-                    </div>
-                    <div className="col-12 col-sm-8">
+                    <div className="col-12 col-sm-12">
                       <div className="form-group local-forms">
                         <label>Address</label>
                         <input
@@ -401,7 +387,7 @@ const UpdateStudent = () => {
                       </div>
                     </div>
                     <div
-                      className="col-4 col-sm-4"
+                      className="col-8 col-sm-8"
                       styles={{
                         menu: (base) => ({ ...base, zIndex: 9999 }),
                       }}
@@ -494,6 +480,39 @@ const UpdateStudent = () => {
                         <span className="text-danger">
                           {errors?.health_status}
                         </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>Téléphone</label>
+                        <input
+                          name="phone_number"
+                          className={
+                            "form-control" +
+                            (errors?.phone_number ? " is-invalid" : "")
+                          }
+                          type="text"
+                          placeholder="Saisir le numéro de téléphone (optionnel)"
+                          defaultValue={student?.phone_number}
+                        />
+                        <span className="text-danger">
+                          {errors?.phone_number}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-4">
+                      <div className="form-group local-forms">
+                        <label>CIN</label>
+                        <input
+                          name="cin"
+                          className={
+                            "form-control" + (errors?.cin ? " is-invalid" : "")
+                          }
+                          type="text"
+                          placeholder="Saisir le CIN (optionnel)"
+                          defaultValue={student?.cin}
+                        />
+                        <span className="text-danger">{errors?.cin}</span>
                       </div>
                     </div>
                   </div>

@@ -15,6 +15,8 @@ class Payment extends Model
     use HasFactory, SoftDeletes;
 
 
+    protected $appends = ['parent', 'year'];
+
     protected $fillable = [
         'amount',
         'method',
@@ -22,6 +24,16 @@ class Payment extends Model
         'description',
         'receipt',
     ];
+
+    public function getParentAttribute()
+    {
+        return $this->parent()->first();
+    }
+
+    public function getYearAttribute()
+    {
+        return $this->year()->first();
+    }
 
 
     public function generateReceipt()
@@ -50,11 +62,15 @@ class Payment extends Model
 
     public function parent()
     {
-        return $this->belongsTo(StudentParent::class, 'parent_id');
+        return $this->belongsTo(StudentParent::class, 'student_parent_id');
     }
 
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+    public function year()
+    {
+        return $this->belongsTo(SchoolYear::class, 'school_year_id');
     }
 }

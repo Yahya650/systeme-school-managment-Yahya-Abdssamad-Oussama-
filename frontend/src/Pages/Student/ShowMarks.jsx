@@ -370,6 +370,9 @@ const ShowMarks = () => {
                                 <thead className="student-thread">
                                   <tr>
                                     <th>Matière</th>
+                                    {user?.classe.courses.filter(
+                                      (cours) => cours.modules.length > 0
+                                    ).length > 0 && <th>Sous Unité</th>}
                                     <th>Notes Controls Continues</th>
                                     <th>Coefficient</th>
                                     <th>Coef*Note</th>
@@ -378,71 +381,160 @@ const ShowMarks = () => {
                                 </thead>
                                 <tbody>
                                   {user?.classe.courses.map((course, i) => (
-                                    <tr key={i}>
-                                      <td>{course.name}</td>
-                                      <th>
-                                        {(() => {
-                                          let sum = 0;
-                                          let data = notes?.filter(
-                                            (exam_record) =>
-                                              exam_record.exam.course_id ===
-                                                course.id &&
-                                              exam_record.exam.type.type !==
-                                                "cff"
-                                          );
-                                          data?.forEach((element) => {
-                                            sum += element.note;
-                                          });
-                                          let result = data?.length
-                                            ? sum / data.length
-                                            : 0;
-                                          return result
-                                            ? result.toFixed(2)
-                                            : null;
-                                        })()}
-                                      </th>
-                                      <th>
-                                        {notes
-                                          ? semester?.value1 == 2
-                                            ? course.ceof2
-                                            : course.ceof1
-                                          : null}
-                                      </th>
+                                    <React.Fragment key={i}>
+                                      {course.modules &&
+                                      course.modules.length > 0 ? (
+                                        course.modules.map((module, j) => (
+                                          <tr key={`${i}-${j}`}>
+                                            {j === 0 && (
+                                              <td
+                                                rowSpan={course.modules.length}
+                                                className="border"
+                                              >
+                                                {course.name}
+                                              </td>
+                                            )}
+                                            <td key={j}>{module.name}</td>
 
-                                      <th>
-                                        {(() => {
-                                          let sum = 0;
-                                          let data = notes?.filter(
-                                            (exam_record) =>
-                                              exam_record.exam.course_id ===
-                                                course.id &&
-                                              exam_record.exam.type.type !==
-                                                "cff"
-                                          );
-                                          data?.forEach((element) => {
-                                            sum += element.note;
-                                          });
-                                          let result = data?.length
-                                            ? sum / data.length
-                                            : 0;
-                                          result = result * course.ceof1;
-                                          return result
-                                            ? result.toFixed(2)
-                                            : null;
-                                        })()}
-                                      </th>
-                                      <th>
-                                        {notes
-                                          ?.filter(
-                                            (exam_record) =>
-                                              exam_record.exam.course_id ==
-                                                course.id &&
-                                              exam_record.exam.type.type ===
-                                                "cff"
-                                          )[0]
-                                          ?.note.toFixed(2)}
-                                      </th>
-                                    </tr>
+                                            <th>
+                                              {(() => {
+                                                let sum = 0;
+                                                let data = notes?.filter(
+                                                  (exam_record) =>
+                                                    exam_record.exam
+                                                      .module_id ===
+                                                      module.id &&
+                                                    exam_record.exam.type
+                                                      .type !== "cff"
+                                                );
+                                                data?.forEach((element) => {
+                                                  sum += element.note;
+                                                });
+                                                let result = data?.length
+                                                  ? sum / data.length
+                                                  : 0;
+                                                return result
+                                                  ? result.toFixed(2)
+                                                  : null;
+                                              })()}
+                                            </th>
+                                            <th>
+                                              {notes
+                                                ? semester?.value1 == 2
+                                                  ? module.ceof2
+                                                  : module.ceof1
+                                                : null}
+                                            </th>
+
+                                            <th>
+                                              {(() => {
+                                                let sum = 0;
+                                                let data = notes?.filter(
+                                                  (exam_record) =>
+                                                    exam_record.exam
+                                                      .module_id ===
+                                                      module.id &&
+                                                    exam_record.exam.type
+                                                      .type !== "cff"
+                                                );
+                                                data?.forEach((element) => {
+                                                  sum += element.note;
+                                                });
+                                                let result = data?.length
+                                                  ? sum / data.length
+                                                  : 0;
+                                                result = result * module.ceof1;
+                                                return result
+                                                  ? result.toFixed(2)
+                                                  : null;
+                                              })()}
+                                            </th>
+                                            <th>
+                                              {notes
+                                                ?.filter(
+                                                  (exam_record) =>
+                                                    exam_record.exam
+                                                      .module_id == module.id &&
+                                                    exam_record.exam.type
+                                                      .type === "cff"
+                                                )[0]
+                                                ?.note.toFixed(2)}
+                                            </th>
+                                          </tr>
+                                        ))
+                                      ) : (
+                                        <tr key={i}>
+                                          <td>{course.name}</td>
+                                          {user?.classe.courses.filter(
+                                            (cours) => cours.modules.length > 0
+                                          ).length > 0 && (
+                                            <td className="text-center">-</td>
+                                          )}
+                                          <th>
+                                            {(() => {
+                                              let sum = 0;
+                                              let data = notes?.filter(
+                                                (exam_record) =>
+                                                  exam_record.exam.course_id ===
+                                                    course.id &&
+                                                  exam_record.exam.type.type !==
+                                                    "cff"
+                                              );
+                                              data?.forEach((element) => {
+                                                sum += element.note;
+                                              });
+                                              let result = data?.length
+                                                ? sum / data.length
+                                                : 0;
+                                              return result
+                                                ? result.toFixed(2)
+                                                : null;
+                                            })()}
+                                          </th>
+                                          <th>
+                                            {notes
+                                              ? semester?.value1 == 2
+                                                ? course.ceof2
+                                                : course.ceof1
+                                              : null}
+                                          </th>
+
+                                          <th>
+                                            {(() => {
+                                              let sum = 0;
+                                              let data = notes?.filter(
+                                                (exam_record) =>
+                                                  exam_record.exam.course_id ===
+                                                    course.id &&
+                                                  exam_record.exam.type.type !==
+                                                    "cff"
+                                              );
+                                              data?.forEach((element) => {
+                                                sum += element.note;
+                                              });
+                                              let result = data?.length
+                                                ? sum / data.length
+                                                : 0;
+                                              result = result * course.ceof1;
+                                              return result
+                                                ? result.toFixed(2)
+                                                : null;
+                                            })()}
+                                          </th>
+                                          <th>
+                                            {notes
+                                              ?.filter(
+                                                (exam_record) =>
+                                                  exam_record.exam.course_id ==
+                                                    course.id &&
+                                                  exam_record.exam.type.type ===
+                                                    "cff"
+                                              )[0]
+                                              ?.note.toFixed(2)}
+                                          </th>
+                                        </tr>
+                                      )}
+                                    </React.Fragment>
                                   ))}
                                 </tbody>
                               </table>

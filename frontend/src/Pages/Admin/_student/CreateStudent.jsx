@@ -60,6 +60,7 @@ const CreateStudent = () => {
         gender: e.target.gender[0].value,
         date_of_birth: e.target.date_of_birth[0].value,
         blood_type: e.target.blood_type[0].value,
+        monthly_fee: e.target.monthly_fee[0].value,
         health_status: e.target.health_status[0].value,
         classe_id: dcryptID(e.target.classe_id.value),
 
@@ -87,6 +88,7 @@ const CreateStudent = () => {
         gender: e.target.gender.value,
         date_of_birth: e.target.date_of_birth.value,
         blood_type: e.target.blood_type.value,
+        monthly_fee: e.target.monthly_fee.value,
         health_status: e.target.health_status.value,
         student_parent_id: dcryptID(e.target.student_parent_id.value),
         classe_id: dcryptID(e.target.classe_id.value),
@@ -131,24 +133,7 @@ const CreateStudent = () => {
                       </span>
                     </h5>
                   </div>
-                  <div className="col-12 col-sm-4">
-                    <div className="form-group local-forms">
-                      <label>
-                        Code Massar <span className="login-danger">*</span>
-                      </label>
-                      <input
-                        name="code_massar"
-                        className={
-                          "form-control" +
-                          (errors?.code_massar ? " is-invalid" : "")
-                        }
-                        type="text"
-                        onChange={(e) => setUserNameStudent(e.target.value)}
-                        placeholder="Saisir le code massar"
-                      />
-                      <span className="text-danger">{errors?.code_massar}</span>
-                    </div>
-                  </div>
+
                   <div className="col-12 col-sm-8">
                     <div className="form-group local-forms">
                       <label>
@@ -171,6 +156,42 @@ const CreateStudent = () => {
                   <div className="col-12 col-sm-4">
                     <div className="form-group local-forms">
                       <label>
+                        Frais mensuels(DH){" "}
+                        <span className="login-danger">*</span>
+                      </label>
+                      <input
+                        name="monthly_fee"
+                        className={
+                          "form-control" +
+                          (errors?.monthly_fee ? " is-invalid" : "")
+                        }
+                        type="number"
+                        placeholder="Saisir le frais mensuels"
+                      />
+                      <span className="text-danger">{errors?.monthly_fee}</span>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-4">
+                    <div className="form-group local-forms">
+                      <label>
+                        Code Massar <span className="login-danger">*</span>
+                      </label>
+                      <input
+                        name="code_massar"
+                        className={
+                          "form-control" +
+                          (errors?.code_massar ? " is-invalid" : "")
+                        }
+                        type="text"
+                        onChange={(e) => setUserNameStudent(e.target.value)}
+                        placeholder="Saisir le code massar"
+                      />
+                      <span className="text-danger">{errors?.code_massar}</span>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-4">
+                    <div className="form-group local-forms">
+                      <label>
                         UserName<span className="login-danger">*</span>
                       </label>
                       <input
@@ -187,21 +208,25 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.email}</span>
                     </div>
                   </div>
+
                   <div className="col-12 col-sm-4">
                     <div className="form-group local-forms">
                       <label>
-                        Prénom<span className="login-danger">*</span>
+                        Date de naissance
+                        <span className="login-danger">*</span>
                       </label>
                       <input
-                        name="first_name"
+                        name="date_of_birth"
                         className={
-                          "form-control" +
-                          (errors?.first_name ? " is-invalid" : "")
+                          "form-control datetimepicker" +
+                          (errors?.date_of_birth ? " is-invalid" : "")
                         }
-                        type="text"
-                        placeholder="Saisir le prénom"
+                        type="date"
+                        placeholder="Saisir la date de naissance"
                       />
-                      <span className="text-danger">{errors?.first_name}</span>
+                      <span className="text-danger">
+                        {errors?.date_of_birth}
+                      </span>
                     </div>
                   </div>
                   <div className="col-12 col-sm-4">
@@ -226,6 +251,23 @@ const CreateStudent = () => {
                   <div className="col-12 col-sm-4">
                     <div className="form-group local-forms">
                       <label>
+                        Prénom<span className="login-danger">*</span>
+                      </label>
+                      <input
+                        name="first_name"
+                        className={
+                          "form-control" +
+                          (errors?.first_name ? " is-invalid" : "")
+                        }
+                        type="text"
+                        placeholder="Saisir le prénom"
+                      />
+                      <span className="text-danger">{errors?.first_name}</span>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-4">
+                    <div className="form-group local-forms">
+                      <label>
                         Gender <span className="login-danger">*</span>
                       </label>
                       <select
@@ -242,58 +284,7 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.gender}</span>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-4">
-                    <div className="form-group local-forms">
-                      <label>
-                        Date de naissance
-                        <span className="login-danger">*</span>
-                      </label>
-                      <input
-                        name="date_of_birth"
-                        className={
-                          "form-control datetimepicker" +
-                          (errors?.date_of_birth ? " is-invalid" : "")
-                        }
-                        type="date"
-                        placeholder="Saisir la date de naissance"
-                      />
-                      <span className="text-danger">
-                        {errors?.date_of_birth}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-4">
-                    <div className="form-group local-forms">
-                      <label>Téléphone</label>
-                      <input
-                        name="phone_number"
-                        className={
-                          "form-control" +
-                          (errors?.phone_number ? " is-invalid" : "")
-                        }
-                        type="text"
-                        placeholder="Saisir le numéro de téléphone (optionnel)"
-                      />
-                      <span className="text-danger">
-                        {errors?.phone_number}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-4">
-                    <div className="form-group local-forms">
-                      <label>CIN</label>
-                      <input
-                        name="cin"
-                        className={
-                          "form-control" + (errors?.cin ? " is-invalid" : "")
-                        }
-                        type="text"
-                        placeholder="Saisir le CIN (optionnel)"
-                      />
-                      <span className="text-danger">{errors?.cin}</span>
-                    </div>
-                  </div>
-                  <div className="col-12 col-sm-8">
+                  <div className="col-12 col-sm-12">
                     <div className="form-group local-forms">
                       <label>Address</label>
                       <input
@@ -308,7 +299,7 @@ const CreateStudent = () => {
                       <span className="text-danger">{errors?.address}</span>
                     </div>
                   </div>
-                  <div className="col-4 col-sm-4">
+                  <div className="col-4 col-sm-8">
                     <div className="form-group local-forms">
                       <label>
                         Parents <span className="login-danger">*</span>
@@ -388,6 +379,37 @@ const CreateStudent = () => {
                       <span className="text-danger">
                         {errors?.health_status}
                       </span>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-4">
+                    <div className="form-group local-forms">
+                      <label>Téléphone</label>
+                      <input
+                        name="phone_number"
+                        className={
+                          "form-control" +
+                          (errors?.phone_number ? " is-invalid" : "")
+                        }
+                        type="text"
+                        placeholder="Saisir le numéro de téléphone (optionnel)"
+                      />
+                      <span className="text-danger">
+                        {errors?.phone_number}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-4">
+                    <div className="form-group local-forms">
+                      <label>CIN</label>
+                      <input
+                        name="cin"
+                        className={
+                          "form-control" + (errors?.cin ? " is-invalid" : "")
+                        }
+                        type="text"
+                        placeholder="Saisir le CIN (optionnel)"
+                      />
+                      <span className="text-danger">{errors?.cin}</span>
                     </div>
                   </div>
                 </div>

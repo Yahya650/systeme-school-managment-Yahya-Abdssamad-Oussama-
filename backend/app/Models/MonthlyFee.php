@@ -10,6 +10,10 @@ class MonthlyFee extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'student_id',
+    ];
+
     // public function student()
     // {
     //     return $this->belongsTo(Student::class);

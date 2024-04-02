@@ -59,7 +59,9 @@ class PaymentController extends Controller
     {
         $request->validate([
             'method' => 'required',
+            'month' => 'required|numeric',
             'student_id' => 'required|exists:students,id',
+            'amount' => 'required|numeric',
         ]);
 
         $student = Student::find($request->student_id);
@@ -71,11 +73,11 @@ class PaymentController extends Controller
         // }
 
         $payment = new Payment();
-        $payment->amount = $student->monthlyFee->amount;
+        $payment->amount = $request->amount;
         $payment->method = $request->method;
         $payment->payment_date = Carbon::now()->format('Y-m-d');
         $payment->description = $request->description;
-        $payment->month = Carbon::now()->format('Y-m') . Carbon::parse($student->created_at)->format('-d');;
+        $payment->month = Carbon::now()->format('Y-') . $request->month;
         $payment->status = true;
         $payment->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $payment->student_parent_id = $student->student_parent_id;
@@ -83,10 +85,10 @@ class PaymentController extends Controller
         $payment->receipt = "";
         $payment->save();
 
-        $payment->receipt = $this->generateAndSaveReceipt($payment);
-        $payment->save();
+        // $payment->receipt = $this->generateAndSaveReceipt($payment);
+        // $payment->save();
 
-        Mail::to($studentParent->email)->send(new ReceiptEmail($payment));
+        // Mail::to($studentParent->email)->send(new ReceiptEmail($payment));
         // $this->sendReceiptEmail($payment, StudentParent::find($student->student_parent_id)->email);
 
         return response()->json([
