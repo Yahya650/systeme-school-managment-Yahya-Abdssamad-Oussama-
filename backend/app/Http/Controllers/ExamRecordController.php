@@ -28,6 +28,13 @@ class ExamRecordController extends Controller
         return response()->json(request()->user('student')->examRecords()->latest()->get());
     }
 
+    public function lastMarks(Request $request)
+    {
+        $admin = $request->user('admin');
+        $examRecords = $admin->examRecords()->with(['student'])->latest()->limit(5)->get();
+        return response()->json($examRecords);
+    }
+
 
     public function getMarks(Request $request)
     {

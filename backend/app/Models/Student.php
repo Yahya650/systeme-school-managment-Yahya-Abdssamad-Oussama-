@@ -9,6 +9,7 @@ use App\Models\Absence;
 use App\Models\Payment;
 use App\Models\ExamRecord;
 use App\Models\StudentParent;
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,14 +21,23 @@ class Student extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 
-    protected $appends = ['role'];
+    protected $appends = ['role', 'paymentStatus', 'monthlyFee'];
 
-    protected $with = ['classe', 'parent', 'reports.admin', 'absences.course', 'absences.teacher'];
-    // protected $with = ['classe', 'parent', 'examRecords.exam', 'reports.admin', 'absences.course', 'absences.teacher'];
+    protected $with = ['classe', 'parent', 'reports.admin', 'absences.course', 'absences.teacher', 'payments', 'monthlyFees'];
 
     public function getRoleAttribute()
     {
         return 'student';
+    }
+
+    public function getPaymentStatusAttribute()
+    {
+        return $this->paymentStatus();
+    }
+
+    public function getMonthlyFeeAttribute()
+    {
+        return $this->monthlyFees()->where('school_year_id', getCurrentSchoolYearFromDataBase()->id)->first();
     }
 
     protected $fillable = [
@@ -59,9 +69,47 @@ class Student extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    public function paymentStatus($schoolYearId = null)
+    {
+        if (is_null($schoolYearId)) {
+            $schoolYearId = getCurrentSchoolYearFromDataBase()->id;
+        }
+
+        $paymentsBySchoolYear = $this->payments()->where('school_year_id', $schoolYearId);
+
+        if ($paymentsBySchoolYear->count() == 0) {
+            return [
+                'status' => false,
+                'months_not_paid' => 1,
+                'amount_due' => $this->monthlyFees()->where('school_year_id', $schoolYearId)->latest()->first()->amount
+            ];
+        }
+
+        $lastPayment = $paymentsBySchoolYear->latest()->first();
+
+        $monthlyFee = $this->monthlyFees()->where('school_year_id', $schoolYearId)->latest()->first()->amount;
+        $monthsNotPaid = max(0, Carbon::now()->diffInMonths(Carbon::parse($lastPayment->month)));
+        $amountStillDue = $monthsNotPaid * $monthlyFee;
+
+        return [
+            'status' => $monthsNotPaid == 0,
+            'months_not_paid' => $monthsNotPaid,
+            'amount_due' => $amountStillDue,
+            'months_paid' => $paymentsBySchoolYear->count(),
+            'total_money_paid' => $paymentsBySchoolYear->sum('amount'),
+            'lastPaymentDate' => $lastPayment->created_at,
+        ];
+    }
+
+
     public function examRecords()
     {
         return $this->hasMany(ExamRecord::class);
+    }
+
+    public function monthlyFees()
+    {
+        return $this->hasMany(MonthlyFee::class);
     }
 
     public function reports()

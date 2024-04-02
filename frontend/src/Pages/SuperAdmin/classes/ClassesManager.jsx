@@ -180,9 +180,7 @@ const ClassesManager = () => {
                 />
                 <div className="mb-3">
                   <div className="form-group local-forms">
-                    <label>
-                      Filière <span className="login-danger">*</span>
-                    </label>
+                    <label>Filière</label>
                     <Select
                       ref={filiereId}
                       styles={{

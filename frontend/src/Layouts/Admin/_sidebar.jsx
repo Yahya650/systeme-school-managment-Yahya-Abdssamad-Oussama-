@@ -1,3 +1,5 @@
+import { faUsersLine } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 
@@ -43,6 +45,18 @@ const _sidebar = () => {
                   <NavLink to={"/admin/saisir-marks-manual"}>
                     <span>Saisir Manuellement</span>
                   </NavLink>
+                </li>
+              </ul>
+            </li>
+            <li className="">
+              <NavLink to={"#"}>
+                <FontAwesomeIcon icon={faUsersLine} />
+                <span> Les Classes</span>
+                <span className="menu-arrow"></span>
+              </NavLink>
+              <ul>
+                <li>
+                  <NavLink to="/admin/all-classes">Liste Des Classes</NavLink>
                 </li>
               </ul>
             </li>

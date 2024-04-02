@@ -48,7 +48,7 @@ const ListeClasses = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await AxiosClient.get("/super-admin/school_levels");
+        const { data } = await AxiosClient.get("/school_levels");
         setSchoolLevels(data);
       } catch (error) {
         errorToast(error.response.data.message);
@@ -358,13 +358,14 @@ const ListeClasses = () => {
                                       <LoadingCircle />
                                     ) : (
                                       <>
-                                        <i className="fas fa-save" />
+                                        <i className="fas fa-save" />{" "}
                                         Enregistrer
                                       </>
                                     )}
                                   </button>
                                 </div>
                               </td>
+                              <td></td>
                               <td></td>
                               <td></td>
                             </tr>

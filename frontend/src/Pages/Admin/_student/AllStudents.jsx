@@ -22,7 +22,7 @@ import {
   faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
 import LoadingCircle from "../../../Components/LoadingCircle";
-import { errorToast } from "../../../config/Toasts/toasts";
+import { errorToast, successToast } from "../../../config/Toasts/toasts";
 
 const AllStudents = () => {
   const [loading, setLoading] = useState(true);
@@ -33,15 +33,19 @@ const AllStudents = () => {
   const [loadingParents, setLoadingParents] = useState(true);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [currentStudent, setCurrentStudent] = useState(null);
   const [loadingRestore, setloadingRestore] = useState(false);
   const [loadingRestoreSelected, setloadingRestoreSelected] = useState(false);
   const [loadingDeleteSelected, setloadingDeleteSelected] = useState(false);
+  const [payments, setPayments] = useState([]);
+  const [paymentFormData, setPaymentFormData] = useState({});
   const [classeOptions, setClasseOptions] = useState([]);
   const [parentOptions, setParentOptions] = useState([]);
   const btnGrid1 = useRef(null);
   const classe_id = useRef(null);
   const parent_id = useRef(null);
   const title = useRef(null);
+  const paymentMonth = useRef(null);
   const content = useRef(null);
   const code_massar = useRef(null);
   const close_createReport_modal = useRef(null);
@@ -57,7 +61,8 @@ const AllStudents = () => {
     setCurrentPage,
     total,
     errors,
-    setErrors
+    setErrors,
+    currentSchoolYear,
   } = useContextApi();
 
   const {
@@ -198,12 +203,54 @@ const AllStudents = () => {
     setLoadingCreateReport(false);
   };
 
+  const addPayment = async () => {
+    setPaymentFormData({
+      ...paymentFormData,
+      month: new Date(payments[payments.length - 1]?.month)?.getMonth()
+        ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 1 !== 12
+          ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
+          : 1
+        : "",
+      student_id: currentStudent?.id,
+      amount: !paymentFormData.amout
+        ? currentStudent?.monthlyFee.amount
+        : paymentFormData.amout,
+    });
+
+    console.log(paymentFormData);
+    // setPayments([...payments, paymentFormData]);
+    try {
+      const { data } = await AxiosClient.post(
+        "/admin/payments",
+        paymentFormData
+      );
+      setErrors(null);
+      setPayments([...payments, data.data]);
+      successToast(data.message);
+    } catch (error) {
+      setErrors(error.response.data.errors);
+      errorToast(error.response.data.message);
+      setPayments([...payments.filter((p) => p.id !== paymentFormData.id)]);
+    }
+  };
+
   useEffect(() => {
     setCurrentPage(1);
     fetchData();
     fetchParents();
     fetchClasses();
   }, []);
+
+  // useEffect(() => {
+  //   console.log(currentStudent);
+  // }, [currentStudent]);
+  // useEffect(() => {
+  //   console.log(
+  //     new Date(payments[payments.length - 1]?.month)?.getMonth()
+  //       ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
+  //       : null
+  //   );
+  // }, [payments]);
 
   return (
     <div className="content container-fluid">
@@ -896,9 +943,64 @@ const AllStudents = () => {
                                 <div className="card-footer">
                                   <div className="row align-items-center">
                                     <div className="col-auto">
-                                      <span className="badge bg-success-dark">
-                                        Paid
-                                      </span>
+                                      {student.paymentStatus.status ? (
+                                        <span
+                                          onClick={() => {
+                                            setPayments(student.payments);
+                                            setCurrentStudent(student);
+                                          }}
+                                          data-tooltip-id={
+                                            "my-tooltip2" + cryptID(student.id)
+                                          }
+                                          data-tooltip-content={
+                                            "Mois non payés: " +
+                                            student.paymentStatus
+                                              .months_not_paid +
+                                            "\n" +
+                                            "Montant dû: " +
+                                            student.paymentStatus.amount_due +
+                                            " DH"
+                                          }
+                                          className="badge bg-success"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#paymentModel"
+                                          style={{
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          Paye
+                                        </span>
+                                      ) : (
+                                        <span
+                                          onClick={() => {
+                                            setPayments(student.payments);
+                                            setCurrentStudent(student);
+                                          }}
+                                          data-tooltip-id={
+                                            "my-tooltip2" + cryptID(student.id)
+                                          }
+                                          data-tooltip-content={
+                                            "Mois non payés: " +
+                                            student.paymentStatus
+                                              .months_not_paid +
+                                            "\n" +
+                                            "Montant dû: " +
+                                            student.paymentStatus.amount_due +
+                                            " DH"
+                                          }
+                                          className="badge bg-danger"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#paymentModel"
+                                          style={{
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          Non Paye
+                                        </span>
+                                      )}
+                                      <Tooltip
+                                        id={"my-tooltip2" + cryptID(student.id)}
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1048,6 +1150,177 @@ const AllStudents = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="paymentModel"
+        tabIndex="-1"
+        aria-labelledby="paymentModelLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-xl">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="paymentModelLabel">
+                Tout les paiements
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <table
+                className="table table-stripped table-hover datatable dataTable no-footer"
+                id="DataTables_Table_0"
+                role="grid"
+                aria-describedby="DataTables_Table_0_info"
+              >
+                <thead className="thead-light">
+                  <tr role="row">
+                    <th className="sorting">Amount</th>
+                    <th className="sorting">Method</th>
+                    <th className="sorting">La Date De payment</th>
+                    <th className="sorting">Le Mois payée</th>
+                    <th className="sorting">Le Parent</th>
+                    <th className="sorting">Année Scholaire</th>
+                    <th className="sorting">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payments.map((payment, i) => (
+                    <tr key={i}>
+                      <td>
+                        <span className="badge badge-soft-success">
+                          {payment.amount} DH
+                        </span>
+                      </td>
+                      <td>{payment.method}</td>
+                      <td>{payment.payment_date}</td>
+                      <td>{new Date(payment.month).getMonth() + 1}</td>
+                      <td>
+                        {payment.parent.last_name +
+                          " " +
+                          payment.parent.first_name}
+                      </td>
+                      <td>{payment.year.year}</td>
+                      <td>- </td>
+                    </tr>
+                  ))}
+                  <tr className="add-row">
+                    <td>
+                      <input
+                        type="text"
+                        className={
+                          "form-control" + (errors?.amount ? " is-invalid" : "")
+                        }
+                        onChange={(e) => {
+                          setPaymentFormData({
+                            ...paymentFormData,
+                            amount: e.target.value,
+                          });
+                        }}
+                        defaultValue={currentStudent?.monthlyFee.amount}
+                      />
+                      <span className="text text-danger">{errors?.amount}</span>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className={
+                          "form-control" + (errors?.method ? " is-invalid" : "")
+                        }
+                        onChange={(e) => {
+                          setPaymentFormData({
+                            ...paymentFormData,
+                            method: e.target.value,
+                          });
+                        }}
+                      />
+                      <span className="text  text-danger">
+                        {errors?.method}
+                      </span>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        disabled
+                        value={new Date().toISOString().slice(0, 10)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className={
+                          "form-control" + (errors?.month ? " is-invalid" : "")
+                        }
+                        disabled
+                        value={
+                          new Date(
+                            payments[payments.length - 1]?.month
+                          )?.getMonth()
+                            ? new Date(
+                                payments[payments.length - 1]?.month
+                              )?.getMonth() +
+                                1 !==
+                              12
+                              ? new Date(
+                                  payments[payments.length - 1]?.month
+                                )?.getMonth() + 2
+                              : 1
+                            : ""
+                        }
+                      />
+                      <span className="text  text-danger">{errors?.month}</span>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        disabled
+                        className="form-control"
+                        value={`${currentStudent?.parent?.last_name || ""} ${
+                          currentStudent?.parent?.first_name || ""
+                        }`}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        disabled
+                        value={currentSchoolYear?.year}
+                      />
+                    </td>
+                    <td className="add-remove text-end">
+                      <Link
+                        onClick={() => addPayment()}
+                        className="add-btn me-2"
+                      >
+                        <i className="fas fa-plus-circle"></i>
+                      </Link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              {/* <button type="button" className="btn btn-primary">
+                Save changes
+              </button> */}
             </div>
           </div>
         </div>

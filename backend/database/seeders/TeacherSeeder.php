@@ -84,32 +84,5 @@ class TeacherSeeder extends Seeder
         foreach ($teachers as $teacher) {
             Teacher::create($teacher);
         }
-
-        $teacherClasseCourses = [
-            [
-                'teacher_id' => 1,
-                'classe_id' => 18,
-                'course_id' => 53,
-            ],
-            [
-                'teacher_id' => 2,
-                'classe_id' => 18,
-                'course_id' => 54,
-            ],
-            [
-                'teacher_id' => 2,
-                'classe_id' => 18,
-                'course_id' => 57,
-            ],
-            [
-                'teacher_id' => 3,
-                'classe_id' => 18,
-                'course_id' => 58,
-            ],
-        ];
-
-        foreach ($teacherClasseCourses as $teacherClasseCourse) {
-            TeacherClasseCourse::create($teacherClasseCourse);
-        }
     }
 }

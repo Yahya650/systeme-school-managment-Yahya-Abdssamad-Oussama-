@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('method');
             $table->date('payment_date');
             $table->text('description')->nullable();
-            $table->string('receipt');
+            $table->string('receipt')->nullable();
             $table->string('month');
             $table->boolean('status')->default(false);
 

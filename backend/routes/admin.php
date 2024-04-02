@@ -1,15 +1,18 @@
 <?php
 
-use App\Http\Controllers\AbsenceController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ClasseController;
-use App\Http\Controllers\ExamRecordController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\StudentParentController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\TimeTableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AbsenceController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ClassTypeController;
+use App\Http\Controllers\TimeTableController;
+use App\Http\Controllers\ExamRecordController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SchoolLevelController;
+use App\Http\Controllers\StudentParentController;
 
 
 // Routes Authentication Admin
@@ -23,11 +26,14 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::put('/update-profile', [AdminController::class, 'updateProfile']);
     Route::post('/update-profile-picture', [AdminController::class, 'updatePictureProfileAuth']);
     Route::get('/logout', [AdminController::class, 'logout']);
+    // End Routes Admin
+
+    Route::get('/get-classe-types-by-school-level/{idSchoolLevel}', [ClassTypeController::class, 'getClasseTypesBySchoolLevel']);
+    Route::get('/filter-classe', [ClasseController::class, 'filterClasses']);
 
     Route::post('/upload-timetable/{idClass}', [TimeTableController::class, 'store']);
     Route::apiResource('timetables', TimeTableController::class)->only(['index', 'destroy', 'show']);
     Route::post('/update-timetable/{id}', [TimeTableController::class, 'update']);
-    // End Routes Admin
 
     // CRUD for students and student parents
     Route::middleware(['abilities:can-crud_students,can-crud_student_parents'])->group(function () {
@@ -42,9 +48,14 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('classe/{id}/students', [ClasseController::class, 'getStudentsByClasse']);
     Route::post('/onchange-classe', [ClasseController::class, 'onChangeClass']);
     Route::post('/save-marks-manual', [ExamRecordController::class, 'saveMarksByCourseManual']);
+    Route::apiResource('payments', PaymentController::class);
 
     // Routes Students
     Route::group(['prefix' => 'etudiants'], function () {
+
+        Route::post('/get-payments-by-schoolYear/{id}', [PaymentController::class, 'getPaymentsBySchoolYear']);
+
+        Route::get('/last-marks', [ExamRecordController::class, 'lastMarks']);
         Route::post('/save-mark', [ExamRecordController::class, 'store']);
         Route::apiResource('exam-records', ExamRecordController::class)->only(['index', 'destroy', 'show']);
         Route::post('/update-mark/{id}', [ExamRecordController::class, 'update']);

@@ -29,6 +29,7 @@ class ClasseController extends Controller
 
         return response()->json($classes);
     }
+
     public function getAllClasses()
     {
         return response()->json(Classe::all());
@@ -39,20 +40,49 @@ class ClasseController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'filiere_id' => 'required|exists:filieres,id',
-            'number_etud_max' => 'required|integer',
-            'classe_type_id' => 'required|exists:classe_types,id',
-        ]);
 
-        $filiere = Filiere::find($request->filiere_id);
-        if (!$filiere) return response()->json(['message' => 'filière non trouvé'], 404);
-        // 
         $classeType = ClasseType::find($request->classe_type_id);
         if (!$classeType) return response()->json(['message' => 'type de classe non trouvé'], 404);
 
-        $code = $classeType->code . $filiere->code . '-' . Classe::where('filiere_id', $request->filiere_id)->where('classe_type_id', $request->classe_type_id)->count() + 1;
+        if ($classeType->filieres()->exists()) {
+            $request->validate([
+                'filiere_id' => 'required|exists:filieres,id',
+                'classe_type_id' => 'required|exists:classe_types,id',
+                'number_etud_max' => 'required|integer',
+            ]);
+        }
+        $request->validate([
+            'classe_type_id' => 'required|exists:classe_types,id',
+            'number_etud_max' => 'required|integer',
+        ]);
 
+        if ($classeType->id >= 13) return response()->json(['message' => 'type de classe non Activé'], 404);
+        if ($classeType->filieres()->exists()) {
+            $filiere = Filiere::find($request->filiere_id);
+            if (!$filiere) return response()->json(['message' => 'filière non trouvé'], 404);
+
+            $code = $classeType->code . $filiere->code . '-' . Classe::where('filiere_id', $request->filiere_id)->where('classe_type_id', $request->classe_type_id)->count() + 1;
+
+            $classe = new Classe();
+            $classe->code = $code;
+            $classe->filiere_id = $request->filiere_id;
+            $classe->number_etud_max = $request->number_etud_max;
+            $classe->classe_type_id = $request->classe_type_id;
+            $classe->number_etud = 0;
+            $classe->save();
+
+            $courses = Course::where('filiere_id', $request->filiere_id)->where('classe_type_id', $request->classe_type_id)->get();
+            foreach ($courses as $course) {
+                $teacherClasseCourse = new TeacherClasseCourse();
+                $teacherClasseCourse->course_id = $course->id;
+                $teacherClasseCourse->classe_id = $classe->id;
+                $teacherClasseCourse->save();
+            }
+            return response()->json(["message" => "classe ajouté avec succès"]);
+        }
+
+        // this for Préscolaire level
+        $code = $classeType->code . '-' . Classe::where('filiere_id', null)->where('classe_type_id', $request->classe_type_id)->count() + 1;
         $classe = new Classe();
         $classe->code = $code;
         $classe->filiere_id = $request->filiere_id;
@@ -60,14 +90,6 @@ class ClasseController extends Controller
         $classe->classe_type_id = $request->classe_type_id;
         $classe->number_etud = 0;
         $classe->save();
-
-        $courses = Course::where('filiere_id', $request->filiere_id)->where('classe_type_id', $request->classe_type_id)->get();
-        foreach ($courses as $course) {
-            $teacherClasseCourse = new TeacherClasseCourse();
-            $teacherClasseCourse->course_id = $course->id;
-            $teacherClasseCourse->classe_id = $classe->id;
-            $teacherClasseCourse->save();
-        }
         return response()->json(["message" => "classe ajouté avec succès"]);
 
         // if i want return the courses for any classe not have teacher
@@ -127,7 +149,9 @@ class ClasseController extends Controller
 
     public function getStudentsByClasse($id)
     {
-        request()->validate([
+        $request = request();
+
+        $request->validate([
             'module_id' => 'nullable|exists:modules,id',
             'semester_id' => 'required|exists:semesters,id',
             'type_exam_id' => 'required|exists:type_exams,id',
@@ -142,9 +166,7 @@ class ClasseController extends Controller
     public function filterClasses()
     {
         $request = request();
-        // $request->validate([
-        //     'classe_type_id' => 'required|exists:classe_types,id',
-        // ]);
+
         $classeType = ClasseType::find($request->classe_type_id);
         if (!$classeType) return response()->json(['message' => 'le type de classe non trouve'], 404);
 

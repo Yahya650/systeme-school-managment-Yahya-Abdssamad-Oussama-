@@ -59,7 +59,6 @@ class TimeTableController extends Controller
         };
 
         $request->validate([
-            'title' => ['nullable', 'string'],
             'file' => ['required', 'mimes:pdf,png,jpg,jpeg', 'max:2048'],
             "start_date" => ['required', 'date', 'after:' . now()->toDateString()],
         ]);
@@ -88,12 +87,18 @@ class TimeTableController extends Controller
         }
 
         $newTimeTable->start_date = $request->start_date;
-        $newTimeTable->title = $request->title;
+        $newTimeTable->title = $classe->code . '-' . getCurrentSchoolYearFromDataBase()->year;
         $newTimeTable->classe_id = $idClasse;
+        $newTimeTable->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $newTimeTable->save();
 
         $classe->time_table_id = $newTimeTable->id;
         $classe->save();
+
+        foreach ($classe->students as $student) {
+            Mail::to($student->parent->email)->send(new TimeTableUploaded($student, $newTimeTable));
+        }
+
         return response()->json(['message' => 'Emploi du temps ajouté et envoyé avec succès'], 201);
     }
 
@@ -190,7 +195,7 @@ class TimeTableController extends Controller
         $schoolLevel = $classe->classeType->school_level;
 
         $timeTable = new TimeTable();
-        $timeTable->title = $classe->code . '-' . getCurrentSchoolYear();
+        $timeTable->title = $classe->code . '-' . getCurrentSchoolYearFromDataBase()->year;
         $timeTable->start_date = $request->start_date;
 
         Storage::exists("public/" . $classe->time_table?->file) && Storage::disk('local')->delete("public/" . $classe->time_table?->file);
