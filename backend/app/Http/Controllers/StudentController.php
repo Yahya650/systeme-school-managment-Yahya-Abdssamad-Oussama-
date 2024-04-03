@@ -124,11 +124,11 @@ class StudentController extends Controller
         $newStudent->admin_id = $request->user('admin')->id;
         $newStudent->save();
         Classe::find($request->classe_id)->update(['number_etud' => Classe::find($request->classe_id)->number_etud + 1]);
-        MonthlyFee::create([
-            'student_id' => $newStudent->id,
-            'amount' => $request->monthly_fee,
-            'school_year_id' => getCurrentSchoolYearFromDataBase()->id,
-        ]);
+        $newMonthlyFee = new MonthlyFee();
+        $newMonthlyFee->student_id = $newStudent->id;
+        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
+        $newMonthlyFee->save();
 
         return response([
             'code_massar' => $request->code_massar,
