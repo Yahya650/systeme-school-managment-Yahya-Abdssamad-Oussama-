@@ -200,7 +200,8 @@ const CreateStudent = () => {
                           "form-control" + (errors?.email ? " is-invalid" : "")
                         }
                         type="text"
-                        defaultValue={
+                        disabled
+                        value={
                           userNameStudent && userNameStudent + "@taalim.ma"
                         }
                         placeholder="ex: R000000000@taalim.ma"
