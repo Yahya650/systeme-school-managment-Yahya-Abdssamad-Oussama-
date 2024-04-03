@@ -60,7 +60,7 @@ const CreateStudent = () => {
         gender: e.target.gender[0].value,
         date_of_birth: e.target.date_of_birth[0].value,
         blood_type: e.target.blood_type[0].value,
-        monthly_fee: e.target.monthly_fee[0].value,
+        monthly_fee: e.target.monthly_fee.value,
         health_status: e.target.health_status[0].value,
         classe_id: dcryptID(e.target.classe_id.value),
 

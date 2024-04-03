@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('monthly_fees', function (Blueprint $table) {
             $table->id();
-            $table->float('amount');
+            $table->decimal('amount', 10, 2)->nullable(); // Adjust precision and scale as needed
 
             $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();

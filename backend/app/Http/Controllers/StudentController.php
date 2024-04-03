@@ -343,9 +343,9 @@ class StudentController extends Controller
         $student->classe_id = $request->classe_id;
         $student->student_parent_id = $request->student_parent_id;
         $student->save();
-        $newMonthlyFee = new MonthlyFee();
-        $newMonthlyFee->student_id = $student->id;
-        $newMonthlyFee->amount = $request->monthly_fee;
+
+        $newMonthlyFee = MonthlyFee::where('student_id', $student->id)->first();
+        $newMonthlyFee->amount = (float) $request->monthly_fee;
         $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $newMonthlyFee->save();
 
@@ -455,9 +455,8 @@ class StudentController extends Controller
         $student->classe_id = $request->classe_id;
         $student->save();
 
-        $newMonthlyFee = new MonthlyFee();
-        $newMonthlyFee->student_id = $student->id;
-        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee = MonthlyFee::where('student_id', $student->id)->first();
+        $newMonthlyFee->amount = (float) $request->monthly_fee;
         $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $newMonthlyFee->save();
 
@@ -568,9 +567,8 @@ class StudentController extends Controller
         $student->student_parent_id = $parent->id;
         $student->save();
 
-        $newMonthlyFee = new MonthlyFee();
-        $newMonthlyFee->student_id = $student->id;
-        $newMonthlyFee->amount = $request->monthly_fee;
+        $newMonthlyFee = MonthlyFee::where('student_id', $student->id)->first();
+        $newMonthlyFee->amount = (float) $request->monthly_fee;
         $newMonthlyFee->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $newMonthlyFee->save();
 
