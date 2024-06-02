@@ -11,7 +11,6 @@ use App\Http\Controllers\ClassTypeController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\ExamRecordController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\SchoolLevelController;
 use App\Http\Controllers\StudentParentController;
 
 

@@ -151,7 +151,7 @@ const DashboardAdmin = () => {
                     <tbody>
                       {lastMarks?.map((mark, i) => (
                         <tr key={i}>
-                          <td>{mark.student.code_massar}</td>
+                          <td>{mark.student?.code_massar}</td>
                           <td className="text-nowrap">
                             <div>{mark.exam.course.name}</div>
                           </td>
@@ -160,29 +160,29 @@ const DashboardAdmin = () => {
                               <img
                                 className="rounded-circle"
                                 src={
-                                  mark.student.profile_picture
+                                  mark.student?.profile_picture
                                     ? BACKEND_URL +
                                       "/storage/" +
-                                      mark.student.profile_picture
-                                    : mark.student.gender == "male"
+                                      mark.student?.profile_picture
+                                    : mark.student?.gender == "male"
                                     ? "/assets/img/default-profile-picture-grey-male-icon.png"
                                     : "/assets/img/default-profile-picture-grey-female-icon.png"
                                 }
                                 width="25"
                                 alt="Star Students"
                               />
-                              {mark.student.first_name} {mark.student.last_name}
+                              {mark.student?.first_name} {mark.student?.last_name}
                             </Link>
                           </td>
                           <td className="text-center">
                             {mark.note >
-                            mark?.student.classe.classe_type.school_level
+                            mark?.student?.classe.classe_type.school_level
                               .passing_mark ? (
                               <span className=" text-end text-success">
                                 <b>{mark.note}</b>
                               </span>
                             ) : mark.note <
-                              mark?.student.classe.classe_type.school_level
+                              mark?.student?.classe.classe_type.school_level
                                 .passing_mark ? (
                               <span className="text-end text-danger">
                                 <b>{mark.note}</b>

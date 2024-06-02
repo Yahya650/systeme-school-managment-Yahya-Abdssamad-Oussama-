@@ -84,7 +84,6 @@ const AllStudents = () => {
     await getStudents(val_currentPage);
     setLoading(false);
   };
-
   const handleResetSearchForm = async (doFetch = true) => {
     btnGrid1.current.click();
     if (typeFetch === "deleted" && doFetch) handleGetTrash();
@@ -98,7 +97,6 @@ const AllStudents = () => {
       label: "Rechercher par une Parent...",
     });
   };
-
   const fetchParents = async () => {
     const parents = await AxiosClient.get("/admin/student-parents");
     const options1 = parents.data.map((parent) => ({
@@ -108,7 +106,6 @@ const AllStudents = () => {
     setParentOptions(options1);
     setLoadingParents(false);
   };
-
   const fetchClasses = async () => {
     const classes = await AxiosClient.get("/admin/classes");
     const options = classes.data.map((classe) => ({
@@ -121,7 +118,6 @@ const AllStudents = () => {
     setClasseOptions(options);
     setLoadingClasses(false);
   };
-
   const handleSubmit = async (e, doLoading = true, val_currentPage) => {
     e.preventDefault();
     if (
@@ -132,7 +128,7 @@ const AllStudents = () => {
       errorToast("s'il vous plait choisir minimum une classe");
       return;
     }
-    btnGrid1.current.click();
+    btnGrid1?.current?.click();
     if (doLoading) {
       setLoading(true);
       setLoadingSearch(true);
@@ -154,7 +150,6 @@ const AllStudents = () => {
     setLoading(false);
     setLoadingSearch(false);
   };
-
   const handleGetTrash = async (doLoading = true, val_currentPage) => {
     doLoading && setLoading(true);
     setIds([]);
@@ -163,7 +158,6 @@ const AllStudents = () => {
     await getStudentsTrash(val_currentPage);
     setLoading(false);
   };
-
   const handleRestoreSelected = async () => {
     setloadingRestoreSelected(true);
     await restoreStudentSelected(ids);
@@ -185,7 +179,6 @@ const AllStudents = () => {
     await removeStudent(dcryptID(id));
     setLoadingDelete(false);
   };
-
   const handelCreateReport = async (e) => {
     e.preventDefault();
     const formData = {
@@ -204,26 +197,45 @@ const AllStudents = () => {
   };
 
   const addPayment = async () => {
-    setPaymentFormData({
-      ...paymentFormData,
-      month: new Date(payments[payments.length - 1]?.month)?.getMonth()
-        ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 1 !== 12
-          ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
-          : 1
-        : "",
-      student_id: currentStudent?.id,
-      amount: !paymentFormData.amout
-        ? currentStudent?.monthlyFee.amount
-        : paymentFormData.amout,
-    });
+    // setPaymentFormData({
+    //   ...paymentFormData,
+    //   month: new Date(payments[payments.length - 1]?.month)?.getMonth()
+    //     ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 1 !== 12
+    //       ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
+    //       : 1
+    //     : "",
+    //   student_id: currentStudent?.id,
+    //   amount: !paymentFormData.amout
+    //     ? currentStudent?.monthlyFee.amount
+    //     : paymentFormData.amout,
+    // });
 
-    console.log(paymentFormData);
+    // console.log(paymentFormData);
     // setPayments([...payments, paymentFormData]);
+    console.log(payments);
+
+    // console.log(
+    //   new Date(payments[payments.length - 1]?.month)?.getMonth()
+    //     ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 1 !== 12
+    //       ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
+    //       : 1
+    //     : ""
+    // );
+
     try {
-      const { data } = await AxiosClient.post(
-        "/admin/payments",
-        paymentFormData
-      );
+      const { data } = await AxiosClient.post("/admin/payments", {
+        month: new Date(payments[payments.length - 1]?.month)?.getMonth()
+          ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 1 !==
+            12
+            ? new Date(payments[payments.length - 1]?.month)?.getMonth() + 2
+            : 1
+          : "",
+        student_id: currentStudent?.id,
+        amount: !paymentFormData.amout
+          ? currentStudent?.monthlyFee.amount
+          : paymentFormData.amout,
+      });
+
       setErrors(null);
       setPayments([...payments, data.data]);
       successToast(data.message);
@@ -233,6 +245,10 @@ const AllStudents = () => {
       setPayments([...payments.filter((p) => p.id !== paymentFormData.id)]);
     }
   };
+
+  useEffect(() => {
+    console.log(currentStudent);
+  }, [currentStudent]);
 
   useEffect(() => {
     setCurrentPage(1);

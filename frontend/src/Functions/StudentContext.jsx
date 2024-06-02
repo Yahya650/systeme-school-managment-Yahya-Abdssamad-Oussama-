@@ -311,7 +311,6 @@ const StudentContext = ({ children }) => {
           <div>
             <b>Code Massar : </b> {data.code_massar} <br />
             <b>Nouveau mot de passe: </b> {data.password} <br />
-            <b>Password : </b> {data.message} <br />
           </div>
         ),
         icon: "success",
