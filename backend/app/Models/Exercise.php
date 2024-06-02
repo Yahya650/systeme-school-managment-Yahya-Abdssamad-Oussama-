@@ -34,7 +34,7 @@ class Exercise extends Model
     {
         return $this->belongsToMany(Classe::class, 'exercise_classes')
             ->using(ExerciseClasse::class)
-            ->wherePivot('deleted_at', null)
+            // ->wherePivot('deleted_at', null)
             ->withTimestamps();
     }
 }

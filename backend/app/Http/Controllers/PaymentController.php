@@ -59,13 +59,12 @@ class PaymentController extends Controller
     {
         $request->validate([
             'method' => 'required',
-            'month' => 'required|numeric',
+            // 'month' => 'required',
             'student_id' => 'required|exists:students,id',
             'amount' => 'required|numeric',
         ]);
 
         $student = Student::find($request->student_id);
-        $studentParent = StudentParent::find($student->student_parent_id);
         // if ($student->paymentStatus()['status']) {
         //     return response()->json([
         //         'message' => 'not access'
@@ -77,11 +76,12 @@ class PaymentController extends Controller
         $payment->method = $request->method;
         $payment->payment_date = Carbon::now()->format('Y-m-d');
         $payment->description = $request->description;
-        $payment->month = Carbon::now()->format('Y-') . $request->month;
+        $payment->month = $request->month != '' ? Carbon::now()->format('Y-') . $request->month : Carbon::now()->format('Y-m');
         $payment->status = true;
         $payment->school_year_id = getCurrentSchoolYearFromDataBase()->id;
         $payment->student_parent_id = $student->student_parent_id;
         $payment->student_id = $request->student_id;
+        $payment->student_parent_id = $student->student_parent_id;
         $payment->receipt = "";
         $payment->save();
 

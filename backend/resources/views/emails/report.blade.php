@@ -21,7 +21,7 @@
                                 <td style="padding: 40px 0px 0px;">
                                     <div style="text-align: left;">
                                         <div style="padding-bottom: 20px;"><img
-                                                src="{{ asset('/storage/logo_app/gsb-logo.png') }}" alt="GSB">
+                                            src="{{ asset('/storage/logo_app/gsb-logo.png') }}" alt="GSB">
                                         </div>
                                     </div>
                                     <div style="padding: 20px; background-color: rgb(255, 255, 255);">

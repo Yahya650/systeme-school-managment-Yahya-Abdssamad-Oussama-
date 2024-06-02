@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classe;
-use App\Models\ExamRecord;
-use App\Models\MonthlyFee;
+use App\Models\Payment;
 use App\Models\Student;
 use Nette\Utils\Random;
+use App\Models\ExamRecord;
+use App\Models\MonthlyFee;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StudentParent;
@@ -248,7 +249,8 @@ class StudentController extends Controller
             'current_page' => $currentPage,
             'per_page' => $perPage,
             'total' => $students->count(),
-            'last_page' => ceil($students->count() / $perPage)
+            'last_page' => ceil($students->count() / $perPage),
+            'last_paymant' => Payment::where('student_id', $studentsPaginated->last()?->id)->first()
         ]);
     }
 
@@ -849,26 +851,32 @@ class StudentController extends Controller
         $classe_id = $request->classe_id;
         $type = $request->type;
 
-        $studentsQuery = Student::query()->withTrashed();
 
-        if ($code_massar) $studentsQuery->where('code_massar', 'like', '%' . $code_massar . '%');
-        if ($parent_id) $studentsQuery->where('student_parent_id', 'like', '%' . $parent_id . '%');
-        if ($classe_id) $studentsQuery->where('classe_id', 'like', '%' . $classe_id . '%');
-
-        $students = $studentsQuery->get();
 
         if ($type === "deleted") {
-            $deletedStudents = $students->filter(function ($student) {
-                return $student->deleted_at !== null;
-            });
+            $studentsQuery = Student::query()->onlyTrashed();
+
+            if ($code_massar) $studentsQuery->where('code_massar', 'like', '%' . $code_massar . '%');
+            if ($parent_id) $studentsQuery->where('student_parent_id', $parent_id);
+            if ($classe_id) $studentsQuery->where('classe_id', $classe_id);
+
+            $students = $studentsQuery->get();
             return response()->json([
-                'data' => $deletedStudents->values(),
+                'data' => $students->values(),
                 'current_page' => 1, // Assuming it's always the first page for deleted students
                 'per_page' => 0,
                 'total' => 0,
                 'last_page' => 0 // Assuming it's always the last page for deleted students
             ]);
         }
+
+        $studentsQuery = Student::query();
+
+        if ($code_massar) $studentsQuery->where('code_massar', 'like', '%' . $code_massar . '%');
+        if ($parent_id) $studentsQuery->where('student_parent_id', $parent_id);
+        if ($classe_id) $studentsQuery->where('classe_id', $classe_id);
+
+        $students = $studentsQuery->get();
 
         return response()->json([
             'data' => $students,
